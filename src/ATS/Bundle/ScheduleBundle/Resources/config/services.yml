@@ -1,0 +1,9 @@
+services:
+    ats_schedule.book_parser:
+        class: ATS\Bundle\ScheduleBundle\Util\Parser\BookParser
+        arguments:
+            - "@doctrine"
+            
+#    ats_schedule.example:
+#        class: ATS\Bundle\ScheduleBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

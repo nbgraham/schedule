@@ -1,0 +1,11 @@
+ats_schedule_home:
+    type:     annotation
+    resource: "@ATSScheduleBundle/Controller/DefaultController.php"
+
+ats_schedule:
+    type:     rest
+    resource: "@ATSScheduleBundle/Controller/"
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc

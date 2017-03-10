@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Class Scheduling{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="application/javascript" src="{{ asset('bundles/atsschedule/js/controller/Default/index.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    
+    <div id="calendar">
+        
+    </div>
+    
+{% endblock %}

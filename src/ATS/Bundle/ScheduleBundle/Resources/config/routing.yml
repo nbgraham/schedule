@@ -1,0 +1,3 @@
+ats_schedule_homepage:
+    path:     /
+    defaults: { _controller: ATSScheduleBundle:Default:index }
