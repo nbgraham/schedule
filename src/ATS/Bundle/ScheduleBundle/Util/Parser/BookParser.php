@@ -5,13 +5,13 @@ namespace ATS\Bundle\ScheduleBundle\Util\Parser;
 use ATS\Bundle\ScheduleBundle\Entity\Building;
 use ATS\Bundle\ScheduleBundle\Entity\Campus;
 use ATS\Bundle\ScheduleBundle\Entity\Course;
-use ATS\Bundle\ScheduleBundle\Entity\Event;
+use ATS\Bundle\ScheduleBundle\Entity\ClassEvent;
 use ATS\Bundle\ScheduleBundle\Entity\Instructor;
 use ATS\Bundle\ScheduleBundle\Entity\Room;
 use ATS\Bundle\ScheduleBundle\Entity\Term;
 use ATS\Bundle\ScheduleBundle\Entity\TermBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
@@ -38,16 +38,6 @@ class BookParser
     protected $include_online;
     
     /**
-     * @var resource
-     */
-    protected $handle;
-    
-    /**
-     * @var InputInterface
-     */
-    protected $input;
-    
-    /**
      * @var OutputInterface
      */
     protected $output;
@@ -57,23 +47,18 @@ class BookParser
      *
      * @param Registry $doctrine
      */
-    public function __construct($doctrine)
+    public function __construct(Registry $doctrine)
     {
         $this->doctrine = $doctrine;
+        
+        $this->setIncludeOnline(false);
     }
     
-    public function setPath($path)
-    {
-        $this->path = $path;
-        return $this;
-    }
-    
-    public function setIncludeOnline($on)
-    {
-        $this->include_online = $on;
-        return $this;
-    }
-    
+    /**
+     * Start the parsing.
+     * 
+     * @param OutputInterface|null $output
+     */
     public function doParse(OutputInterface $output = null)
     {
         $this->output = $output;
@@ -81,42 +66,71 @@ class BookParser
         $this->run();
     }
     
+    /**
+     * 
+     */
     protected function run()
     {
-        $num_entries = count(file($this->path)) - 1;
+        $this->disableDoctrineLogging();
         
-        $this->openfile();
+        $handle   = $this->openFile();
+        $progress = new ProgressBar($this->output, count(file($this->path)));
+        $progress->setFormat('debug');
+        $progress->start();
         
-        while($data = fgetcsv($this->handle)) {
-            $class = $this->parseline($data);
+        $i      = 1;
+        $chunks = 100;
+        while($data = fgetcsv($handle)) {
+            $this->parseline($data);
             
-            if ($this->output instanceof outputinterface) {
-                $this->printline($class);
+            if ($i % $chunks == 0) {
+                $this->getManager()->flush();
+                
+                $progress->advance($chunks);
             }
+            
+            $i++;
         }
         
         $this->getManager()->flush();
+        $progress->finish();
+        
+        fclose($handle);
     }
     
     protected function parseLine(array $data)
     {
-        $this->output->writeln(implode(' ', $data));
+        // 0 = semester - invalid entry. 20 = Days.
+        if ('...' === $data[0] || (!$this->include_online && $this->isOnline($data))) {
+            return null;
+        }
         
-        $campus = $this->getCampus($data);
-        $this->getBuilding($campus, $data);
+        $room     = null;
+        $location = $this->parseBuilding($data);
+        $campus   = $this->getCampus($data);
+        if ($building = $this->getBuilding($campus, $location)) {
+            $room = $this->getRoom($building, $location);
+        }
         
         $instructor = $this->getInstructor($data);
-        $term       = $this->getTerm($data);
-        $course     = $this->getCourse($term, $data);
+        $term       = $this->getTerm($data, $term_block);
+        $course     = $this->getCourse($data);
         
-        return $this->parseClass($campus, $course, $term, $instructor, $data);
+        $class = $this->parseClass($data, $campus, $course, $term_block, $instructor, $room);
+        
+        // Each class needs real IDs to reference, so if any of these IDs aren't already stored in the DB - store them.
+        if (!$campus->getId() || !$course->getId() || !$term->getId() || !$instructor->getId() || !$room->getId()) {
+            $this->getManager()->flush();
+        }
+        
+        return $class;
     }
     
     protected function getCampus(array $data)
     {
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Campus');
-        $object = $repo->findBy([
-            'display_name' => $data[9]
+        $object = $repo->findOneBy([
+            'name' => $data[9]
         ]);
         
         if ($object) {
@@ -129,85 +143,106 @@ class BookParser
         return $object;
     }
     
-    protected function getBuilding(Campus $campus, array $data)
+    protected function getBuilding(Campus $campus, array $location)
     {
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Building');
-        $object = $repo->findBy([
-            'name' => $data[18]
+        $object = $repo->findOneBy([
+            'name'   => $location['building'],
+            'campus' => $campus,
         ]);
         
         if ($object) {
             return $object;
         }
         
-        $object = new Building($campus, $data[18]);
+        $object = new Building($campus, $location['building']);
+        $campus->addBuilding($object);
+        
         $this->getManager()->persist($object);
         
         return $object;
     }
     
-    protected function getRoom(Building $parent, array $data)
+    protected function getRoom(Building $building, array $location)
     {
+        $name   = $location['room'] ?: '0000';
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Room');
-        $object = $repo->findBy([
-            'id' => $data[19]
+        $object = $repo->findOneBy([
+            'number'   => $name,
+            'building' => $building,
         ]);
         
         if ($object) {
             return $object;
         }
         
-        $object = new Room($parent, $data[19]);
+        $object = new Room($building, $name);
+        $building->addRoom($object);
+        
         $this->getManager()->persist($object);
         
         return $object;
+    }
+    
+    private function parseBuilding(array $data)
+    {
+        if ('XCH' !== substr($data[18], 0, 3)) {
+            return [
+                'building' => $data[18],
+                'room'     => $data[19],
+            ];
+        }
+        
+        return [
+            'building' => 'XCH',
+            'room'     => substr($data[18], 3),
+        ];
+        
     }
     
     protected function getInstructor(array $data)
     {
-        $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Instructor');
-        $object = $repo->findBy([
-            'id' => $data[7]
-        ]);
+        $id   = (int) $data[7];
+        $name = $data[7] ? $data[6] : 'N/A'; 
         
-        if ($object) {
+        if (($object = $this->find('ATSScheduleBundle:Instructor', $id)) instanceof Instructor) {
             return $object;
         }
         
-        $object = new Instructor($data[7], $data[6]);
+        $object = new Instructor($id, $name);
         $this->getManager()->persist($object);
         
         return $object;
     }
     
-    protected function getTerm(array $data)
+    protected function getTerm(array $data, TermBlock &$block = null)
     {
-        $term_meta = $this->parseTerm($data);
-        $this->output->writeln(implode(' - ', $term_meta));
-        $this->output->writeln(count($data));
-        
+        $term   = $this->parseTerm($data);
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Term');
-        $object = $repo->findBy([
-            'year'     => $term_meta['year'],
-            'semester' => $term_meta['semester'],
+        $object = $repo->findOneBy([
+            'year'     => $term['year'],
+            'semester' => $term['semester'],
         ]);
         
         if ($object) {
-            $this->validateTermBlock($object, $term_meta['block']);
+            $block = $this->validateTermBlock($object, $term['block']);
             return $object;
         }
         
-        $object = new Term($data[0], $term_meta['year'], $term_meta['semester']);
-        $this->getManager()->persist($object);
-        $this->validateTermBlock($object, $term_meta['block']);
+        $object = new Term($data[0], $term['year'], $term['semester']);
+        $block  = $this->validateTermBlock($object, $term['block']);
         
         return $object;
     }
     
     protected function validateTermBlock(Term $term, $block)
     {
+        if (!$term->getId()) {
+            return $this->createBlock($term, $block);
+        }
+        
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:TermBlock');
-        $object = $repo->findBy([
+        $object = $repo->findOneBy([
             'term' => $term,
             'name' => $block,
         ]);
@@ -216,30 +251,36 @@ class BookParser
             return $object;
         }
         
+        return $this->createBlock($term, $block);
+    }
+    
+    private function createBlock(Term $term, $block)
+    {
         $object = new TermBlock($term, $block);
         $term->addBlock($object);
         
         $this->getManager()->persist($object);
+        $this->getManager()->flush();
+        
+        return $object;
     }
     
-    protected function getCourse(Term $term, array $data)
+    protected function getCourse(array $data)
     {
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Course');
-        $object = $repo->findBy([
-            'number' => $data[2],
+        $object = $repo->findOneBy([
+            'subject' => $data[1],
+            'number'  => $data[2],
         ]);
         
-        if ($object) {
+        if ($object instanceof Course) {
             return $object;
         }
         
-        $object = new Course();
+        $object = new Course($data[1], $data[2]);
         $object
-            ->setNumber($data[2])
             ->setTitle($data[5])
-            ->setTerm($term)
-            ->setSubject($data[1])
-            ->setLevel($data[28])
+            ->setLevel($data[36])
             ->setMaximumEnrollment($data[11])
         ;
         
@@ -248,12 +289,18 @@ class BookParser
         return $object;
     }
     
-    protected function parseClass(Campus $campus, Course $course, Term $term, Instructor $instructor, array $data)
+    protected function parseClass(array $data, Campus $campus, Course $course, TermBlock $block, Instructor $instructor, Room $room = null)
     {
-        $event = new Event();
+        if (($object = $this->find('ATSScheduleBundle:ClassEvent', $data[4])) instanceof ClassEvent) {
+            return $object;
+        }
+        
+        $event = new ClassEvent();
         $event
             ->setCrn($data[4])
             ->setDays($data[20])
+            ->setStartDate($this->getDate($data[16]))
+            ->setEndDate($this->getDate($data[17]))
             ->setStartTime($data[21])
             ->setEndTime($data[22])
             ->setStatus($data[8])
@@ -261,8 +308,9 @@ class BookParser
             ->setSection($data[3])
             ->setCampus($campus)
             ->setCourse($course)
-            ->setTerm($term)
+            ->setBlock($block)
             ->setInstructor($instructor)
+            ->setRoom($room)
         ;
         
         $this->getManager()->persist($event);
@@ -270,36 +318,129 @@ class BookParser
         return $event;
     }
     
+    /**
+     * Determine if the class offered is an online class.
+     * 
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isOnline(array $data)
+    {
+        // 20 = Days.
+        return null === $data[20]
+            && $this->getDate($data[16]) <= new \DateTime()
+        ;
+    }
+    
+    /**
+     * Break the terms into parts.
+     * 
+     * @param array $data
+     *
+     * @return array
+     */
     private function parseTerm(array $data)
     {
         $parts = explode(' ', $data[0]);
         return [
             'year'     => end($parts),
             'semester' => $parts[0],
-            'block'    => $data[27],
+            'block'    => $data[35],
         ];
     }
     
-    protected function printLine(Event $class)
-    {
-        
-    }
-    
+    /**
+     * Opens a CSV file for read only access.
+     * 
+     * @return resource
+     */
     protected function openFile()
     {
-        if (!$this->handle = fopen($this->path, 'r')) {
+        if (!$handle = fopen($this->path, 'r')) {
             throw new FileNotFoundException();
         }
         
         // Ignore the column headers.
-        fgetcsv($this->handle);
+        fgetcsv($handle);
         
-        return $this;
+        return $handle;
     }
     
+    /**
+     * Tiny wrapper around doctrine Registry.
+     * 
+     * @param string $className
+     * @param mixed  $id
+     *
+     * @return object
+     */
+    private function find($className, $id)
+    {
+        return $this->doctrine->getManager()
+            ->find($className, $id)
+        ;
+    }
     
+    /**
+     * Format the date string.
+     * 
+     * @param string $date
+     *
+     * @return \DateTime
+     */
+    private function getDate($date)
+    {
+        if ($date instanceof \DateTime) {
+            return $date;
+        }
+        
+        return new \DateTime($date);
+    }
+    
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     */
     private function getManager()
     {
         return $this->doctrine->getManager();
+    }
+    
+    /**
+     * Sets the path to the csv to parse.
+     * 
+     * @param string $path
+     *
+     * @return $this
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+        return $this;
+    }
+    
+    /**
+     * Sets the flag for including online classes.
+     * 
+     * @param boolean $on
+     *
+     * @return $this
+     */
+    public function setIncludeOnline($on)
+    {
+        $this->include_online = $on;
+        return $this;
+    }
+    
+    /**
+     * Save memory by disabling sql query logging.
+     */
+    private function disableDoctrineLogging()
+    {
+        $this->doctrine
+            ->getConnection()
+            ->getConfiguration()
+            ->setSQLLogger(null)
+        ;
     }
 }

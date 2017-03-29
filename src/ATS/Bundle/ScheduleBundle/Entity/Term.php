@@ -11,21 +11,15 @@ use Doctrine\ORM\Mapping as ORM;
 class Term extends AbstractEntity
 {
     /**
-     * @ORM\ManyToMany(targetEntity="TermBlock", mappedBy="term")
+     * @ORM\OneToMany(targetEntity="TermBlock", mappedBy="term")
      * @var TermBlock[]
      */
     protected $blocks;
     
     /**
-     * @ORM\OneToMany(targetEntity="Event", mappedBy="term")
-     * @var Event[]
-     */
-    protected $classes;
-    
-    /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(type="integer")
      * 
      * @var Integer
      */
@@ -52,15 +46,17 @@ class Term extends AbstractEntity
     /**
      * Term constructor.
      *
-     * @param $name
+     * @param string  $name
+     * @param integer $year
+     * @param string  $semester
      */
     public function __construct($name, $year, $semester)
     {
         $this->setDisplayName($name);
         
-        $this->blocks  = new ArrayCollection();
-        $this->terms   = new ArrayCollection();
-        $this->classes = new ArrayCollection();
+        $this->year     = $year;
+        $this->semester = $semester;
+        $this->blocks   = new ArrayCollection();
     }
     
     /**
@@ -104,29 +100,10 @@ class Term extends AbstractEntity
      *
      * @return Term
      */
-    public function addBlock($block)
+    public function addBlock(TermBlock $block)
     {
         $this->blocks->add($block);
-        
-        return $this;
-    }
-    
-    /**
-     * @return Event[]
-     */
-    public function getClasses()
-    {
-        return $this->classes;
-    }
-    
-    /**
-     * @param Event $class
-     *
-     * @return Term
-     */
-    public function addClass(Event $class)
-    {
-        $this->classes->add($class);
+        $block->setTerm($this);
         
         return $this;
     }

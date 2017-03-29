@@ -2,6 +2,7 @@
 
 namespace ATS\Bundle\ScheduleBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,10 +11,16 @@ use Doctrine\ORM\Mapping as ORM;
 class TermBlock extends AbstractEntity
 {
     /**
-     * @ORM\ManyToMany(targetEntity="Term", inversedBy="blocks")
+     * @ORM\ManyToOne(targetEntity="Term", inversedBy="blocks", fetch="EXTRA_LAZY", cascade={"persist"})
      * @var Term
      */
     protected $term;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="block", fetch="EXTRA_LAZY")
+     * @var ClassEvent[]
+     */
+    protected $classes;
     
     /**
      * @ORM\Id()
@@ -42,6 +49,8 @@ class TermBlock extends AbstractEntity
             ->setTerm($term)
             ->setName($name)
         ;
+        
+        $this->classes = new ArrayCollection();
     }
     
     /**
@@ -57,7 +66,7 @@ class TermBlock extends AbstractEntity
      *
      * @return TermBlock
      */
-    public function setTerm($term)
+    public function setTerm(Term $term)
     {
         $this->term = $term;
         

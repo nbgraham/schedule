@@ -7,6 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
+ * @ORM\Table(name="building", indexes={
+ *    @ORM\Index(name="idx_name", columns={"name"})
+ * })
  */
 class Building extends AbstractEntity
 {
@@ -46,7 +49,10 @@ class Building extends AbstractEntity
      */
     public function __construct(Campus $campus, $name)
     {
-        $this->setName($name);
+        $this
+            ->setCampus($campus)
+            ->setName($name)
+        ;
         
         $this->rooms = new ArrayCollection();
     }

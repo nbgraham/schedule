@@ -4,12 +4,21 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity()
  */
 class Instructor extends AbstractEntity
 {
+    /**
+     * @Serializer\MaxDepth(2)
+     * 
+     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="instructor")
+     * @var ClassEvent[]
+     */
+    protected $classes;
+    
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
@@ -26,12 +35,6 @@ class Instructor extends AbstractEntity
     protected $name;
     
     /**
-     * @ORM\OneToMany(targetEntity="Event", mappedBy="instructor")
-     * @var Event[]
-     */
-    protected $classes;
-    
-    /**
      * Instructor constructor.
      *
      * @param int    $id
@@ -41,7 +44,7 @@ class Instructor extends AbstractEntity
     {
         $this->id      = $id;
         $this->name    = $name;
-        $this->courses = new ArrayCollection();
+        $this->classes = new ArrayCollection();
     }
     
     /**
@@ -73,33 +76,33 @@ class Instructor extends AbstractEntity
     }
     
     /**
-     * @return Course[]
+     * @return ClassEvent[]
      */
-    public function getCourses()
+    public function getClasses()
     {
-        return $this->courses;
+        return $this->classes;
     }
     
     /**
-     * @param Course $course
+     * @param ClassEvent $event
      *
      * @return Instructor
      */
-    public function addCourse(Course $course)
+    public function addClass(ClassEvent $event)
     {
-        $this->courses->add($course);
+        $this->classes->add($event);
         
         return $this;
     }
     
     /**
-     * @param Course $course
+     * @param ClassEvent $class
      *
      * @return Instructor
      */
-    public function removeCourse(Course $course)
+    public function removeClass(ClassEvent $class)
     {
-        $this->courses->removeElement($course);
+        $this->classes->removeElement($class);
         
         return $this;
     }

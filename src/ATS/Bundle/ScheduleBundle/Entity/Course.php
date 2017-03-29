@@ -4,34 +4,42 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity()
+ * @ORM\Table(name="course", indexes={
+ *    @ORM\Index(name="idx_subject", columns={"subject"}),
+ *    @ORM\Index(name="idx_subject_num", columns={"subject", "number"})
+ * })
  */
 class Course extends AbstractEntity
 {
     //// Term, Subject, Course Number, Section, CRN, Title, Primary Instructor, Instructor ID, Status, Campus, Grade Mode, Maximum Enrollment, Actual Enrollment, Seats Available, Enrollment Waitlist, Start Date, End Date, Building, Room, Days, Start Time, End Time, College, Department, Schedule Code, Part of Term, Level
     
     /**
-     * @ORM\OneToMany(targetEntity="Event", mappedBy="course")
-     * @var Event[]
+     * @Serializer\MaxDepth(2)
+     * 
+     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="course")
+     * @var ClassEvent[]
      */
     protected $classes;
     
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(name="id", type="bigint")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * 
+     * @var Integer
+     */
+    protected $id;
+    
+    /**
+     * @ORM\Column(type="integer")
      * 
      * @var Integer
      */
     protected $number;
-    
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    protected $term;
     
     /**
      * @ORM\Column(type="string")
@@ -59,14 +67,20 @@ class Course extends AbstractEntity
     
     /**
      * Course constructor.
+     * 
+     * @param string  $subject
+     * @param integer $number
      */
-    public function __construct()
+    public function __construct($subject, $number)
     {
+        $this->subject = $subject;
+        $this->number  = $number;
+        
         $this->classes = new ArrayCollection();
     }
     
     /**
-     * @return Event[]
+     * @return ClassEvent[]
      */
     public function getClasses()
     {
@@ -79,14 +93,6 @@ class Course extends AbstractEntity
     public function getNumber()
     {
         return $this->number;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getTerm()
-    {
-        return $this->term;
     }
     
     /**
@@ -129,18 +135,6 @@ class Course extends AbstractEntity
     public function setNumber($number)
     {
         $this->number = $number;
-        
-        return $this;
-    }
-    
-    /**
-     * @param string $term
-     *
-     * @return Course
-     */
-    public function setTerm($term)
-    {
-        $this->term = $term;
         
         return $this;
     }
@@ -194,14 +188,22 @@ class Course extends AbstractEntity
     }
     
     /**
-     * @param Event $event
+     * @param ClassEvent $event
      *
      * @return $this
      */
-    public function addClass(Event $event)
+    public function addClass(ClassEvent $event)
     {
         $this->classes->add($event);
         
         return $this;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

@@ -7,26 +7,21 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
+ * @ORM\Table(name="campus", indexes={
+ *    @ORM\Index(name="idx_name", columns={"name"})
+ * })
  */
 class Campus extends AbstractEntity
 {
     /**
-     * @ORM\OneToMany(targetEntity="Building", mappedBy="campus")
+     * @ORM\OneToMany(targetEntity="Building", mappedBy="campus", cascade={"ALL"})
      * @var Building[]
      */
     protected $buildings;
     
     /**
-     * @ORM\ManyToMany(targetEntity="Event")
-     * @ORM\JoinTable("campus_classes",
-     *    joinColumns={
-     *      @ORM\JoinColumn(name="campus_id", referencedColumnName="id")
-     *    },
-     *    inverseJoinColumns={
-     *      @ORM\JoinColumn(name="course_crn", referencedColumnName="crn", unique=true)
-     *    }
-     * )
-     * @var Event[]
+     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="campus")
+     * @var ClassEvent[]
      */
     protected $classes;
     
@@ -44,7 +39,7 @@ class Campus extends AbstractEntity
      * @ORM\Column(type="string")
      * @var String
      */
-    protected $display_name;
+    protected $name;
     
     /**
      * Campus constructor.
@@ -53,9 +48,10 @@ class Campus extends AbstractEntity
      */
     public function __construct($name)
     {
-        $this->setDisplayName($name);
+        $this->setName($name);
         
         $this->buildings = new ArrayCollection();
+        $this->classes   = new ArrayCollection();
     }
     
     /**
@@ -81,19 +77,19 @@ class Campus extends AbstractEntity
     /**
      * @return mixed
      */
-    public function getDisplayName()
+    public function getName()
     {
-        return $this->display_name;
+        return $this->name;
     }
     
     /**
-     * @param mixed $display_name
+     * @param mixed $name
      *
      * @return Campus
      */
-    public function setDisplayName($display_name)
+    public function setName($name)
     {
-        $this->display_name = $display_name;
+        $this->name = $name;
         
         return $this;
     }
@@ -114,6 +110,7 @@ class Campus extends AbstractEntity
     public function addBuilding(Building $building)
     {
         $this->buildings->add($building);
+        $building->setCampus($this);
         
         return $this;
     }
@@ -126,6 +123,26 @@ class Campus extends AbstractEntity
     public function removeBuilding(Building $building)
     {
         $this->buildings->remove($building);
+        
+        return $this;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getClasses()
+    {
+        return $this->classes;
+    }
+    
+    /**
+     * @param ClassEvent $event
+     *
+     * @return Campus
+     */
+    public function addClass(ClassEvent $event)
+    {
+        $this->classes->add($event);
         
         return $this;
     }
