@@ -11,7 +11,7 @@ class InstructorsController extends AbstractController implements ClassResourceI
     /**
      * Fetches all the known instructors.
      * 
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @View(serializerEnableMaxDepthChecks=true)
      */
     public function cgetAction()
     {
@@ -19,7 +19,7 @@ class InstructorsController extends AbstractController implements ClassResourceI
             ->findAll()
         ;
         
-        return $this->handleView($this->view($instructors));
+        return ['instructors' => $instructors];
     }
     
     /**
@@ -41,6 +41,6 @@ class InstructorsController extends AbstractController implements ClassResourceI
             return null;
         }
         
-        return $instructor;
+        return ['instructor' => $instructor];
     }
 }

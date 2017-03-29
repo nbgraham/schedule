@@ -2,6 +2,7 @@
 
 namespace ATS\Bundle\ScheduleBundle\Util\Parser;
 
+use ATS\Bundle\ScheduleBundle\Entity\AbstractEntity;
 use ATS\Bundle\ScheduleBundle\Entity\Building;
 use ATS\Bundle\ScheduleBundle\Entity\Campus;
 use ATS\Bundle\ScheduleBundle\Entity\Course;
@@ -67,7 +68,7 @@ class BookParser
     }
     
     /**
-     * 
+     * Perform the import.
      */
     protected function run()
     {
@@ -96,12 +97,28 @@ class BookParser
         $progress->finish();
         
         fclose($handle);
+        
+        // The Progress Bar doesn't clear the line upon completion.
+        if ($this->output instanceof OutputInterface) {
+            $this->output->writeln('');
+        }
     }
     
+    /**
+     * Parse a line from The Book.
+     * 
+     * @param array $data
+     *
+     * @return null|ClassEvent
+     */
     protected function parseLine(array $data)
     {
-        // 0 = semester - invalid entry. 20 = Days.
-        if ('...' === $data[0] || (!$this->include_online && $this->isOnline($data))) {
+        // 0 = semester - invalid entry.
+        if ('...' === $data[0]) {
+            return null;
+        }
+        
+        if (!$this->include_online && $this->isOnline($data)) {
             return null;
         }
         
@@ -116,43 +133,70 @@ class BookParser
         $term       = $this->getTerm($data, $term_block);
         $course     = $this->getCourse($data);
         
-        $class = $this->parseClass($data, $campus, $course, $term_block, $instructor, $room);
-        
-        // Each class needs real IDs to reference, so if any of these IDs aren't already stored in the DB - store them.
-        if (!$campus->getId() || !$course->getId() || !$term->getId() || !$instructor->getId() || !$room->getId()) {
-            $this->getManager()->flush();
-        }
-        
-        return $class;
+        return $this->parseClass($data, $campus, $course, $term_block, $instructor, $room);
     }
     
+    /**
+     * Get the Campus.
+     * 
+     * @param array $data
+     *
+     * @return AbstractEntity|Campus
+     */
     protected function getCampus(array $data)
     {
-        $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Campus');
-        $object = $repo->findOneBy([
-            'name' => $data[9]
-        ]);
+        static $instances;
         
-        if ($object) {
+        $value = $data[9];
+        $key   = $this->getKey(['name' => $value]);
+        
+        if ($object = $this->getStored($instances, $key)) {
             return $object;
         }
         
-        $object = new Campus($data[9]);
+        $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Campus');
+        $object = $repo->findOneBy([
+            'name' => $value
+        ]);
+        
+        if ($object instanceof Campus) {
+            return ($instances[$key] = $object);
+        }
+        
+        $object = new Campus($value);
         $this->getManager()->persist($object);
+        
+        $instances[$key] = $object;
         
         return $object;
     }
     
+    /**
+     * Get the building.
+     * 
+     * @param Campus $campus
+     * @param array  $location
+     *
+     * @return AbstractEntity|Building
+     */
     protected function getBuilding(Campus $campus, array $location)
     {
+        static $instances;
+        
+        $key = $this->getKey(['campus' => $campus->getName(), 'name' => $location['building']]);
+        
+        if ($object = $this->getStored($instances, $key)) {
+            return $object;
+        }
+        
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Building');
         $object = $repo->findOneBy([
             'name'   => $location['building'],
             'campus' => $campus,
         ]);
         
-        if ($object) {
-            return $object;
+        if ($object instanceof Building) {
+            return ($instances[$key] = $object);
         }
         
         $object = new Building($campus, $location['building']);
@@ -160,20 +204,38 @@ class BookParser
         
         $this->getManager()->persist($object);
         
+        $instances[$key] = $object;
+        
         return $object;
     }
     
+    /**
+     * Get the room.
+     * 
+     * @param Building $building
+     * @param array    $location
+     *
+     * @return AbstractEntity|Room
+     */
     protected function getRoom(Building $building, array $location)
     {
-        $name   = $location['room'] ?: '0000';
+        static $instances;
+        
+        $name = $location['room'] ?: '0000';
+        $key  = $this->getKey(['building' => $building->getName(),'name' => $name]);
+        
+        if ($object = $this->getStored($instances, $key)) {
+            return $object;
+        }
+        
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Room');
         $object = $repo->findOneBy([
             'number'   => $name,
             'building' => $building,
         ]);
         
-        if ($object) {
-            return $object;
+        if ($object instanceof Room) {
+            return ($instances[$key] = $object);
         }
         
         $object = new Room($building, $name);
@@ -181,103 +243,111 @@ class BookParser
         
         $this->getManager()->persist($object);
         
+        $instances[$key] = $object;
+        
         return $object;
     }
     
-    private function parseBuilding(array $data)
-    {
-        if ('XCH' !== substr($data[18], 0, 3)) {
-            return [
-                'building' => $data[18],
-                'room'     => $data[19],
-            ];
-        }
-        
-        return [
-            'building' => 'XCH',
-            'room'     => substr($data[18], 3),
-        ];
-        
-    }
-    
+    /**
+     * Get the instructor.
+     * 
+     * @param array $data
+     *
+     * @return AbstractEntity|Instructor|object
+     */
     protected function getInstructor(array $data)
     {
+        static $instances;
+        
         $id   = (int) $data[7];
-        $name = $data[7] ? $data[6] : 'N/A'; 
+        $name = $data[7] ? $data[6] : 'N/A';
+        $key  = $this->getKey(['id' => $id, 'name' => $name]);
+        
+        if ($object = $this->getStored($instances, $key)) {
+            return $object;
+        }
         
         if (($object = $this->find('ATSScheduleBundle:Instructor', $id)) instanceof Instructor) {
-            return $object;
+            return ($instances[$key] = $object);
         }
         
         $object = new Instructor($id, $name);
         $this->getManager()->persist($object);
         
+        $instances[$key] = $object;
+        
         return $object;
     }
     
+    /**
+     * Get the term.
+     * 
+     * @param array          $data
+     * @param TermBlock|null $block
+     *
+     * @return AbstractEntity|Term
+     */
     protected function getTerm(array $data, TermBlock &$block = null)
     {
-        $term   = $this->parseTerm($data);
+        static $instances;
+        
+        $term = $this->parseTerm($data);
+        $key  = $this->getKey($term);
+        
+        if ($object = $this->getStored($instances, $key)) {
+            $block = $this->validateTermBlock($object, $term['block']);
+            return $object;
+        }
+        
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Term');
         $object = $repo->findOneBy([
             'year'     => $term['year'],
             'semester' => $term['semester'],
         ]);
         
-        if ($object) {
+        if ($object instanceof Term) {
             $block = $this->validateTermBlock($object, $term['block']);
-            return $object;
+            return ($instances[$key] = $object);
         }
         
         $object = new Term($data[0], $term['year'], $term['semester']);
         $block  = $this->validateTermBlock($object, $term['block']);
         
+        $instances[$key] = $object;
+        
         return $object;
     }
     
-    protected function validateTermBlock(Term $term, $block)
+    /**
+     * Get the course.
+     * 
+     * @param array $data
+     *
+     * @return AbstractEntity|Course|null
+     */
+    protected function getCourse(array $data)
     {
-        if (!$term->getId()) {
-            return $this->createBlock($term, $block);
-        }
+        static $instances;
         
-        $repo   = $this->getManager()->getRepository('ATSScheduleBundle:TermBlock');
-        $object = $repo->findOneBy([
-            'term' => $term,
-            'name' => $block,
-        ]);
+        $subject = $data[1];
+        $number  = $data[2];
+        $key     = $this->getKey(['subject' => $subject, 'number' => $number]);
         
-        if ($object) {
+        if ($object = $this->getStored($instances, $key)) {
             return $object;
         }
         
-        return $this->createBlock($term, $block);
-    }
-    
-    private function createBlock(Term $term, $block)
-    {
-        $object = new TermBlock($term, $block);
-        $term->addBlock($object);
-        
-        $this->getManager()->persist($object);
-        $this->getManager()->flush();
-        
-        return $object;
-    }
-    
-    protected function getCourse(array $data)
-    {
         $repo   = $this->getManager()->getRepository('ATSScheduleBundle:Course');
         $object = $repo->findOneBy([
-            'subject' => $data[1],
-            'number'  => $data[2],
+            'subject' => $subject,
+            'number'  => $number,
         ]);
         
         if ($object instanceof Course) {
-            return $object;
+            return ($instances[$key] = $object);
         }
         
-        $object = new Course($data[1], $data[2]);
+        $object = new Course($subject, $number);
         $object
             ->setTitle($data[5])
             ->setLevel($data[36])
@@ -286,9 +356,23 @@ class BookParser
         
         $this->getManager()->persist($object);
         
+        $instances[$key] = $object;
+        
         return $object;
     }
     
+    /**
+     * Import a class.
+     * 
+     * @param array      $data
+     * @param Campus     $campus
+     * @param Course     $course
+     * @param TermBlock  $block
+     * @param Instructor $instructor
+     * @param Room|null  $room
+     *
+     * @return AbstractEntity|ClassEvent|object
+     */
     protected function parseClass(array $data, Campus $campus, Course $course, TermBlock $block, Instructor $instructor, Room $room = null)
     {
         if (($object = $this->find('ATSScheduleBundle:ClassEvent', $data[4])) instanceof ClassEvent) {
@@ -334,6 +418,84 @@ class BookParser
     }
     
     /**
+     * Parse special cases of the building codes.
+     * 
+     * @param array $data
+     *
+     * @return array
+     */
+    private function parseBuilding(array $data)
+    {
+        if ('XCH' !== substr($data[18], 0, 3)) {
+            return [
+                'building' => $data[18],
+                'room'     => $data[19],
+            ];
+        }
+        
+        return [
+            'building' => 'XCH',
+            'room'     => substr($data[18], 3),
+        ];
+        
+    }
+    
+    /**
+     * Get the Term Block.
+     *
+     * @param AbstractEntity|Term $term
+     * @param string              $block
+     *
+     * @return TermBlock|null|object
+     */
+    protected function validateTermBlock(AbstractEntity $term, $block)
+    {
+        static $instances;
+        
+        $key = $this->getKey(['term' => $term->getDisplayName(), 'name' => $block]);
+        if ($object = $this->getStored($instances, $key)) {
+            return $object;
+        }
+        
+        if (!$term->getId()) {
+            return ($instances[$key] = $this->createBlock($term, $block));
+        }
+        
+        $repo   = $this->getManager()->getRepository('ATSScheduleBundle:TermBlock');
+        $object = $repo->findOneBy([
+            'term' => $term,
+            'name' => $block,
+        ]);
+        
+        if ($object instanceof TermBlock) {
+            return ($instances[$key] = $object);
+        }
+        
+        $instances[$key] = ($object = $this->createBlock($term, $block));
+        
+        return $object;
+    }
+    
+    /**
+     * Create a term block.
+     * 
+     * @param Term   $term
+     * @param string $block
+     *
+     * @return TermBlock
+     */
+    private function createBlock(Term $term, $block)
+    {
+        $object = new TermBlock($term, $block);
+        $term->addBlock($object);
+        
+        $this->getManager()->persist($object);
+        $this->getManager()->flush();
+        
+        return $object;
+    }
+    
+    /**
      * Break the terms into parts.
      * 
      * @param array $data
@@ -373,7 +535,7 @@ class BookParser
      * @param string $className
      * @param mixed  $id
      *
-     * @return object
+     * @return AbstractEntity|object|null
      */
     private function find($className, $id)
     {
@@ -442,5 +604,39 @@ class BookParser
             ->getConfiguration()
             ->setSQLLogger(null)
         ;
+    }
+    
+    /**
+     * Generate a standardized key used for in memory storage.
+     * 
+     * @param array $parts
+     *
+     * @return string
+     */
+    protected function getKey(array $parts)
+    {
+        return implode('-', $parts);
+    }
+    
+    /**
+     * Check the local memory cache for an instance for a desired object.
+     * 
+     * @param array  $instances
+     * @param string $key
+     *
+     * @return null|AbstractEntity
+     */
+    protected function getStored(&$instances, $key)
+    {
+        if (!$instances) {
+            $instances = [];
+            return null;
+        }
+        
+        if (array_key_exists($key, $instances)) {
+            return $instances[$key];
+        }
+        
+        return null;
     }
 }

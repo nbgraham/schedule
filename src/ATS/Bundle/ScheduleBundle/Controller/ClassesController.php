@@ -33,6 +33,6 @@ class ClassesController extends AbstractController implements ClassResourceInter
             ])
         ;
         
-        return $courses;
+        return ['courses' => $courses];
     }
 }
