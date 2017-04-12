@@ -13,8 +13,14 @@ nelmio_api_doc: ~
 fos_rest:
     routing_loader:
         default_format: json
+    # JSON listener
+    body_listener: true
+    # URI listener
+    param_fetcher_listener: true
+    format_listener: true
     view:
         view_response_listener: true
+    allowed_methods_listener: true
 
 assetic:
     debug:          "%kernel.debug%"
@@ -22,6 +28,9 @@ assetic:
     bundles:        [ ATSScheduleBundle ]
     filters:
         cssrewrite: ~
+        less:
+            node: /usr/local/bin/node
+            node_paths: [/usr/local/lib/node_modules]
 
 framework:
     #esi:             ~

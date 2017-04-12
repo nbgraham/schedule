@@ -62,6 +62,16 @@ class Session extends AbstractEntity
     {
         $this->date_created = new \DateTime();
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'id' => $this->id,
+        ];
+    }
 
     /**
      * Get the session Id.

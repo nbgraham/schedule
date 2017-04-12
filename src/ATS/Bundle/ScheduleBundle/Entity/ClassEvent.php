@@ -4,12 +4,13 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * The Event table represents instances of course classes.
  * 
  * @ORM\Entity()
- * @ORM\Table(name="class")
+ * @ORM\Table(name="`class`")
  */
 class ClassEvent extends AbstractEntity
 {
@@ -18,12 +19,27 @@ class ClassEvent extends AbstractEntity
     const ACTIVE    = 1;
     
     /**
+     * @Serializer\MaxDepth(1)
+     * #Serializer\Groups({"details"})
+     * 
+     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="classes")
+     * @var Subject
+     */
+    protected $subject;
+    
+    /**
+     * @Serializer\MaxDepth(1)
+     * #Serializer\Groups({"details"})
+     * 
      * @ORM\ManyToOne(targetEntity="Course", inversedBy="classes")
      * @var Course
      */
     protected $course;
     
     /**
+     * @Serializer\MaxDepth(1)
+     * @Serializer\Groups({"location"})
+     * 
      * @ORM\ManyToOne(targetEntity="Campus", inversedBy="classes")
      * @var Campus
      */
@@ -31,12 +47,17 @@ class ClassEvent extends AbstractEntity
     
     /**
      * @Serializer\MaxDepth(1)
+     * @Serializer\Groups({"location"})
+     * 
      * @ORM\ManyToOne(targetEntity="Room", inversedBy="classes")
      * @var Room
      */
     protected $room;
     
     /**
+     * @Serializer\MaxDepth(1)
+     * @Serializer\Groups({"instructor"})
+     * 
      * @ORM\ManyToOne(targetEntity="Instructor", inversedBy="classes")
      * 
      * @var Instructor
@@ -44,6 +65,8 @@ class ClassEvent extends AbstractEntity
     protected $instructor;
     
     /**
+     * @Serializer\Exclude()
+     * 
      * @ORM\ManyToOne(targetEntity="TermBlock", inversedBy="classes")
      * @var TermBlock
      */
@@ -79,12 +102,14 @@ class ClassEvent extends AbstractEntity
     protected $days;
     
     /**
+     * @Serializer\Exclude()
      * @ORM\Column(type="date")
      * @var \DateTime
      */
     protected $start_date;
     
     /**
+     * @Serializer\Exclude()
      * @ORM\Column(type="date")
      * @var \DateTime
      */
@@ -112,6 +137,50 @@ class ClassEvent extends AbstractEntity
     public function __construct()
     {
         
+    }
+    
+    /**
+     * @Serializer\VirtualProperty()
+     */
+    public function getEnd()
+    {
+        return $this->formatTime($this->end_date, $this->end_time);
+    }
+    
+    /**
+     * @Serializer\VirtualProperty()
+     */
+    public function getStart()
+    {
+        return $this->formatTime($this->start_date, $this->start_time);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'crn' => $this->crn,
+        ];
+    }
+    
+    /**
+     * Return an ISO8601 formatted date.
+     * 
+     * @param \DateTime $date_obj
+     * @param  string   $time
+     *
+     * @return string
+     */
+    protected function formatTime(\DateTime $date_obj, $time)
+    {
+        $date   = clone $date_obj;
+        $time   = 3 === strlen($time) ? '0' . $time : $time;
+        $hour   = substr($time, 0, 2);
+        $minute = substr($time, 2);
+        
+        return $date->setTime($hour, $minute)->format('c');
     }
     
     /**
@@ -429,4 +498,27 @@ class ClassEvent extends AbstractEntity
         
         return $this;
     }
+    
+    /**
+     * @return Subject
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+    
+    /**
+     * @param Subject $subject
+     *
+     * @return ClassEvent
+     */
+    public function setSubject(Subject $subject)
+    {
+        $this->subject = $subject;
+        
+        $subject->addClass($this);
+        
+        return $this;
+    }
+    
 }

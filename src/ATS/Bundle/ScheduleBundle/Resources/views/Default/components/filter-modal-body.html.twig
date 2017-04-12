@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <script>
+        window.addEventListener('load', function () {
+            GlobalUtils.setSemesters({{ render(controller('ATSScheduleBundle:Term:cget', {
+                '_format': 'json'
+            })) }});
+            
+            GlobalUtils.setSubjects({{ render(controller('ATSScheduleBundle:Subject:cget', {
+                '_format': 'json'
+            })) }});
+            
+            GlobalUtils.setInstructors({{ render(controller('ATSScheduleBundle:Instructor:cget', {
+                '_format': 'json'
+            })) }});
+        });
+    </script>
+    
+    <div class="row">
+        <label for="term" class="cold-sm-4 control-label">Semester</label>
+        
+        <div class="cold-sm-4">
+            <select id="term" class="chosen-select" data-placeholder="Filter by Semester..">
+                <option></option>
+            </select>
+        </div>
+        
+        <div class="cold-sm-4">
+            <select id="term-block" class="chosen-select hidden" data-placeholder="Filter by Block..">
+                <option></option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <label for="subject" class="cold-sm-4 control-label">Subject</label>
+        
+        <span class="cold-sm-8">
+            <select id="subject" class="chosen-select" data-placeholder="Filter by Subject..">
+                <option></option>
+            </select>
+        </span>
+    </div>
+    
+    <div class="row">
+        <label for="instructor" class="cold-sm-4 control-label">Instructor</label>
+        
+        <div class="cold-sm-8">
+            <select id="instructor" class="chosen-select" data-placeholder="Filter by Instructor..">
+                <option></option>
+            </select>
+        </div>
+    </div>
+</div>

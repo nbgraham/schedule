@@ -58,6 +58,17 @@ class Building extends AbstractEntity
     }
     
     /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'name'   => $this->name,
+            'campus' => $this->campus->getName(),
+        ];
+    }
+    
+    /**
      * @return Campus
      */
     public function getCampus()

@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity()
@@ -21,6 +22,8 @@ class Room extends AbstractEntity
     protected $building;
     
     /**
+     * @Serializer\Exclude()
+     * 
      * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="room")
      * @var ClassEvent[]
      */
@@ -52,6 +55,17 @@ class Room extends AbstractEntity
         $this->number   = $number;
         $this->building = $building;
         $this->classes  = new ArrayCollection();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'number'   => $this->number,
+            'building' => $this->getBuilding()->getName(),
+        ];
     }
     
     /**

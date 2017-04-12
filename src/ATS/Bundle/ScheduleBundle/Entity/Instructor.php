@@ -12,7 +12,8 @@ use JMS\Serializer\Annotation as Serializer;
 class Instructor extends AbstractEntity
 {
     /**
-     * @Serializer\MaxDepth(2)
+     * @Serializer\Exclude()
+     * #Serializer\MaxDepth(1)
      * 
      * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="instructor")
      * @var ClassEvent[]
@@ -45,6 +46,17 @@ class Instructor extends AbstractEntity
         $this->id      = $id;
         $this->name    = $name;
         $this->classes = new ArrayCollection();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'id'   => $this->id,
+            'name' => $this->name,
+        ];
     }
     
     /**

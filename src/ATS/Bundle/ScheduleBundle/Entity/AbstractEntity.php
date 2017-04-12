@@ -9,5 +9,9 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
  */
 abstract class AbstractEntity
 {
-    
+    /**
+     * Returns an array of identifiable information.
+     * @return array
+     */
+    public abstract function getKey();
 }

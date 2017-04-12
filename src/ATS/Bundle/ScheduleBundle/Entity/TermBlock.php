@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity()
@@ -17,6 +18,8 @@ class TermBlock extends AbstractEntity
     protected $term;
     
     /**
+     * @Serializer\Exclude()
+     * 
      * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="block", fetch="EXTRA_LAZY")
      * @var ClassEvent[]
      */
@@ -51,6 +54,36 @@ class TermBlock extends AbstractEntity
         ;
         
         $this->classes = new ArrayCollection();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'term' => $this->getTerm()->getName(),
+            'name' => $this->name,
+        ];
+    }
+    
+    /**
+     * @Serializer\VirtualProperty()
+     */
+    public function getDisplayName()
+    {
+        switch ($this->getName()) {
+            case 1:
+                return 'Full Semester';
+            case 2:
+                return 'Module 1';
+            case 3:
+                return 'Module 2';
+            case 'DEC':
+                return 'December';
+            default:
+                return $this->getName();
+        }
     }
     
     /**

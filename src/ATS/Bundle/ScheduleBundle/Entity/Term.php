@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity()
@@ -11,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Term extends AbstractEntity
 {
     /**
+     * @Serializer\MaxDepth(2)
+     * 
      * @ORM\OneToMany(targetEntity="TermBlock", mappedBy="term")
      * @var TermBlock[]
      */
@@ -29,7 +32,7 @@ class Term extends AbstractEntity
      * @ORM\Column(type="string")
      * @var String
      */
-    protected $display_name;
+    protected $name;
     
     /**
      * @ORM\Column(type="integer")
@@ -52,11 +55,22 @@ class Term extends AbstractEntity
      */
     public function __construct($name, $year, $semester)
     {
-        $this->setDisplayName($name);
+        $this->setName($name);
         
         $this->year     = $year;
         $this->semester = $semester;
         $this->blocks   = new ArrayCollection();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'year'     => $this->year,
+            'semester' => $this->semester,
+        ];
     }
     
     /**
@@ -70,25 +84,25 @@ class Term extends AbstractEntity
     /**
      * @return String
      */
-    public function getDisplayName()
+    public function getName()
     {
-        return $this->display_name;
+        return $this->name;
     }
     
     /**
-     * @param String $display_name
+     * @param String $name
      *
      * @return Term
      */
-    public function setDisplayName($display_name)
+    public function setName($name)
     {
-        $this->display_name = $display_name;
+        $this->name = $name;
         
         return $this;
     }
     
     /**
-     * @return TermBlock[]
+     * @return TermBlock[]|ArrayCollection
      */
     public function getBlocks()
     {

@@ -68,6 +68,16 @@ class Role extends AbstractEntity implements RoleInterface
     }
     
     /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'name' => $this->name,
+        ];
+    }
+    
+    /**
      * Symfony-style role name.
      * 
      * @return String

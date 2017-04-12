@@ -1,4 +1,5 @@
 .idea/
+web/assets/compiled/
 
 /app/config/parameters.yml
 /build/

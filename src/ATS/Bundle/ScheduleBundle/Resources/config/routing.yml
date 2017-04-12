@@ -1,3 +1,22 @@
-ats_schedule_homepage:
-    path:     /
-    defaults: { _controller: ATSScheduleBundle:Default:index }
+home:
+    type:     annotation
+    resource: "@ATSScheduleBundle/Controller/DefaultController.php"
+
+scheduler_subjects:
+    type:     rest
+    resource: "@ATSScheduleBundle/Controller/SubjectController.php"
+
+scheduler_courses:
+    type:     rest
+    parent:   scheduler_subjects
+    resource: "@ATSScheduleBundle/Controller/CourseController.php"
+
+#scheduler_classes:
+#    type:     rest
+#    parent:   scheduler_courses
+#    resource: ATS\Bundle\ScheduleBundle\Controller\ClassController
+
+
+ats_scheduler:
+    type:     rest
+    resource: "@ATSScheduleBundle/Controller/"

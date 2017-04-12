@@ -3,7 +3,6 @@
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Base controller class for all controllers in the bundle.
@@ -12,6 +11,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class AbstractController extends FOSRestController
 {
+    /**
+     * @param $className
+     *
+     * @return \Doctrine\Common\Persistence\ObjectRepository
+     */
     public function getRepo($className)
     {
         return $this->getDoctrine()->getRepository($className);

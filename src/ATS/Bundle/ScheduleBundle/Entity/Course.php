@@ -9,8 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="course", indexes={
- *    @ORM\Index(name="idx_subject", columns={"subject"}),
- *    @ORM\Index(name="idx_subject_num", columns={"subject", "number"})
+ *    @ORM\Index(name="idx_number", columns={"number"})
  * })
  */
 class Course extends AbstractEntity
@@ -18,7 +17,15 @@ class Course extends AbstractEntity
     //// Term, Subject, Course Number, Section, CRN, Title, Primary Instructor, Instructor ID, Status, Campus, Grade Mode, Maximum Enrollment, Actual Enrollment, Seats Available, Enrollment Waitlist, Start Date, End Date, Building, Room, Days, Start Time, End Time, College, Department, Schedule Code, Part of Term, Level
     
     /**
-     * @Serializer\MaxDepth(2)
+     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="courses", cascade={"persist"})
+     * @var Subject
+     */
+    protected $subject;
+    
+    /**
+     * @Serializer\Exclude()
+     * @Serializer\Groups({"classes"})
+     * #Serializer\MaxDepth(3)
      * 
      * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="course")
      * @var ClassEvent[]
@@ -45,12 +52,6 @@ class Course extends AbstractEntity
      * @ORM\Column(type="string")
      * @var string
      */
-    protected $subject;
-    
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
     protected $title;
     
     /**
@@ -68,15 +69,26 @@ class Course extends AbstractEntity
     /**
      * Course constructor.
      * 
-     * @param string  $subject
+     * @param Subject $subject
      * @param integer $number
      */
-    public function __construct($subject, $number)
+    public function __construct(Subject $subject, $number)
     {
-        $this->subject = $subject;
-        $this->number  = $number;
+        $this->setSubject($subject);
+        $this->number = $number;
         
         $this->classes = new ArrayCollection();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getKey()
+    {
+        return [
+            'subject' => $this->getSubject()->getName(),
+            'number'  => $this->number,
+        ];
     }
     
     /**
@@ -96,7 +108,7 @@ class Course extends AbstractEntity
     }
     
     /**
-     * @return string
+     * @return Subject
      */
     public function getSubject()
     {
@@ -140,13 +152,14 @@ class Course extends AbstractEntity
     }
     
     /**
-     * @param string $subject
+     * @param Subject $subject
      *
      * @return Course
      */
-    public function setSubject($subject)
+    public function setSubject(Subject $subject)
     {
         $this->subject = $subject;
+        $subject->addCourse($this);
         
         return $this;
     }

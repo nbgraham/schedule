@@ -3,10 +3,22 @@
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
 use ATS\Bundle\ScheduleBundle\Entity\Instructor;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-class InstructorsController extends AbstractController implements ClassResourceInterface
+/**
+ * The instructor controller.
+ * 
+ * @ApiDoc()
+ * @RouteResource("instructor", pluralize=false)
+ * 
+ * @author Austin Shinpaugh <ashinpaugh@ou.edu>
+ */
+class InstructorController extends AbstractController implements ClassResourceInterface
 {
     /**
      * Fetches all the known instructors.
@@ -27,14 +39,20 @@ class InstructorsController extends AbstractController implements ClassResourceI
      *
      * @View(templateVar="instructor", serializerEnableMaxDepthChecks=true)
      * 
-     * @param int $id
+     * @QueryParam(
+     *     name="id",
+     *     requirements="\d+",
+     *     description="The instructor's campus ID.",
+     *     strict=true,
+     *     allowBlank=false
+     * )
      *
      * @return mixed
      */
-    public function getAction($id)
+    public function getAction(ParamFetcher $fetcher)
     {
         $instructor = $this->getRepo('ATSScheduleBundle:Instructor')
-            ->find($id)
+            ->find($fetcher->get('id'))
         ;
         
         if (!$instructor instanceof Instructor) {

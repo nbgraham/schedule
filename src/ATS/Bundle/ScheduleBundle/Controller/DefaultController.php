@@ -15,7 +15,7 @@ class DefaultController extends AbstractController
     /**
      * Page index.
      * 
-     * @Route("/")
+     * @Route(name="ats_home")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction()
