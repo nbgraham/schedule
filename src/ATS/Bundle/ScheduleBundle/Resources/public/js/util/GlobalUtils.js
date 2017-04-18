@@ -104,7 +104,7 @@ let GlobalUtils;
     {
         return subjects;
     };
-
+    
     /**
      * Returns the subject from the URL.
      * @returns {string}

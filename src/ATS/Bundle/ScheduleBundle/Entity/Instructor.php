@@ -13,7 +13,6 @@ class Instructor extends AbstractEntity
 {
     /**
      * @Serializer\Exclude()
-     * #Serializer\MaxDepth(1)
      * 
      * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="instructor")
      * @var ClassEvent[]

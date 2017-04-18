@@ -32,9 +32,11 @@ class SubjectController extends AbstractController implements ClassResourceInter
      */
     public function cgetAction()
     {
-        return $this->getRepo('ATSScheduleBundle:Subject')
+        $subjects = $this->getRepo('ATSScheduleBundle:Subject')
             ->findAll()
         ;
+        
+        return ['subjects' => $subjects];
     }
     
     /**

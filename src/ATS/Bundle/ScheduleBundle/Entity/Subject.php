@@ -15,9 +15,9 @@ use JMS\Serializer\Annotation as Serializer;
 class Subject extends AbstractEntity
 {
     /**
-     * @Serializer\Exclude()
+     * @Serializer\MaxDepth(2)
      * 
-     * @ORM\OneToMany(targetEntity="Course", mappedBy="subject", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Course", mappedBy="subject", cascade={"persist"}, fetch="EAGER")
      * @var Course[]
      */
     protected $courses;

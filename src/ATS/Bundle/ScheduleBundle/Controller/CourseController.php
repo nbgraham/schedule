@@ -30,9 +30,11 @@ class CourseController extends AbstractController implements ClassResourceInterf
      */
     public function cgetAction()
     {
-        return $this->getRepo('ATSScheduleBundle:Course')
+        $courses = $this->getRepo('ATSScheduleBundle:Course')
             ->findAll()
         ;
+        
+        return ['courses' => $courses];
     }
     
     /**

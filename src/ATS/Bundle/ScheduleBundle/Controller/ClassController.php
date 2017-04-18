@@ -38,30 +38,38 @@ class ClassController extends AbstractController implements ClassResourceInterfa
      * @QueryParam(name="block",      nullable=true)
      * @QueryParam(name="subject",    nullable=true)
      * @QueryParam(name="instructor", nullable=true)
+     * @QueryParam(name="number",     nullable=true)
      * 
      * @View(serializerEnableMaxDepthChecks=true)
      */
     public function getAction(ParamFetcher $fetcher)
     {
         $block      = null;
-        $instructor = null;
         $subject    = null;
+        $course     = null;
+        $instructor = null;
         
         if ($block_id = $fetcher->get('block')) {
             $block = $this->getRepo('ATSScheduleBundle:TermBlock')
-                ->find($block_id)
+                ->findById($block_id)
             ;
         }
         
         if ($instructor_id = $fetcher->get('instructor')) {
             $instructor = $this->getRepo('ATSScheduleBundle:Instructor')
-                ->find($instructor_id)
+                ->findById($instructor_id)
             ;
         }
         
         if ($subject_id = $fetcher->get('subject')) {
             $subject = $this->getRepo('ATSScheduleBundle:Subject')
-                ->find($subject_id)
+                ->findById($subject_id)
+            ;
+        }
+        
+        if ($course_id = $fetcher->get('number')) {
+            $course = $this->getRepo('ATSScheduleBundle:Course')
+                ->findById($course_id)
             ;
         }
         
@@ -70,7 +78,8 @@ class ClassController extends AbstractController implements ClassResourceInterfa
                 ->findBy(array_filter([
                     'block'      => $block,
                     'subject'    => $subject,
-                    'instructor' => $instructor
+                    'course'     => $course,
+                    'instructor' => $instructor,
                 ])),
         ];
     }

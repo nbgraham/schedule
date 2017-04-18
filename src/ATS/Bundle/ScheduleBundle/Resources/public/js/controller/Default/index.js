@@ -28,8 +28,7 @@
         bindModalActions();
     });
 
-    /**
-     * Fill filter select fields with their associated data.
+    /**fg
      */
     function populateFilters()
     {
@@ -38,6 +37,21 @@
         fillSelect('#term', GlobalUtils.getSemesters());
         
         bindSemesterChange();
+        bindSubjectChange();
+        
+        // TODO: Fix this. Hitting escape when an input is selected will close the modal... which is super annoying.
+        $('.chosen-search-input').on('keydown', function (e) {
+            if (e.keyCode !== 27) {
+                return;
+            }
+            
+            $(this)
+                .blur()
+                .focus()
+            ;
+            
+            e.stopImmediatePropagation();
+        });
     }
 
     /**
@@ -56,16 +70,11 @@
                 return;
             }
             
-            let item, name;
-            item = data[idx];
-            name = item.hasOwnProperty('display_name')
-                ? item.display_name
-                : item.name
-            ;
+            let item = data[idx];
             
             $('<option>')
                 .attr('value', item.id)
-                .text(name)
+                .text(determineChosenLabel(item))
                 .appendTo(select)
             ;
         }
@@ -75,6 +84,27 @@
             width: '100%',
             allow_single_deselect: 1
         });
+    }
+
+    /**
+     * Determines an appropriate option display text based on the information
+     * provided from the entity that the user is selecting from.
+     * 
+     * @param {object} entity
+     * 
+     * @returns string
+     */
+    function determineChosenLabel(entity)
+    {
+        if (entity.hasOwnProperty('display_name')) {
+            return entity.display_name;
+        }
+        
+        if (!entity.hasOwnProperty('level')) {
+            return entity.name;
+        }
+        
+        return entity.number + ' | ' + entity.name;
     }
 
     /**
@@ -114,6 +144,41 @@
                 select.trigger("chosen:updated");
             }
             
+        });
+    }
+    
+    /**
+     * Whenever a change in subject selection happens, update the
+     * course number selector.
+     */
+    function bindSubjectChange()
+    {
+        $('#subject').on('change', function (event, params) {
+            // params is undefined when you deselect a subject.
+            if (!params) {
+                $('#number').chosen('destroy');
+                return;
+            }
+            
+            let subjects, subject, select, idx;
+            subjects = GlobalUtils.getSubjects();
+            for (idx in subjects) {
+                if (!subjects.hasOwnProperty(idx)) {
+                    continue;
+                }
+                
+                subject = subjects[idx];
+                if (subject.id != params.selected) {
+                    continue;
+                }
+                
+                select = $('#number');
+                select.find('option[value]').remove();
+                select.show();
+                
+                fillSelect('#number', subject.courses);
+                select.trigger('chosen:updated');
+            }
         });
     }
     

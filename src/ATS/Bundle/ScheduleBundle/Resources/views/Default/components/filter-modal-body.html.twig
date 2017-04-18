@@ -25,7 +25,7 @@
         </div>
         
         <div class="cold-sm-4">
-            <select id="term-block" class="chosen-select hidden" data-placeholder="Filter by Block..">
+            <select id="term-block" class="chosen-select hidden" data-placeholder="Filter by Block.." multiple="">
                 <option></option>
             </select>
         </div>
@@ -34,8 +34,14 @@
     <div class="row">
         <label for="subject" class="cold-sm-4 control-label">Subject</label>
         
-        <span class="cold-sm-8">
-            <select id="subject" class="chosen-select" data-placeholder="Filter by Subject..">
+        <span class="cold-sm-4">
+            <select id="subject" class="chosen-select" data-placeholder="Filter by Subject.." multiple="">
+                <option></option>
+            </select>
+        </span>
+        
+        <span class="cold-sm-4">
+            <select id="number" class="chosen-select hidden" data-placeholder="Filter by Course Number.." multiple="">
                 <option></option>
             </select>
         </span>
@@ -45,7 +51,7 @@
         <label for="instructor" class="cold-sm-4 control-label">Instructor</label>
         
         <div class="cold-sm-8">
-            <select id="instructor" class="chosen-select" data-placeholder="Filter by Instructor..">
+            <select id="instructor" class="chosen-select" data-placeholder="Filter by Instructor.." multiple="">
                 <option></option>
             </select>
         </div>

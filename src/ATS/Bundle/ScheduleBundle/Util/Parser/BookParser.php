@@ -311,13 +311,13 @@ class BookParser
         
         $object = new Course($subject, $number);
         $object
-            ->setTitle($data[5])
+            ->setName($data[5])
             ->setLevel($data[36])
             ->setMaximumEnrollment($data[11])
         ;
         
         // Binary data was present in one of the fields.
-        if (!mb_check_encoding($object->getTitle(), 'UTF-8')) {
+        if (!mb_check_encoding($object->getName(), 'UTF-8')) {
             return null;
         }
         

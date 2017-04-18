@@ -49,11 +49,6 @@ const Scheduler = (function ($) {
                     element.find('.fc-title')
                         .append("<br/>" + event.description)
                     ; 
-                },
-                dayClick: function(date, jsEvent, view) {
-                    console.log(date);
-                    console.log(jsEvent);
-                    console.log(view);
                 }
             };
             
@@ -75,13 +70,9 @@ const Scheduler = (function ($) {
             this.calendar.fullCalendar('addEventSource', {
                 url:   GlobalUtils.getAPIUrl(uri),
                 type:  'GET',
-                data:  getData(),
+                data:  context.getData(),
                 cache: true,
                 
-                eventDataTransform: function (data) {
-                    console.log('data transform');
-                    console.log(data);
-                },
                 complete : function (data) {
                     context.loadCourseClass(data.responseJSON);
                 },
@@ -93,27 +84,46 @@ const Scheduler = (function ($) {
             
             updateHeader();
         },
-        
+
+        /**
+         * Goofy little wrapper around URI building; future-proofing and whatnot.
+         * @returns {string}
+         */
         buildUri : function () {
-            let uri, data;
-            uri  = '/class';
-            //data = getData();
-            
-            uri = uri
-                //+ (data.block   ? '/' + data.block   : '')
-                //+ (data.subject ? '/' + data.subject : '')
-                + '.json'
-            ;
-            
-            return uri;
+            return '/class.json';
         },
-        
+
+        /**
+         * Gets the raw data from the input controls and filters out
+         * any unnecessary data so that the query string isn't filled
+         * with empty data.
+         * 
+         * @returns {{term: *, block: *, subject: *, instructor: *}|*}
+         */
         getData : function () {
-            return {
-                'instructor': $('#instructor').val()
-            };
+            let data, idx;
+            data = getData();
+            
+            for (idx in data) {
+                if (!data.hasOwnProperty(idx)) {
+                    continue;
+                }
+                
+                let value = data[idx];
+                
+                if (!value || (value instanceof Array && !value.length)) {
+                    delete data[idx];
+                }
+            }
+            
+            return data;
         },
-        
+
+        /**
+         * Handles the data returned from a graceful API response.
+         * 
+         * @param data
+         */
         loadCourseClass : function (data) {
             let events;
             
@@ -130,7 +140,7 @@ const Scheduler = (function ($) {
         },
 
         /**
-         * Clear the calendar.
+         * Wipe the calendar.
          */
         clear : function () {
             this.calendar.fullCalendar('removeEventSources');
@@ -224,7 +234,14 @@ const Scheduler = (function ($) {
         
         return events;
     }
-    
+
+    /**
+     * Used when the API data returned uses the course controller.
+     * {@deprecated}
+     * 
+     * @param courses
+     * @returns {Array}
+     */
     function getClasses (courses)
     {
         let events, i;
@@ -299,10 +316,39 @@ const Scheduler = (function ($) {
     {
         return {
             'term'      : $('#term').val(),
-            'block'     : $('#term-block').val(),
-            'subject'   : $('#subject').val(),
-            'instructor': $('#instructor').val()
+            'block'     : filterMultiSelects($('#term-block')),
+            'subject'   : filterMultiSelects($('#subject')),
+            'number'    : filterMultiSelects($('#number')),
+            'instructor': filterMultiSelects($('#instructor'))
         };
+    }
+
+    /**
+     * Filters out useless values returned from Chosen/jQuery's val() method.
+     * 
+     * @param {jQuery} select
+     * @returns {Array}
+     */
+    function filterMultiSelects(select)
+    {
+        let output, values, idx;
+        output = [];
+        values = select.val();
+        
+        for (idx in values) {
+            if (!values.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            let value = values[idx];
+            if (!value.length) {
+                continue;
+            }
+            
+            output.push(value);
+        }
+        
+        return output;
     }
     
     return Scheduler;

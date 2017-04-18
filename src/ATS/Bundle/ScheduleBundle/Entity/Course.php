@@ -14,9 +14,8 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Course extends AbstractEntity
 {
-    //// Term, Subject, Course Number, Section, CRN, Title, Primary Instructor, Instructor ID, Status, Campus, Grade Mode, Maximum Enrollment, Actual Enrollment, Seats Available, Enrollment Waitlist, Start Date, End Date, Building, Room, Days, Start Time, End Time, College, Department, Schedule Code, Part of Term, Level
-    
     /**
+     * @Serializer\Exclude()
      * @ORM\ManyToOne(targetEntity="Subject", inversedBy="courses", cascade={"persist"})
      * @var Subject
      */
@@ -25,7 +24,6 @@ class Course extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * @Serializer\Groups({"classes"})
-     * #Serializer\MaxDepth(3)
      * 
      * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="course")
      * @var ClassEvent[]
@@ -52,7 +50,7 @@ class Course extends AbstractEntity
      * @ORM\Column(type="string")
      * @var string
      */
-    protected $title;
+    protected $name;
     
     /**
      * @ORM\Column(type="integer")
@@ -118,9 +116,9 @@ class Course extends AbstractEntity
     /**
      * @return string
      */
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
     
     /**
@@ -165,13 +163,13 @@ class Course extends AbstractEntity
     }
     
     /**
-     * @param string $title
+     * @param string $name
      *
      * @return Course
      */
-    public function setTitle($title)
+    public function setName($name)
     {
-        $this->title = $title;
+        $this->name = $name;
         
         return $this;
     }
