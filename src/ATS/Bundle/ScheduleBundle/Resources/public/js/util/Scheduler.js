@@ -27,6 +27,7 @@ const Scheduler = (function ($) {
         init : function (options)
         {
             let defaults = {
+                allDaySlot:  false,
                 defaultView: 'agendaWeek',
                 weekends:    false,
                 defaultDate: moment(),
@@ -35,6 +36,10 @@ const Scheduler = (function ($) {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'agendaWeek,agendaDay'
+                },
+                viewRender: function (view) {
+                    updateHeader();
+                    hideDateColumnHeader();
                 },
                 eventRender: function (event, element) {
                     if (!event.hasOwnProperty('description')) {
@@ -50,14 +55,6 @@ const Scheduler = (function ($) {
                     console.log(jsEvent);
                     console.log(view);
                 }
-                
-                /*events: [{
-                    title:"My repeating event",
-                    start: '10:00', // a start time (10am in this example)
-                    end: '14:00', // an end time (6pm in this example)
-                    
-                    dow: [ 1, 4 ] // Repeat monday and thursday
-                }],*/
             };
             
             this.calendar.fullCalendar(Object.assign(defaults, options));
@@ -93,20 +90,20 @@ const Scheduler = (function ($) {
                     console.log(xhr);
                 }
             });
+            
+            updateHeader();
         },
         
         buildUri : function () {
             let uri, data;
             uri  = '/class';
-            data = getData();
+            //data = getData();
             
             uri = uri
                 //+ (data.block   ? '/' + data.block   : '')
                 //+ (data.subject ? '/' + data.subject : '')
                 + '.json'
             ;
-            
-            console.log(uri);
             
             return uri;
         },
@@ -127,7 +124,7 @@ const Scheduler = (function ($) {
             }
             
             this.calendar.fullCalendar('addEventSource', {
-                events: events
+                'events': filterEvents(this.calendar, events)
             });
             
         },
@@ -139,7 +136,65 @@ const Scheduler = (function ($) {
             this.calendar.fullCalendar('removeEventSources');
         }
     };
-    
+
+    /**
+     * Hides the month / day in the column week headers.
+     */
+    function hideDateColumnHeader ()
+    {
+        $('.fc-day-header span').each(function () {
+            let text, parts;
+            text  = $(this).text();
+            parts = text.split(' ');
+            
+            $(this).text(parts[0]);
+        });
+    }
+
+    /**
+     * Update the header based on the semester.
+     */
+    function updateHeader()
+    {
+        let title = $('#term option:selected').text();
+        
+        $('#calendar')
+            .find('.fc-header-toolbar h2')
+            .html(title ? title : 'No Semester')
+        ;
+    }
+
+    /**
+     * Make sure that there are no duplicate events rendered in the calendar.
+     * 
+     * @param {fullCalendar} calendar
+     * @param {Event[]}       events
+     * @returns {Array}
+     */
+    function filterEvents(calendar, events)
+    {
+        let output, idx;
+        
+        output = [];
+        for (idx in events) {
+            let event = events[idx];
+            
+            if (calendar.fullCalendar('clientEvents', event.id).length) {
+                continue;
+            }
+            
+            output.push(event);
+        }
+        
+        return output;
+    }
+
+    /**
+     * Parse the JSON API data and turn them into event objects.
+     * 
+     * @param classes
+     * @returns {Array}
+     */
     function loadEventAsClass(classes)
     {
         let events, i;
@@ -157,6 +212,7 @@ const Scheduler = (function ($) {
             }
             
             events.push({
+                id:    cls.crn,
                 title: subject.name + ' ' + course.number,
                 start: getTime(cls.start_time),
                 end:   getTime(cls.end_time),
@@ -190,6 +246,7 @@ const Scheduler = (function ($) {
                 }
                 
                 events.push({
+                    id:    cls.crn,
                     title: course.subject + ' ' + course.number,
                     start: getTime(cls.start_time),
                     end:   getTime(cls.end_time),
@@ -200,7 +257,13 @@ const Scheduler = (function ($) {
         
         return events;
     }
-    
+
+    /**
+     * Turn the stored dates into their numerical representation.
+     * 
+     * @param {string} strDays
+     * @returns {Array}
+     */
     function getDays (strDays)
     {
         if (!strDays.length) {
@@ -226,7 +289,12 @@ const Scheduler = (function ($) {
         
         return time.substr(0, 2) + ':' + time.substr(2);
     }
-    
+
+    /**
+     * Get the data used in the query to the API Endpoint.
+     * 
+     * @returns {{term: *, block: *, subject: *, instructor: *}}
+     */
     function getData()
     {
         return {
@@ -235,18 +303,6 @@ const Scheduler = (function ($) {
             'subject'   : $('#subject').val(),
             'instructor': $('#instructor').val()
         };
-    }
-    
-    function generateEventSourceKey()
-    {
-        let data = getData();
-        
-        return [data.block, data.subject, data.instructor].join('-');
-    }
-    
-    function getEventSourceKey()
-    {
-        
     }
     
     return Scheduler;

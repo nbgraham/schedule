@@ -71,7 +71,10 @@
         }
         
         // Chosen will initialize at 0px because it's in a modal.
-        select.chosen({ width: '100%' });
+        select.chosen({ 
+            width: '100%',
+            allow_single_deselect: 1
+        });
     }
 
     /**
@@ -81,6 +84,12 @@
     function bindSemesterChange()
     {
         $('#term').on('change', function (event, params) {
+            // params is undefined when you deselect a semester.
+            if (!params) {
+                $('#term-block').chosen('destroy');
+                return;
+            }
+            
             let semesters, semester, select, idx;
             semesters = GlobalUtils.getSemesters();
             for (idx in semesters) {
