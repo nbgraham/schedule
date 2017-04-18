@@ -28,7 +28,8 @@
         bindModalActions();
     });
 
-    /**fg
+    /**
+     * Fill the filter boxes with their respective data.
      */
     function populateFilters()
     {
@@ -163,8 +164,25 @@
                 return;
             }
             
-            let subjects, subject, select, idx;
+            let subjects, select, subject, idx;
             subjects = GlobalUtils.getSubjects();
+            select   = $('#number');
+            
+            if (params.hasOwnProperty('deselected')) {
+                select
+                    .find('option[data-subject="' + params.deselected + '"]')
+                    .remove()
+                ;
+                
+                if (!$(this).val().length) {
+                    select.chosen('destroy');
+                } else {
+                    select.trigger('chosen:updated');
+                }
+                
+                return;
+            }
+            
             for (idx in subjects) {
                 if (!subjects.hasOwnProperty(idx)) {
                     continue;
@@ -175,9 +193,12 @@
                     continue;
                 }
                 
-                select = $('#number');
-                
                 fillSelect('#number', subject.courses);
+                
+                select.find('option:not([data-subject])')
+                    .attr('data-subject', subject.id)
+                ;
+                
                 select.trigger('chosen:updated');
             }
         });
@@ -187,7 +208,9 @@
     {
         let modal = $('#filtersModal');
         modal.find('#apply-filters').on('click', function () {
-            scheduler.fetch();
+            if (scheduler.fetch()) {
+                modal.modal('hide');
+            }
         });
         
         modal.find('#clear-filters').on('click', function () {

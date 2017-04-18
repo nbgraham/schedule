@@ -61,6 +61,10 @@ const Scheduler = (function ($) {
          * Request the classes based on the applied filters.
          */
         fetch : function (uri) {
+            if (!requiredFields(this)) {
+                return false;
+            }
+            
             let context = this;
             
             if (!uri) {
@@ -83,6 +87,8 @@ const Scheduler = (function ($) {
             });
             
             updateHeader();
+            
+            return true;
         },
 
         /**
@@ -233,6 +239,30 @@ const Scheduler = (function ($) {
         }
         
         return events;
+    }
+    
+    function requiredFields(scheduler)
+    {
+        let term, block, subject;
+        term = $('#term');
+        if (!term.val()) {
+            term.trigger('chosen:activate');
+            return false;
+        }
+        
+        block = $('#term-block');
+        if (!block.val().length) {
+            block.trigger('chosen:open');
+            return false;
+        }
+        
+        subject = $('#subject');
+        if (!subject.val().length) {
+            subject.trigger('chosen:open');
+            return false;
+        }
+        
+        return true;
     }
 
     /**
