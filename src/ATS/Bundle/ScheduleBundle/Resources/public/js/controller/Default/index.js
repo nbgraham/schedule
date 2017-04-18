@@ -82,7 +82,10 @@
         // Chosen will initialize at 0px because it's in a modal.
         select.chosen({ 
             width: '100%',
-            allow_single_deselect: 1
+            allow_single_deselect: 1/*,
+            From a DevOps perspective, soft-limiting this just makes sense. From
+            someone who wants to graduate and impress - what are you gonna do?
+            max_selected_options:  3,*/
         });
     }
 
@@ -173,8 +176,6 @@
                 }
                 
                 select = $('#number');
-                select.find('option[value]').remove();
-                select.show();
                 
                 fillSelect('#number', subject.courses);
                 select.trigger('chosen:updated');
