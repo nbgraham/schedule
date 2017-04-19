@@ -133,11 +133,11 @@ class ClassEvent extends AbstractEntity
      */
     protected $num_enrolled;
     
-    
-    public function __construct()
-    {
-        
-    }
+    /**
+     * @ORM\Column(type="integer")
+     * @var Integer
+     */
+    protected $maximum_enrollment;
     
     /**
      * @Serializer\VirtualProperty()
@@ -521,4 +521,23 @@ class ClassEvent extends AbstractEntity
         return $this;
     }
     
+    /**
+     * @return int
+     */
+    public function getMaximumEnrollment()
+    {
+        return $this->maximum_enrollment;
+    }
+    
+    /**
+     * @param int $maximum_enrollment
+     *
+     * @return ClassEvent
+     */
+    public function setMaximumEnrollment($maximum_enrollment)
+    {
+        $this->maximum_enrollment = $maximum_enrollment;
+        
+        return $this;
+    }
 }

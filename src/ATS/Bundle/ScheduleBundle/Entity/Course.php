@@ -53,12 +53,6 @@ class Course extends AbstractEntity
     protected $name;
     
     /**
-     * @ORM\Column(type="integer")
-     * @var Integer
-     */
-    protected $maximum_enrollment;
-    
-    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -122,14 +116,6 @@ class Course extends AbstractEntity
     }
     
     /**
-     * @return int
-     */
-    public function getMaximumEnrollment()
-    {
-        return $this->maximum_enrollment;
-    }
-    
-    /**
      * @return string
      */
     public function getLevel()
@@ -170,18 +156,6 @@ class Course extends AbstractEntity
     public function setName($name)
     {
         $this->name = $name;
-        
-        return $this;
-    }
-    
-    /**
-     * @param int $maximum_enrollment
-     *
-     * @return Course
-     */
-    public function setMaximumEnrollment($maximum_enrollment)
-    {
-        $this->maximum_enrollment = $maximum_enrollment;
         
         return $this;
     }

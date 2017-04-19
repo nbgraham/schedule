@@ -313,7 +313,6 @@ class BookParser
         $object
             ->setName($data[5])
             ->setLevel($data[36])
-            ->setMaximumEnrollment($data[11])
         ;
         
         // Binary data was present in one of the fields.
@@ -352,7 +351,6 @@ class BookParser
             ->setStartTime($data[21])
             ->setEndTime($data[22])
             ->setStatus($data[8])
-            ->setNumEnrolled($data[12])
             ->setSection($data[3])
             ->setCampus($campus)
             ->setCourse($course)
@@ -360,6 +358,8 @@ class BookParser
             ->setInstructor($instructor)
             ->setRoom($room)
             ->setSubject($subject)
+            ->setNumEnrolled($data[12])
+            ->setMaximumEnrollment($data[11])
         ;
         
         return $this->persist($instances, $key, $event);
