@@ -33,7 +33,7 @@ const Scheduler = (function ($) {
                 defaultDate: moment(),
                 minTime:     "08:00:00",
                 header: {
-                    left: 'prev,next today',
+                    left: '',
                     center: 'title',
                     right: 'agendaWeek,agendaDay'
                 },
@@ -61,7 +61,7 @@ const Scheduler = (function ($) {
          * Request the classes based on the applied filters.
          */
         fetch : function (uri) {
-            if (!requiredFields(this)) {
+            if (!requiredFields()) {
                 return false;
             }
             
@@ -71,6 +71,7 @@ const Scheduler = (function ($) {
                 uri = this.buildUri();
             }
             
+            this.clear();
             this.calendar.fullCalendar('addEventSource', {
                 url:   GlobalUtils.getAPIUrl(uri),
                 type:  'GET',
@@ -143,6 +144,22 @@ const Scheduler = (function ($) {
                 'events': filterEvents(this.calendar, events)
             });
             
+        },
+
+        /**
+         * Clear the applied filters.
+         */
+        clearFilters : function () {
+            let selectors, options;
+            selectors = $('.chosen-select');
+            options   = selectors.find('option[value]:selected');
+            
+            // $.removeAttr is broken for the selected property.
+            options.prop('selected', false);
+            
+            // Hide related fields (term-blocks, course numbers).
+            selectors.trigger('change');
+            selectors.trigger('chosen:updated');
         },
 
         /**
@@ -240,26 +257,34 @@ const Scheduler = (function ($) {
         
         return events;
     }
-    
-    function requiredFields(scheduler)
+
+    /**
+     * Ensures the required fields have appropriate values before submitting
+     * an API request.
+     * 
+     * @returns {boolean}
+     */
+    function requiredFields()
     {
-        let term, block, subject;
-        term = $('#term');
+        let term, multiples, idx;
+        term      = $('#term');
+        multiples = [$('#term-block'), $('#subject')];
+        
         if (!term.val()) {
             term.trigger('chosen:activate');
             return false;
         }
         
-        block = $('#term-block');
-        if (!block.val().length) {
-            block.trigger('chosen:open');
-            return false;
-        }
-        
-        subject = $('#subject');
-        if (!subject.val().length) {
-            subject.trigger('chosen:open');
-            return false;
+        for (idx in multiples) {
+            if (!multiples.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            let selector = multiples[idx];
+            if (!selector.val().length) {
+                selector.trigger('chosen:open');
+                return false;
+            }
         }
         
         return true;

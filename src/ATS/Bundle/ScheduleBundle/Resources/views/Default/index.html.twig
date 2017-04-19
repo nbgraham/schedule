@@ -22,18 +22,29 @@
     {% include '@ATSSchedule/Default/components/filter-modal-wrapper.html.twig' %}
     
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row scheduler-header">
+            <div class="col-md-2">
                 <div class="tool-bar">
+                    <button id="clear-calendar" type="button" class="btn btn-default">Clear</button>
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#filtersModal">
                         Filter
                     </button>
                 </div>
             </div>
+            
+            <div class="col-md-8 text-center">
+                <h4>OU Scheduling Utility</h4>
+            </div>
+            
+            <div class="col-md-2 text-center">
+                {% image '@ATSScheduleBundle/Resources/public/images/greyOULogo.png' %}
+                    <img src="{{ asset_url }}" alt="logo" />
+                {% endimage %}
+            </div>
         </div>
     </div>
     
-    <div class="container-fluid">
+    <div class="container-fluid calendar-container">
         <div id="calendar">
             
         </div>

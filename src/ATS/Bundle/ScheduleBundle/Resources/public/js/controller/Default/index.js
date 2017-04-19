@@ -214,6 +214,10 @@
         });
         
         modal.find('#clear-filters').on('click', function () {
+            scheduler.clearFilters();
+        });
+        
+        $('#clear-calendar').click(function () {
             scheduler.clear();
         });
     }
