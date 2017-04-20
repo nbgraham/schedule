@@ -14,6 +14,7 @@ use ATS\Bundle\ScheduleBundle\Entity\Term;
 use ATS\Bundle\ScheduleBundle\Entity\TermBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectRepository;
+use ForceUTF8\Encoding;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -225,10 +226,6 @@ class BookParser
             return $object;
         }
         
-        //echo "\nkeyy: " . $key . "\n";
-        //echo "\nkey:" . array_key_exists($key, $instances) . "\n";
-        //var_dump($instances);
-        
         $object = new Room($building, $name);
         $building->addRoom($object);
         
@@ -311,14 +308,9 @@ class BookParser
         
         $object = new Course($subject, $number);
         $object
-            ->setName($data[5])
+            ->setName(Encoding::toUTF8($data[5]))
             ->setLevel($data[36])
         ;
-        
-        // Binary data was present in one of the fields.
-        if (!mb_check_encoding($object->getName(), 'UTF-8')) {
-            return null;
-        }
         
         return $this->persist($instances, $key, $object);
     }

@@ -15,17 +15,17 @@
         return;
     }
     
-    $(document).ready(function () {
-        if (!Scheduler instanceof Object) {
-            console.log('Scheduler util is not loaded.');
-            return;
-        }
-        
+    /*
+     * Setup the modal filters.
+     * 
+     * Using window load to ensure that the data in GlobalUtils was parsed.
+     */
+    $(window).on('load', function () {
         scheduler = new Scheduler('#calendar');
         scheduler.init();
         
         populateFilters();
-        bindModalActions();
+        buttonActions();
     });
 
     /**
@@ -40,13 +40,17 @@
         bindSemesterChange();
         bindSubjectChange();
         
-        // TODO: Fix this. Hitting escape when an input is selected will close the modal... which is super annoying.
-        $('.chosen-search-input').on('keydown', function (e) {
+        $('.modal-body').on('keydown', function (e) {
             if (e.keyCode !== 27) {
                 return;
             }
             
-            $(this)
+            let element = $(e.target);
+            if (!element.hasClass('chosen-search-input')) {
+                return;
+            }
+            
+            element
                 .blur()
                 .focus()
             ;
@@ -72,7 +76,6 @@
             }
             
             let item = data[idx];
-            
             $('<option>')
                 .attr('value', item.id)
                 .text(determineChosenLabel(item))
@@ -83,7 +86,9 @@
         // Chosen will initialize at 0px because it's in a modal.
         select.chosen({ 
             width: '100%',
-            allow_single_deselect: 1/*,
+            allow_single_deselect:  1/*,
+            inherit_select_classes: true
+            ,
             From a DevOps perspective, soft-limiting this just makes sense. From
             someone who wants to graduate and impress - what are you gonna do?
             max_selected_options:  3,*/
@@ -204,7 +209,7 @@
         });
     }
     
-    function bindModalActions()
+    function buttonActions ()
     {
         let modal = $('#filtersModal');
         modal.find('#apply-filters').on('click', function () {

@@ -24,7 +24,7 @@ class ParseBookCommand extends AbstractCommand
         $this
             ->setName('scheduler:parse-book')
             ->setDescription('Parses the CSV book file and loads its contents into the databse.')
-            ->addArgument('path', InputArgument::OPTIONAL, 'Path to the CSV file.', 'datastores/Classes17.csv')
+            ->addArgument('path', InputArgument::OPTIONAL, 'Path to the CSV file.', 'datastores/Classes.csv')
             ->addOption('include_online', 'io', InputOption::VALUE_OPTIONAL, 'Flag to include online courses.', false)
         ;
     }

@@ -28,14 +28,19 @@
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
             
-            <link rel="stylesheet" href="{{ asset('assets/vendor/fullcalendar/dist/fullcalendar.print.min.css') }}" media='print' />
+            {% stylesheets
+                'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
+                '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
+                output='assets/compiled/css/app_print.css'
+                filter='cssrewrite,less'
+            %}
+                <link rel="stylesheet" href="{{ asset_url }}" media="print" />
+            {% endstylesheets %}
         {% endblock %}
+        
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {#<div class="container">
-            
-        </div>#}
         {% block body %}{% endblock %}
         
         {% block javascripts %}
@@ -51,7 +56,9 @@
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}
             
-            {% javascripts '@ATSScheduleBundle/Resources/public/js/util/*' output='assets/compiled/js/utils.js' %}
+            {% javascripts '@ATSScheduleBundle/Resources/public/js/util/*'
+                output='assets/compiled/js/utils.js'
+            %}
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}
         {% endblock %}

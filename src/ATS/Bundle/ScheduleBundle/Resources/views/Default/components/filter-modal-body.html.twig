@@ -1,6 +1,6 @@
 <div class="container-fluid">
-    <script>
-        window.addEventListener('load', function () {
+    <script type="application/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
             GlobalUtils.setSemesters({{ render(controller('ATSScheduleBundle:Term:cget', {
                 '_format': 'json'
             })) }});
@@ -19,13 +19,13 @@
         <label for="term" class="cold-sm-4 control-label">Semester</label>
         
         <div class="cold-sm-4">
-            <select id="term" class="chosen-select" data-placeholder="Filter by Semester" required>
+            <select id="term" class="chosen-select" data-placeholder="Semester..." required>
                 <option></option>
             </select>
         </div>
         
         <div class="cold-sm-4">
-            <select id="term-block" class="chosen-select hidden" data-placeholder="Filter by Module" multiple="" required>
+            <select id="term-block" class="chosen-select hidden" data-placeholder="Module..." multiple="" required>
                 <option></option>
             </select>
         </div>
@@ -35,13 +35,13 @@
         <label for="subject" class="cold-sm-4 control-label">Subject</label>
         
         <span class="cold-sm-4">
-            <select id="subject" class="chosen-select" data-placeholder="Filter by Subject" multiple="">
+            <select id="subject" class="chosen-select" data-placeholder="Subject..." multiple="" required>
                 <option></option>
             </select>
         </span>
         
         <span class="cold-sm-4">
-            <select id="number" class="chosen-select hidden" data-placeholder="Filter by Course Number" multiple="">
+            <select id="number" class="chosen-select hidden" data-placeholder="Course..." multiple="">
                 <option></option>
             </select>
         </span>
@@ -51,7 +51,7 @@
         <label for="instructor" class="cold-sm-4 control-label">Instructor</label>
         
         <div class="cold-sm-8">
-            <select id="instructor" class="chosen-select" data-placeholder="Filter by Instructor" multiple="">
+            <select id="instructor" class="chosen-select" data-placeholder="Instructor..." multiple="">
                 <option></option>
             </select>
         </div>
