@@ -61,6 +61,12 @@
             %}
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}
+            
+            {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*'
+                output='assets/compiled/js/controllers.js'
+            %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
         {% endblock %}
     </body>
 </html>
