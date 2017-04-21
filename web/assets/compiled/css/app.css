@@ -1,0 +1,19 @@
+div.scheduler-header-wrapper div.scheduler-header {
+  background: #5f1414;
+  padding: 0.5em 0;
+}
+div.scheduler-header-wrapper div.scheduler-header h4 {
+  color: #FFF;
+}
+div.scheduler-header-wrapper div.scheduler-header div.header-image {
+  padding-right: 1.5em;
+}
+div.scheduler-header-wrapper div.scheduler-header div.header-image img {
+  width: 2em;
+}
+div.scheduler-header-wrapper div.scheduler-header div.tool-bar {
+  margin: 0.25em;
+}
+div.calendar-container {
+  margin-top: 0.5em;
+}
