@@ -17,3 +17,7 @@ div.scheduler-header-wrapper div.scheduler-header div.tool-bar {
 div.calendar-container {
   margin-top: 0.5em;
 }
+#filtersModal #term_block_chosen,
+#filtersModal #number_chosen {
+  margin: 0.25em 0;
+}
