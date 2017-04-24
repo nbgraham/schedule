@@ -287,7 +287,9 @@ const Scheduler = (function ($) {
         let term, block, multiples, idx;
         term      = $('#term');
         block     = $('#term-block');
-        multiples = [$('#subject'), $('#instructor')];
+        multiples = ['#subject', '#instructor'];
+        
+        toggleOrangeBorder(false);
         
         if (!term.val()) {
             term.trigger('chosen:activate');
@@ -305,13 +307,38 @@ const Scheduler = (function ($) {
             }
             
             let selector = multiples[idx];
-            if (selector.val().length) {
-                selector.trigger('chosen:open');
+            if ($(selector).val().length) {
                 return true;
             }
         }
         
+        toggleOrangeBorder(true);
+        
         return false;
+    }
+
+    /**
+     * Highlights the required fields, either subject(s) or instructor(s).
+     * 
+     * @param {Boolean} on
+     */
+    function toggleOrangeBorder(on)
+    {
+        let multiples, color, idx;
+        multiples = ['#subject', '#instructor'];
+        color     = on ? 'orange' : '';
+        
+        for (idx in multiples) {
+            if (!multiples.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            let selector = multiples[idx];
+            $(selector + '_chosen')
+                .find('ul')
+                .css('border-color', color)
+            ;
+        }
     }
 
     /**
