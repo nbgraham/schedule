@@ -155,7 +155,7 @@ const Scheduler = (function ($) {
                 defaultDate: moment(),
                 minTime:     "08:00:00",
                 header: {
-                    left: '',
+                    left: 'prev,next',
                     center: 'title',
                     right: 'agendaWeek,agendaDay'
                 },
