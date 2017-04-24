@@ -193,7 +193,7 @@ const Scheduler = (function ($) {
                 uri = this.buildUri();
             }
             
-            this.clear();
+            this.wipe();
             this.calendar.fullCalendar('addEventSource', {
                 url:   GlobalUtils.getAPIUrl(uri),
                 type:  'GET',
@@ -266,6 +266,7 @@ const Scheduler = (function ($) {
                 'events': filterEvents(this.calendar, events)
             });
             
+            return this;
         },
 
         /**
@@ -282,13 +283,30 @@ const Scheduler = (function ($) {
             // Hide related fields (term-blocks, course numbers).
             selectors.trigger('change');
             selectors.trigger('chosen:updated');
+            
+            if (!this.calendar.fullCalendar('clientEvents').length) {
+                updateHeader();
+            }
+            
+            return this;
         },
 
         /**
-         * Wipe the calendar.
+         * Clear all calendar data.
          */
         clear : function () {
+            this.wipe().clearFilters();
+            
+            return this;
+        },
+
+        /**
+         * Wipe the calendar data.
+         */
+        wipe : function () {
             this.calendar.fullCalendar('removeEventSources');
+            
+            return this;
         }
     };
 
