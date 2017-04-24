@@ -284,12 +284,18 @@ const Scheduler = (function ($) {
      */
     function requiredFields()
     {
-        let term, multiples, idx;
+        let term, block, multiples, idx;
         term      = $('#term');
-        multiples = [$('#term-block'), $('#subject')];
+        block     = $('#term-block');
+        multiples = [$('#subject'), $('#instructor')];
         
         if (!term.val()) {
             term.trigger('chosen:activate');
+            return false;
+        }
+        
+        if (!block.val().length) {
+            block.trigger('chosen:open');
             return false;
         }
         
@@ -299,13 +305,13 @@ const Scheduler = (function ($) {
             }
             
             let selector = multiples[idx];
-            if (!selector.val().length) {
+            if (selector.val().length) {
                 selector.trigger('chosen:open');
-                return false;
+                return true;
             }
         }
         
-        return true;
+        return false;
     }
 
     /**
