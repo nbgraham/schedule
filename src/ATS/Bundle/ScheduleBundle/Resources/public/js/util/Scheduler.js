@@ -248,8 +248,10 @@ const Scheduler = (function ($) {
      */
     function loadEventAsClass(classes)
     {
-        let events, i;
+        let events, color, border, i;
         events = [];
+        color  = '#001505';
+        border = '#992600';
         
         for (i in classes) {
             let cls, course, days, subject;
@@ -268,7 +270,9 @@ const Scheduler = (function ($) {
                 start: getTime(cls.start_time),
                 end:   getTime(cls.end_time),
                 dow:   getDays(cls.days),
-                description: cls.instructor.name
+                description:     cls.instructor.name,
+                borderColor:     border,
+                backgroundColor: color
                 
             });
         }
