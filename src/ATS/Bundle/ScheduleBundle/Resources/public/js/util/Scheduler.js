@@ -265,7 +265,8 @@ const Scheduler = (function ($) {
             }
             
             events.push({
-                id:    cls.crn,
+                id:    cls.id,
+                crn:   cls.crn,
                 title: subject.name + ' ' + course.number,
                 start: getTime(cls.start_time),
                 end:   getTime(cls.end_time),
@@ -373,11 +374,12 @@ const Scheduler = (function ($) {
                 }
                 
                 events.push({
-                    id:    cls.crn,
+                    id:    cls.id,
                     title: course.subject + ' ' + course.number,
                     start: getTime(cls.start_time),
                     end:   getTime(cls.end_time),
-                    dow:   getDays(cls.days)
+                    dow:   getDays(cls.days),
+                    crn:   cls.crn
                 });
             }
         }

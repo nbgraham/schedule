@@ -3,6 +3,8 @@ services:
         class: ATS\Bundle\ScheduleBundle\Util\Parser\BookParser
         arguments:
             - "@doctrine"
+        calls:
+            - [setRootDir, ["%kernel.root_dir%"]]
             
 #    ats_schedule.example:
 #        class: ATS\Bundle\ScheduleBundle\Example

@@ -27,6 +27,13 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 class BookParser
 {
     /**
+     * The project's root directory.
+     * 
+     * @var string
+     */
+    protected $root_dir;
+    
+    /**
      * @var Registry 
      */
     protected $doctrine;
@@ -67,7 +74,23 @@ class BookParser
     {
         $this->output = $output;
         
-        $this->run();
+        $this
+            ->setEnvironmentVars()
+            ->run()
+        ;
+    }
+    
+    /**
+     * Set environment variables.
+     * 
+     * @return $this
+     */
+    protected function setEnvironmentVars()
+    {
+        // Make sure that OSX line endings are accounted for when parsing the CSV.
+        ini_set('auto_detect_line_endings',true);
+        
+        return $this;
     }
     
     /**
@@ -84,6 +107,7 @@ class BookParser
         
         $i      = 1;
         $chunks = 100;
+        
         while($data = fgetcsv($handle)) {
             $this->parseline($data);
             
@@ -108,6 +132,27 @@ class BookParser
     }
     
     /**
+     * Determine if we should parse a row.
+     * 
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isValidEntry(array $data)
+    {
+        // 0 = semester - invalid entry. 8 = status.
+        if ('...' === $data[0] || '...' === $data[8]) {
+            return false;
+        }
+        
+        if (!$this->include_online && $this->isOnline($data)) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
      * Parse a line from The Book.
      * 
      * @param array $data
@@ -116,12 +161,7 @@ class BookParser
      */
     protected function parseLine(array $data)
     {
-        // 0 = semester - invalid entry.
-        if ('...' === $data[0]) {
-            return null;
-        }
-        
-        if (!$this->include_online && $this->isOnline($data)) {
+        if (!$this->isValidEntry($data)) {
             return null;
         }
         
@@ -336,7 +376,7 @@ class BookParser
     {
         static $instances;
         
-        $key   = $this->getKey(['crn' => $data[4]]);
+        $key   = $this->getKey(['crn' => $data[4], 'semester' => $block->getId()]);
         $repo  = $this->getManager()->getRepository('ATSScheduleBundle:ClassEvent');
         $event = $this->getStored($instances, $key, $repo) ?: new ClassEvent();
         
@@ -430,6 +470,9 @@ class BookParser
     
     /**
      * Create a term block.
+     *
+     * Term Block needs an ID for the cache key to work, so block parsing
+     * needs to happen before class parsing.
      * 
      * @param Term   $term
      * @param string $block
@@ -479,6 +522,115 @@ class BookParser
         fgetcsv($handle);
         
         return $handle;
+    }
+    
+    /**
+     * Check the local memory cache for an instance for a desired object.
+     * 
+     * @param array            $instances
+     * @param string           $key
+     * @param ObjectRepository $repo
+     *
+     * @return null|AbstractEntity
+     */
+    protected function getStored(&$instances, $key, $repo)
+    {
+        if (null !== $instances) {
+            if (array_key_exists($key, $instances)) {
+                return $instances[$key];
+            }
+            
+            return null;
+        }
+        
+        $instances = [];
+        $stored    = $repo->findAll();
+        
+        /* @var AbstractEntity $item */
+        foreach ($stored as $item) {
+            $instances[$this->getKey($item->getKey())] = $item;
+        }
+        
+        return $this->getStored($instances, $key, $repo);
+    }
+    
+    /**
+     * Persist the newly created object.
+     * 
+     * @param array          &$instances
+     * @param string         $key
+     * @param AbstractEntity $object
+     *
+     * @return AbstractEntity
+     */
+    protected function persist(array &$instances, $key, $object)
+    {
+        $this->getManager()->persist($object);
+        
+        return ($instances[$key] = $object);
+    }
+    
+    /**
+     * Generate a standardized key used for in memory storage.
+     * 
+     * @param array $parts
+     *
+     * @return string
+     */
+    protected function getKey(array $parts)
+    {
+        ksort($parts);
+        
+        return implode('-', $parts);
+    }
+    
+    /**
+     * Used for debugging an issue with CRNs colliding.
+     * 
+     * @return $this
+     */
+    protected function printDuplicateCrns()
+    {
+        $handle = $this->openFile();
+        $crns   = [];
+        
+        while($data = fgetcsv($handle)) {
+            if (!$this->isValidEntry($data)) {
+                continue;
+            }
+            
+            $crn = $data[4];
+            if (!array_key_exists($crn, $crns)) {
+                $crns[$crn] = [$data];
+            } else {
+                $crns[$crn][] = $data;
+            }
+        }
+        
+        $output = '';
+        foreach ($crns as $crn => $rows) {
+            if (1 === count($rows)) {
+                continue;
+            }
+            
+            $output .= "$crn:\n";
+            $this->output->writeln("$crn:\n");
+            
+            foreach ($rows as $row) {
+                $output .= "\t" . implode(',', $row) . "\n";
+                $this->output->writeln("\t" . implode(',', $row));
+            }
+        }
+        
+        fclose($handle);
+        
+        $path   = "{$this->root_dir}/crn-duplicates.txt";
+        $handle = fopen($path, 'w');
+        
+        fwrite($handle, $output);
+        fclose($handle);
+        
+        return $this;
     }
     
     /**
@@ -559,53 +711,16 @@ class BookParser
     }
     
     /**
-     * Generate a standardized key used for in memory storage.
+     * Sets the root directory.
      * 
-     * @param array $parts
+     * @param string $dir
      *
-     * @return string
+     * @return $this
      */
-    protected function getKey(array $parts)
+    public function setRootDir($dir)
     {
-        ksort($parts);
+        $this->root_dir = $dir;
         
-        return implode('-', $parts);
-    }
-    
-    /**
-     * Check the local memory cache for an instance for a desired object.
-     * 
-     * @param array            $instances
-     * @param string           $key
-     * @param ObjectRepository $repo
-     *
-     * @return null|AbstractEntity
-     */
-    protected function getStored(&$instances, $key, $repo)
-    {
-        if (null !== $instances) {
-            if (array_key_exists($key, $instances)) {
-                return $instances[$key];
-            }
-            
-            return null;
-        }
-        
-        $instances = [];
-        $stored    = $repo->findAll();
-        
-        /* @var AbstractEntity $item */
-        foreach ($stored as $item) {
-            $instances[$this->getKey($item->getKey())] = $item;
-        }
-        
-        return $this->getStored($instances, $key, $repo);
-    }
-    
-    protected function persist(array &$instances, $key, $object)
-    {
-        $this->getManager()->persist($object);
-        
-        return ($instances[$key] = $object);
+        return $this;
     }
 }

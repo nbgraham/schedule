@@ -73,11 +73,18 @@ class ClassEvent extends AbstractEntity
     protected $block;
     
     /**
-     * The Event unique ID.
-     * 
      * @ORM\Id()
-     * @ORM\Column(name="crn", type="integer")
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * 
+     * @var Integer
+     */
+    protected $id;
+    
+    /**
+     * The class CRN.
+     * 
+     * @ORM\Column(type="integer")
      * 
      * @var Integer
      */
@@ -161,7 +168,8 @@ class ClassEvent extends AbstractEntity
     public function getKey()
     {
         return [
-            'crn' => $this->crn,
+            'crn'      => $this->crn,
+            'semester' => $this->getBlock()->getId(),
         ];
     }
     
@@ -261,6 +269,14 @@ class ClassEvent extends AbstractEntity
         $this->block = $block;
         
         return $this;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
     
     /**
