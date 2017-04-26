@@ -125,25 +125,33 @@ class BookParser
             return null;
         }
         
-        $room     = null;
-        $subject  = $this->getSubject($data);
+        $subject = $this->getSubject($data);
+        if (!$course = $this->getCourse($subject, $data)) {
+            return null;
+        }
+        
+        $room       = null;
+        $block      = null;
+        $term       = $this->getTerm($data, $block);
+        $instructor = $this->getInstructor($data);
+        
         $location = $this->parseBuilding($data);
         $campus   = $this->getCampus($data);
+        
         if ($building = $this->getBuilding($campus, $location)) {
             $room = $this->getRoom($building, $location);
         }
         
-        $instructor = $this->getInstructor($data);
-        $term       = $this->getTerm($data, $term_block);
-        $course     = $this->getCourse($subject, $data);
-        
-        if (!$course instanceof Course) {
-            return null;
-        }
-        
-        return $this->parseClass($data, $campus, $subject, $course, $term_block, $instructor, $room);
+        return $this->parseClass($data, $block, $subject, $course, $instructor, $campus, $room);
     }
     
+    /**
+     * Find the subject.
+     * 
+     * @param array $data
+     *
+     * @return AbstractEntity|mixed|null
+     */
     protected function getSubject(array $data)
     {
         static $instances;
@@ -252,10 +260,6 @@ class BookParser
             return $object;
         }
         
-        /*if (($object = $this->find('ATSScheduleBundle:Instructor', $id)) instanceof Instructor) {
-            return ($instances[$key] = $object);
-        }*/
-        
         return $this->persist($instances, $key, new Instructor($id, $name));
     }
     
@@ -317,17 +321,18 @@ class BookParser
     
     /**
      * Import a class.
-     * 
+     *
      * @param array      $data
-     * @param Campus     $campus
-     * @param Course     $course
      * @param TermBlock  $block
+     * @param Subject    $subject
+     * @param Course     $course
      * @param Instructor $instructor
-     * @param Room|null  $room
+     * @param Campus     $campus
+     * @param Room       $room
      *
      * @return AbstractEntity|ClassEvent|object
      */
-    protected function parseClass(array $data, Campus $campus, Subject $subject, Course $course, TermBlock $block, Instructor $instructor, Room $room = null)
+    protected function parseClass(array $data, TermBlock $block, Subject $subject, Course $course, Instructor $instructor, Campus $campus, Room $room)
     {
         static $instances;
         

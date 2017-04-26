@@ -9,12 +9,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * User.
  * 
- * @ORM\Entity()
- * @ORM\Table(name="user", indexes={
- *     @ORM\Index(name="idx_username", columns={"username"}),
- *     @ORM\Index(name="idx_email",    columns={"email"}),
+ * #ORM\Entity()
+ * #ORM\Table(name="user", indexes={
+ *     #ORM\Index(name="idx_username", columns={"username"}),
+ *     #ORM\Index(name="idx_email",    columns={"email"}),
  * })
- * @ORM\Cache("NONSTRICT_READ_WRITE")
+ * #ORM\Cache("NONSTRICT_READ_WRITE")
  * 
  * @author Austin Shinpaugh <ashinpaugh@ou.edu>
  */

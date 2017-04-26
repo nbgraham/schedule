@@ -9,9 +9,9 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
  * A Node role. A collection of roles help determine user's access
  * to features and permissions.
  * 
- * @ORM\Entity
- * @ORM\Table(name="role")
- * @ORM\Cache("READ_ONLY")
+ * #ORM\Entity
+ * #ORM\Table(name="role")
+ * #ORM\Cache("READ_ONLY")
  */
 class Role extends AbstractEntity implements RoleInterface
 {

@@ -7,11 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Redundant storage of user session data.
  * 
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="session", indexes={
- *    @ORM\Index(name="idx_expire_time", columns={"expire_time"}),
- *    @ORM\Index(name="idx_last_active", columns={"last_active"})
+ * #ORM\Entity
+ * #ORM\HasLifecycleCallbacks
+ * #ORM\Table(name="session", indexes={
+ *    #ORM\Index(name="idx_expire_time", columns={"expire_time"}),
+ *    #ORM\Index(name="idx_last_active", columns={"last_active"})
  * })
  *
  * @author Austin Shinpaugh <ashinpaugh@ou.com>
