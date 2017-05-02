@@ -411,7 +411,13 @@ const Scheduler = (function ($) {
         
         return days;
     }
-    
+
+    /**
+     * Format the time.
+     * 
+     * @param {string} strTime
+     * @returns {string}
+     */
     function getTime (strTime)
     {
         let time = 4 === strTime.length ? strTime : '0' + strTime;
