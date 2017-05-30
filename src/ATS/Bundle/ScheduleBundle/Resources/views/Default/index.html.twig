@@ -3,16 +3,6 @@
 {% block title %}Class Scheduling{% endblock %}
 
 {% block body %}
-    {#<div class="tools">
-        <div class="left">
-            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#filters-modal">
-                <!--<span class="glyphicon glyphicon-filter"></span>
-                <span>Filter</span>-->
-                Filter
-            </button>
-        </div>
-    </div>#}
-    
     {% include '@ATSSchedule/Default/components/filter-modal-wrapper.html.twig' %}
     
     <div class="container-fluid scheduler-header-wrapper">
@@ -23,6 +13,8 @@
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#filtersModal">
                         Search
                     </button>
+                    
+                    <button id="btn-export" type="button" class="btn" disabled="disabled">Export</button>
                 </div>
             </div>
             

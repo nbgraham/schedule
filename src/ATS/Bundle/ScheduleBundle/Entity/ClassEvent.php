@@ -149,6 +149,14 @@ class ClassEvent extends AbstractEntity
     /**
      * @Serializer\VirtualProperty()
      */
+    public function getBuilding()
+    {
+        return $this->room->getBuilding();
+    }
+    
+    /**
+     * @Serializer\VirtualProperty()
+     */
     public function getEnd()
     {
         return $this->formatTime($this->end_date, $this->end_time);

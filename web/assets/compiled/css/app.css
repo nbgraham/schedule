@@ -21,3 +21,19 @@ div.calendar-container {
 #filtersModal #number_chosen {
   margin: 0.25em 0;
 }
+.ttTitle {
+  text-decoration: bold;
+  font-size: 0.8em;
+}
+.ttTitle .ttCapacity-over-capacity {
+  color: red;
+}
+.ttTitle .ttCapacity-alert {
+  color: lightsalmon;
+}
+.ttTitle .ttCapacity-warning {
+  color: lightpink;
+}
+.ttTitle .lightsalmon-default {
+  color: lightgreen;
+}

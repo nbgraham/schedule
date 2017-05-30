@@ -28,6 +28,23 @@ let GlobalUtils;
     };
 
     /**
+     * Toggle the Export button.
+     * This doesn't belong here, maybe I'll move it later.
+     * 
+     * @param scheduler
+     */
+    GlobalUtils.toggleExportBtn = function (scheduler)
+    {
+        let button = $('#btn-export');
+        
+        if (scheduler.getSectionIds().length) {
+            button.removeProp('disabled');
+        } else {
+            button.prop('disabled', 'disabled');
+        }
+    };
+
+    /**
      * Determine if we're in the dev environment.
      * 
      * @return {boolean}

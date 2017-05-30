@@ -208,7 +208,10 @@
             }
         });
     }
-    
+
+    /**
+     * Binds the page buttons to the related actions.
+     */
     function buttonActions ()
     {
         let modal = $('#filtersModal');
@@ -225,6 +228,38 @@
         $('#clear-calendar').click(function () {
             scheduler.clear();
         });
+        
+        $('#btn-export').on('click', function () {
+            fetchCsvExport();
+        });
+        
+        // Something is removing the disabled attr - add it back.
+        GlobalUtils.toggleExportBtn(scheduler);
+    }
+
+    /**
+     * Builds a URI to fetch a CSV based on the displayed events.
+     */
+    function fetchCsvExport()
+    {
+        let uri, ids, i;
+        
+        uri = '';
+        ids = scheduler.getSectionIds();
+        
+        for (i in ids) {
+            if (!ids.hasOwnProperty(i)) {
+                continue;
+            }
+            
+            if (uri.length) {
+                uri += '&';
+            }
+            
+            uri += 'section[]=' + ids[i];
+        }
+        
+        location.href = GlobalUtils.getAPIUrl('/download/export.json') + '?' + uri;
     }
     
 }) (jQuery);

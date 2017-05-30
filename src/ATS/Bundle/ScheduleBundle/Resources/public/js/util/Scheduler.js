@@ -32,6 +32,7 @@ const Scheduler = (function ($) {
                 weekends:    false,
                 defaultDate: moment(),
                 minTime:     "08:00:00",
+                maxTime:     "22:00:00",
                 header: {
                     left: 'prev,next',
                     center: 'title',
@@ -48,7 +49,19 @@ const Scheduler = (function ($) {
                     
                     element.find('.fc-title')
                         .append("<br/>" + event.description)
-                    ; 
+                    ;
+                    
+                    $(element).qtip({
+                        style: {
+                            classes: "qtip-rounded qtip-shadow qtip-bootstrap"
+                        },
+                        position: {
+                            at: 'bottom center'
+                        },
+                        content: {
+                            text: getToolTipText(event, element)
+                        }
+                    });
                 }
             };
             
@@ -84,6 +97,8 @@ const Scheduler = (function ($) {
                 error: function (xhr) {
                     console.log('error:');
                     console.log(xhr);
+                    
+                    GlobalUtils.toggleExportBtn(context);
                 }
             });
             
@@ -144,6 +159,8 @@ const Scheduler = (function ($) {
                 'events': filterEvents(this.calendar, events)
             });
             
+            GlobalUtils.toggleExportBtn(this);
+            
             return this;
         },
 
@@ -185,8 +202,88 @@ const Scheduler = (function ($) {
             this.calendar.fullCalendar('removeEventSources');
             
             return this;
+        },
+
+        /**
+         * Get the section IDs from all of the displayed events.
+         * 
+         * @returns {Array}
+         */
+        getSectionIds : function () {
+            let context, ids, idx, events, event;
+            
+            context = this;
+            events  = context.calendar.fullCalendar('clientEvents');
+            ids     = [];
+            
+            for (idx in events) {
+                if (!events.hasOwnProperty(idx)) {
+                    continue;
+                }
+                
+                event = events[idx];
+                if (!ids.includes(event.id)) {
+                    ids.push(event.id);
+                }
+            }
+            
+            return ids;
         }
     };
+
+    /**
+     * Get an markup class for the class based on it's current capacity.
+     * 
+     * @param event
+     * @returns {*}
+     */
+    function getCapacityClass(event)
+    {
+        let num_seats, seats_percent;
+        num_seats     = event.section.maximum_enrollment - event.section.num_enrolled;
+        seats_percent = num_seats / event.section.maximum_enrollment;
+        
+        switch (true) {
+            case seats_percent < 0.00:
+                return 'ttCapacity-over-capacity';
+            case seats_percent < 0.10:
+                return 'ttCapacity-alert';
+            case seats_percent < 0.25:
+                return 'ttCapacity-warning';
+            default:
+                return 'ttCapacity-default';
+        }
+    }
+    
+    /**
+     * Generate the text to display in the Tool Tip.
+     * 
+     * @param event
+     * @param element
+     * 
+     * @returns {string|*}
+     */
+    function getToolTipText(event, element)
+    {
+        let output;
+        
+        output =
+            '<p class="ttTitle">'
+            + event.section.subject.name + ": " + event.course.name + " - "
+            + '<span class="' + getCapacityClass(event) + '">'
+                + event.section.num_enrolled + " / " + event.section.maximum_enrollment
+            + '</span>'
+            + "</p>"
+        
+        + "Campus: " + event.section.campus.name + "<br />"
+        + "Building: " + event.section.building.name + "<br />"
+        + "Room: " + event.section.room.number + "<br />"
+        
+        + "<br />"
+        + "Instructor: " + event.section.instructor.name;
+        
+        return output;
+    }
 
     /**
      * Hides the month / day in the column week headers.
@@ -265,6 +362,9 @@ const Scheduler = (function ($) {
             }
             
             events.push({
+                section: cls,
+                course:  course,
+                
                 id:    cls.id,
                 crn:   cls.crn,
                 title: subject.name + ' ' + course.number,
@@ -274,7 +374,6 @@ const Scheduler = (function ($) {
                 description:     cls.instructor.name,
                 borderColor:     border,
                 backgroundColor: color
-                
             });
         }
         

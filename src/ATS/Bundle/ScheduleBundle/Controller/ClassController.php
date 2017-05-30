@@ -26,7 +26,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  * 
  * @RouteResource("class", pluralize=false)
  * 
- * #Prefix("/class")
+ * @Prefix("/class")
  * 
  * @author Austin Shinpaugh <ashinpaugh@ou.edu>
  */
@@ -35,6 +35,7 @@ class ClassController extends AbstractController implements ClassResourceInterfa
     /**
      * Fetch a class.
      * 
+     * @Route("")
      * @QueryParam(name="block",      nullable=true)
      * @QueryParam(name="subject",    nullable=true)
      * @QueryParam(name="instructor", nullable=true)
