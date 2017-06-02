@@ -4265,127 +4265,2331 @@ e=this.intervalEnd):(t=this.start,e=this.end),this.formatRange({start:this.calen
 
 }).call(this);
 
-/**
- * EvEmitter v1.0.3
- * Lil' event emitter
- * MIT License
- */
-
-/* jshint unused: true, undef: true, strict: true */
-
-( function( global, factory ) {
-  // universal module definition
-  /* jshint strict: false */ /* globals define, module, window */
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD - RequireJS
-    define( factory );
-  } else if ( typeof module == 'object' && module.exports ) {
-    // CommonJS - Browserify, Webpack
-    module.exports = factory();
-  } else {
-    // Browser globals
-    global.EvEmitter = factory();
-  }
-
-}( typeof window != 'undefined' ? window : this, function() {
-
-"use strict";
-
-function EvEmitter() {}
-
-var proto = EvEmitter.prototype;
-
-proto.on = function( eventName, listener ) {
-  if ( !eventName || !listener ) {
-    return;
-  }
-  // set events hash
-  var events = this._events = this._events || {};
-  // set listeners array
-  var listeners = events[ eventName ] = events[ eventName ] || [];
-  // only add once
-  if ( listeners.indexOf( listener ) == -1 ) {
-    listeners.push( listener );
-  }
-
-  return this;
-};
-
-proto.once = function( eventName, listener ) {
-  if ( !eventName || !listener ) {
-    return;
-  }
-  // add event
-  this.on( eventName, listener );
-  // set once flag
-  // set onceEvents hash
-  var onceEvents = this._onceEvents = this._onceEvents || {};
-  // set onceListeners object
-  var onceListeners = onceEvents[ eventName ] = onceEvents[ eventName ] || {};
-  // set flag
-  onceListeners[ listener ] = true;
-
-  return this;
-};
-
-proto.off = function( eventName, listener ) {
-  var listeners = this._events && this._events[ eventName ];
-  if ( !listeners || !listeners.length ) {
-    return;
-  }
-  var index = listeners.indexOf( listener );
-  if ( index != -1 ) {
-    listeners.splice( index, 1 );
-  }
-
-  return this;
-};
-
-proto.emitEvent = function( eventName, args ) {
-  var listeners = this._events && this._events[ eventName ];
-  if ( !listeners || !listeners.length ) {
-    return;
-  }
-  var i = 0;
-  var listener = listeners[i];
-  args = args || [];
-  // once stuff
-  var onceListeners = this._onceEvents && this._onceEvents[ eventName ];
-
-  while ( listener ) {
-    var isOnce = onceListeners && onceListeners[ listener ];
-    if ( isOnce ) {
-      // remove listener
-      // remove before trigger to prevent recursion
-      this.off( eventName, listener );
-      // unset once flag
-      delete onceListeners[ listener ];
-    }
-    // trigger listener
-    listener.apply( this, args );
-    // get next listener
-    i += isOnce ? 0 : 1;
-    listener = listeners[i];
-  }
-
-  return this;
-};
-
-return EvEmitter;
-
-}));
-
-/* qTip2 v2.2.1 | Plugins: tips modal viewport svg imagemap ie6 | Styles: core basic css3 | qtip2.com | Licensed MIT | Sun Sep 07 2014 00:09:27 */
-
-/*!
- * imagesLoaded v3.0.4
- * JavaScript is all like "You images are done yet or what?"
- * MIT License
- */
-!function(a){"use strict";function b(a,b){for(var c in b)a[c]=b[c];return a}function c(a){return"[object Array]"===i.call(a)}function d(a){var b=[];if(c(a))b=a;else if("number"==typeof a.length)for(var d=0,e=a.length;e>d;d++)b.push(a[d]);else b.push(a);return b}function e(a,c){function e(a,c,g){if(!(this instanceof e))return new e(a,c);"string"==typeof a&&(a=document.querySelectorAll(a)),this.elements=d(a),this.options=b({},this.options),"function"==typeof c?g=c:b(this.options,c),g&&this.on("always",g),this.getImages(),f&&(this.jqDeferred=new f.Deferred);var h=this;setTimeout(function(){h.check()})}function i(a){this.img=a}e.prototype=new a,e.prototype.options={},e.prototype.getImages=function(){this.images=[];for(var a=0,b=this.elements.length;b>a;a++){var c=this.elements[a];"IMG"===c.nodeName&&this.addImage(c);for(var d=c.querySelectorAll("img"),e=0,f=d.length;f>e;e++){var g=d[e];this.addImage(g)}}},e.prototype.addImage=function(a){var b=new i(a);this.images.push(b)},e.prototype.check=function(){function a(a,e){return b.options.debug&&h&&g.log("confirm",a,e),b.progress(a),c++,c===d&&b.complete(),!0}var b=this,c=0,d=this.images.length;if(this.hasAnyBroken=!1,!d)return void this.complete();for(var e=0;d>e;e++){var f=this.images[e];f.on("confirm",a),f.check()}},e.prototype.progress=function(a){this.hasAnyBroken=this.hasAnyBroken||!a.isLoaded;var b=this;setTimeout(function(){b.emit("progress",b,a),b.jqDeferred&&b.jqDeferred.notify(b,a)})},e.prototype.complete=function(){var a=this.hasAnyBroken?"fail":"done";this.isComplete=!0;var b=this;setTimeout(function(){if(b.emit(a,b),b.emit("always",b),b.jqDeferred){var c=b.hasAnyBroken?"reject":"resolve";b.jqDeferred[c](b)}})},f&&(f.fn.imagesLoaded=function(a,b){var c=new e(this,a,b);return c.jqDeferred.promise(f(this))});var j={};return i.prototype=new a,i.prototype.check=function(){var a=j[this.img.src];if(a)return void this.useCached(a);if(j[this.img.src]=this,this.img.complete&&void 0!==this.img.naturalWidth)return void this.confirm(0!==this.img.naturalWidth,"naturalWidth");var b=this.proxyImage=new Image;c.bind(b,"load",this),c.bind(b,"error",this),b.src=this.img.src},i.prototype.useCached=function(a){if(a.isConfirmed)this.confirm(a.isLoaded,"cached was confirmed");else{var b=this;a.on("confirm",function(a){return b.confirm(a.isLoaded,"cache emitted confirmed"),!0})}},i.prototype.confirm=function(a,b){this.isConfirmed=!0,this.isLoaded=a,this.emit("confirm",this,b)},i.prototype.handleEvent=function(a){var b="on"+a.type;this[b]&&this[b](a)},i.prototype.onload=function(){this.confirm(!0,"onload"),this.unbindProxyEvents()},i.prototype.onerror=function(){this.confirm(!1,"onerror"),this.unbindProxyEvents()},i.prototype.unbindProxyEvents=function(){c.unbind(this.proxyImage,"load",this),c.unbind(this.proxyImage,"error",this)},e}var f=a.jQuery,g=a.console,h="undefined"!=typeof g,i=Object.prototype.toString;"function"==typeof define&&define.amd?define(["eventEmitter/EventEmitter","eventie/eventie"],e):a.imagesLoaded=e(a.EventEmitter,a.eventie)}(window);
-//# sourceMappingURL=imagesloaded.pkg.min.map
 /* qTip2 v2.2.1 | Plugins: tips modal viewport svg imagemap ie6 | Styles: core basic css3 | qtip2.com | Licensed MIT | Sun Sep 07 2014 00:09:27 */
 
 !function(a,b,c){!function(a){"use strict";"function"==typeof define&&define.amd?define(["jquery"],a):jQuery&&!jQuery.fn.qtip&&a(jQuery)}(function(d){"use strict";function e(a,b,c,e){this.id=c,this.target=a,this.tooltip=F,this.elements={target:a},this._id=S+"-"+c,this.timers={img:{}},this.options=b,this.plugins={},this.cache={event:{},target:d(),disabled:E,attr:e,onTooltip:E,lastClass:""},this.rendered=this.destroyed=this.disabled=this.waiting=this.hiddenDuringWait=this.positioning=this.triggering=E}function f(a){return a===F||"object"!==d.type(a)}function g(a){return!(d.isFunction(a)||a&&a.attr||a.length||"object"===d.type(a)&&(a.jquery||a.then))}function h(a){var b,c,e,h;return f(a)?E:(f(a.metadata)&&(a.metadata={type:a.metadata}),"content"in a&&(b=a.content,f(b)||b.jquery||b.done?b=a.content={text:c=g(b)?E:b}:c=b.text,"ajax"in b&&(e=b.ajax,h=e&&e.once!==E,delete b.ajax,b.text=function(a,b){var f=c||d(this).attr(b.options.content.attr)||"Loading...",g=d.ajax(d.extend({},e,{context:b})).then(e.success,F,e.error).then(function(a){return a&&h&&b.set("content.text",a),a},function(a,c,d){b.destroyed||0===a.status||b.set("content.text",c+": "+d)});return h?f:(b.set("content.text",f),g)}),"title"in b&&(d.isPlainObject(b.title)&&(b.button=b.title.button,b.title=b.title.text),g(b.title||E)&&(b.title=E))),"position"in a&&f(a.position)&&(a.position={my:a.position,at:a.position}),"show"in a&&f(a.show)&&(a.show=a.show.jquery?{target:a.show}:a.show===D?{ready:D}:{event:a.show}),"hide"in a&&f(a.hide)&&(a.hide=a.hide.jquery?{target:a.hide}:{event:a.hide}),"style"in a&&f(a.style)&&(a.style={classes:a.style}),d.each(R,function(){this.sanitize&&this.sanitize(a)}),a)}function i(a,b){for(var c,d=0,e=a,f=b.split(".");e=e[f[d++]];)d<f.length&&(c=e);return[c||a,f.pop()]}function j(a,b){var c,d,e;for(c in this.checks)for(d in this.checks[c])(e=new RegExp(d,"i").exec(a))&&(b.push(e),("builtin"===c||this.plugins[c])&&this.checks[c][d].apply(this.plugins[c]||this,b))}function k(a){return V.concat("").join(a?"-"+a+" ":" ")}function l(a,b){return b>0?setTimeout(d.proxy(a,this),b):void a.call(this)}function m(a){this.tooltip.hasClass(ab)||(clearTimeout(this.timers.show),clearTimeout(this.timers.hide),this.timers.show=l.call(this,function(){this.toggle(D,a)},this.options.show.delay))}function n(a){if(!this.tooltip.hasClass(ab)&&!this.destroyed){var b=d(a.relatedTarget),c=b.closest(W)[0]===this.tooltip[0],e=b[0]===this.options.show.target[0];if(clearTimeout(this.timers.show),clearTimeout(this.timers.hide),this!==b[0]&&"mouse"===this.options.position.target&&c||this.options.hide.fixed&&/mouse(out|leave|move)/.test(a.type)&&(c||e))try{a.preventDefault(),a.stopImmediatePropagation()}catch(f){}else this.timers.hide=l.call(this,function(){this.toggle(E,a)},this.options.hide.delay,this)}}function o(a){!this.tooltip.hasClass(ab)&&this.options.hide.inactive&&(clearTimeout(this.timers.inactive),this.timers.inactive=l.call(this,function(){this.hide(a)},this.options.hide.inactive))}function p(a){this.rendered&&this.tooltip[0].offsetWidth>0&&this.reposition(a)}function q(a,c,e){d(b.body).delegate(a,(c.split?c:c.join("."+S+" "))+"."+S,function(){var a=y.api[d.attr(this,U)];a&&!a.disabled&&e.apply(a,arguments)})}function r(a,c,f){var g,i,j,k,l,m=d(b.body),n=a[0]===b?m:a,o=a.metadata?a.metadata(f.metadata):F,p="html5"===f.metadata.type&&o?o[f.metadata.name]:F,q=a.data(f.metadata.name||"qtipopts");try{q="string"==typeof q?d.parseJSON(q):q}catch(r){}if(k=d.extend(D,{},y.defaults,f,"object"==typeof q?h(q):F,h(p||o)),i=k.position,k.id=c,"boolean"==typeof k.content.text){if(j=a.attr(k.content.attr),k.content.attr===E||!j)return E;k.content.text=j}if(i.container.length||(i.container=m),i.target===E&&(i.target=n),k.show.target===E&&(k.show.target=n),k.show.solo===D&&(k.show.solo=i.container.closest("body")),k.hide.target===E&&(k.hide.target=n),k.position.viewport===D&&(k.position.viewport=i.container),i.container=i.container.eq(0),i.at=new A(i.at,D),i.my=new A(i.my),a.data(S))if(k.overwrite)a.qtip("destroy",!0);else if(k.overwrite===E)return E;return a.attr(T,c),k.suppress&&(l=a.attr("title"))&&a.removeAttr("title").attr(cb,l).attr("title",""),g=new e(a,k,c,!!j),a.data(S,g),g}function s(a){return a.charAt(0).toUpperCase()+a.slice(1)}function t(a,b){var d,e,f=b.charAt(0).toUpperCase()+b.slice(1),g=(b+" "+rb.join(f+" ")+f).split(" "),h=0;if(qb[b])return a.css(qb[b]);for(;d=g[h++];)if((e=a.css(d))!==c)return qb[b]=d,e}function u(a,b){return Math.ceil(parseFloat(t(a,b)))}function v(a,b){this._ns="tip",this.options=b,this.offset=b.offset,this.size=[b.width,b.height],this.init(this.qtip=a)}function w(a,b){this.options=b,this._ns="-modal",this.init(this.qtip=a)}function x(a){this._ns="ie6",this.init(this.qtip=a)}var y,z,A,B,C,D=!0,E=!1,F=null,G="x",H="y",I="width",J="height",K="top",L="left",M="bottom",N="right",O="center",P="flipinvert",Q="shift",R={},S="qtip",T="data-hasqtip",U="data-qtip-id",V=["ui-widget","ui-tooltip"],W="."+S,X="click dblclick mousedown mouseup mousemove mouseleave mouseenter".split(" "),Y=S+"-fixed",Z=S+"-default",$=S+"-focus",_=S+"-hover",ab=S+"-disabled",bb="_replacedByqTip",cb="oldtitle",db={ie:function(){for(var a=4,c=b.createElement("div");(c.innerHTML="<!--[if gt IE "+a+"]><i></i><![endif]-->")&&c.getElementsByTagName("i")[0];a+=1);return a>4?a:0/0}(),iOS:parseFloat((""+(/CPU.*OS ([0-9_]{1,5})|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent)||[0,""])[1]).replace("undefined","3_2").replace("_",".").replace("_",""))||E};z=e.prototype,z._when=function(a){return d.when.apply(d,a)},z.render=function(a){if(this.rendered||this.destroyed)return this;var b,c=this,e=this.options,f=this.cache,g=this.elements,h=e.content.text,i=e.content.title,j=e.content.button,k=e.position,l=("."+this._id+" ",[]);return d.attr(this.target[0],"aria-describedby",this._id),f.posClass=this._createPosClass((this.position={my:k.my,at:k.at}).my),this.tooltip=g.tooltip=b=d("<div/>",{id:this._id,"class":[S,Z,e.style.classes,f.posClass].join(" "),width:e.style.width||"",height:e.style.height||"",tracking:"mouse"===k.target&&k.adjust.mouse,role:"alert","aria-live":"polite","aria-atomic":E,"aria-describedby":this._id+"-content","aria-hidden":D}).toggleClass(ab,this.disabled).attr(U,this.id).data(S,this).appendTo(k.container).append(g.content=d("<div />",{"class":S+"-content",id:this._id+"-content","aria-atomic":D})),this.rendered=-1,this.positioning=D,i&&(this._createTitle(),d.isFunction(i)||l.push(this._updateTitle(i,E))),j&&this._createButton(),d.isFunction(h)||l.push(this._updateContent(h,E)),this.rendered=D,this._setWidget(),d.each(R,function(a){var b;"render"===this.initialize&&(b=this(c))&&(c.plugins[a]=b)}),this._unassignEvents(),this._assignEvents(),this._when(l).then(function(){c._trigger("render"),c.positioning=E,c.hiddenDuringWait||!e.show.ready&&!a||c.toggle(D,f.event,E),c.hiddenDuringWait=E}),y.api[this.id]=this,this},z.destroy=function(a){function b(){if(!this.destroyed){this.destroyed=D;var a,b=this.target,c=b.attr(cb);this.rendered&&this.tooltip.stop(1,0).find("*").remove().end().remove(),d.each(this.plugins,function(){this.destroy&&this.destroy()});for(a in this.timers)clearTimeout(this.timers[a]);b.removeData(S).removeAttr(U).removeAttr(T).removeAttr("aria-describedby"),this.options.suppress&&c&&b.attr("title",c).removeAttr(cb),this._unassignEvents(),this.options=this.elements=this.cache=this.timers=this.plugins=this.mouse=F,delete y.api[this.id]}}return this.destroyed?this.target:(a===D&&"hide"!==this.triggering||!this.rendered?b.call(this):(this.tooltip.one("tooltiphidden",d.proxy(b,this)),!this.triggering&&this.hide()),this.target)},B=z.checks={builtin:{"^id$":function(a,b,c,e){var f=c===D?y.nextid:c,g=S+"-"+f;f!==E&&f.length>0&&!d("#"+g).length?(this._id=g,this.rendered&&(this.tooltip[0].id=this._id,this.elements.content[0].id=this._id+"-content",this.elements.title[0].id=this._id+"-title")):a[b]=e},"^prerender":function(a,b,c){c&&!this.rendered&&this.render(this.options.show.ready)},"^content.text$":function(a,b,c){this._updateContent(c)},"^content.attr$":function(a,b,c,d){this.options.content.text===this.target.attr(d)&&this._updateContent(this.target.attr(c))},"^content.title$":function(a,b,c){return c?(c&&!this.elements.title&&this._createTitle(),void this._updateTitle(c)):this._removeTitle()},"^content.button$":function(a,b,c){this._updateButton(c)},"^content.title.(text|button)$":function(a,b,c){this.set("content."+b,c)},"^position.(my|at)$":function(a,b,c){"string"==typeof c&&(this.position[b]=a[b]=new A(c,"at"===b))},"^position.container$":function(a,b,c){this.rendered&&this.tooltip.appendTo(c)},"^show.ready$":function(a,b,c){c&&(!this.rendered&&this.render(D)||this.toggle(D))},"^style.classes$":function(a,b,c,d){this.rendered&&this.tooltip.removeClass(d).addClass(c)},"^style.(width|height)":function(a,b,c){this.rendered&&this.tooltip.css(b,c)},"^style.widget|content.title":function(){this.rendered&&this._setWidget()},"^style.def":function(a,b,c){this.rendered&&this.tooltip.toggleClass(Z,!!c)},"^events.(render|show|move|hide|focus|blur)$":function(a,b,c){this.rendered&&this.tooltip[(d.isFunction(c)?"":"un")+"bind"]("tooltip"+b,c)},"^(show|hide|position).(event|target|fixed|inactive|leave|distance|viewport|adjust)":function(){if(this.rendered){var a=this.options.position;this.tooltip.attr("tracking","mouse"===a.target&&a.adjust.mouse),this._unassignEvents(),this._assignEvents()}}}},z.get=function(a){if(this.destroyed)return this;var b=i(this.options,a.toLowerCase()),c=b[0][b[1]];return c.precedance?c.string():c};var eb=/^position\.(my|at|adjust|target|container|viewport)|style|content|show\.ready/i,fb=/^prerender|show\.ready/i;z.set=function(a,b){if(this.destroyed)return this;{var c,e=this.rendered,f=E,g=this.options;this.checks}return"string"==typeof a?(c=a,a={},a[c]=b):a=d.extend({},a),d.each(a,function(b,c){if(e&&fb.test(b))return void delete a[b];var h,j=i(g,b.toLowerCase());h=j[0][j[1]],j[0][j[1]]=c&&c.nodeType?d(c):c,f=eb.test(b)||f,a[b]=[j[0],j[1],c,h]}),h(g),this.positioning=D,d.each(a,d.proxy(j,this)),this.positioning=E,this.rendered&&this.tooltip[0].offsetWidth>0&&f&&this.reposition("mouse"===g.position.target?F:this.cache.event),this},z._update=function(a,b){var c=this,e=this.cache;return this.rendered&&a?(d.isFunction(a)&&(a=a.call(this.elements.target,e.event,this)||""),d.isFunction(a.then)?(e.waiting=D,a.then(function(a){return e.waiting=E,c._update(a,b)},F,function(a){return c._update(a,b)})):a===E||!a&&""!==a?E:(a.jquery&&a.length>0?b.empty().append(a.css({display:"block",visibility:"visible"})):b.html(a),this._waitForContent(b).then(function(a){c.rendered&&c.tooltip[0].offsetWidth>0&&c.reposition(e.event,!a.length)}))):E},z._waitForContent=function(a){var b=this.cache;return b.waiting=D,(d.fn.imagesLoaded?a.imagesLoaded():d.Deferred().resolve([])).done(function(){b.waiting=E}).promise()},z._updateContent=function(a,b){this._update(a,this.elements.content,b)},z._updateTitle=function(a,b){this._update(a,this.elements.title,b)===E&&this._removeTitle(E)},z._createTitle=function(){var a=this.elements,b=this._id+"-title";a.titlebar&&this._removeTitle(),a.titlebar=d("<div />",{"class":S+"-titlebar "+(this.options.style.widget?k("header"):"")}).append(a.title=d("<div />",{id:b,"class":S+"-title","aria-atomic":D})).insertBefore(a.content).delegate(".qtip-close","mousedown keydown mouseup keyup mouseout",function(a){d(this).toggleClass("ui-state-active ui-state-focus","down"===a.type.substr(-4))}).delegate(".qtip-close","mouseover mouseout",function(a){d(this).toggleClass("ui-state-hover","mouseover"===a.type)}),this.options.content.button&&this._createButton()},z._removeTitle=function(a){var b=this.elements;b.title&&(b.titlebar.remove(),b.titlebar=b.title=b.button=F,a!==E&&this.reposition())},z._createPosClass=function(a){return S+"-pos-"+(a||this.options.position.my).abbrev()},z.reposition=function(c,e){if(!this.rendered||this.positioning||this.destroyed)return this;this.positioning=D;var f,g,h,i,j=this.cache,k=this.tooltip,l=this.options.position,m=l.target,n=l.my,o=l.at,p=l.viewport,q=l.container,r=l.adjust,s=r.method.split(" "),t=k.outerWidth(E),u=k.outerHeight(E),v=0,w=0,x=k.css("position"),y={left:0,top:0},z=k[0].offsetWidth>0,A=c&&"scroll"===c.type,B=d(a),C=q[0].ownerDocument,F=this.mouse;if(d.isArray(m)&&2===m.length)o={x:L,y:K},y={left:m[0],top:m[1]};else if("mouse"===m)o={x:L,y:K},(!r.mouse||this.options.hide.distance)&&j.origin&&j.origin.pageX?c=j.origin:!c||c&&("resize"===c.type||"scroll"===c.type)?c=j.event:F&&F.pageX&&(c=F),"static"!==x&&(y=q.offset()),C.body.offsetWidth!==(a.innerWidth||C.documentElement.clientWidth)&&(g=d(b.body).offset()),y={left:c.pageX-y.left+(g&&g.left||0),top:c.pageY-y.top+(g&&g.top||0)},r.mouse&&A&&F&&(y.left-=(F.scrollX||0)-B.scrollLeft(),y.top-=(F.scrollY||0)-B.scrollTop());else{if("event"===m?c&&c.target&&"scroll"!==c.type&&"resize"!==c.type?j.target=d(c.target):c.target||(j.target=this.elements.target):"event"!==m&&(j.target=d(m.jquery?m:this.elements.target)),m=j.target,m=d(m).eq(0),0===m.length)return this;m[0]===b||m[0]===a?(v=db.iOS?a.innerWidth:m.width(),w=db.iOS?a.innerHeight:m.height(),m[0]===a&&(y={top:(p||m).scrollTop(),left:(p||m).scrollLeft()})):R.imagemap&&m.is("area")?f=R.imagemap(this,m,o,R.viewport?s:E):R.svg&&m&&m[0].ownerSVGElement?f=R.svg(this,m,o,R.viewport?s:E):(v=m.outerWidth(E),w=m.outerHeight(E),y=m.offset()),f&&(v=f.width,w=f.height,g=f.offset,y=f.position),y=this.reposition.offset(m,y,q),(db.iOS>3.1&&db.iOS<4.1||db.iOS>=4.3&&db.iOS<4.33||!db.iOS&&"fixed"===x)&&(y.left-=B.scrollLeft(),y.top-=B.scrollTop()),(!f||f&&f.adjustable!==E)&&(y.left+=o.x===N?v:o.x===O?v/2:0,y.top+=o.y===M?w:o.y===O?w/2:0)}return y.left+=r.x+(n.x===N?-t:n.x===O?-t/2:0),y.top+=r.y+(n.y===M?-u:n.y===O?-u/2:0),R.viewport?(h=y.adjusted=R.viewport(this,y,l,v,w,t,u),g&&h.left&&(y.left+=g.left),g&&h.top&&(y.top+=g.top),h.my&&(this.position.my=h.my)):y.adjusted={left:0,top:0},j.posClass!==(i=this._createPosClass(this.position.my))&&k.removeClass(j.posClass).addClass(j.posClass=i),this._trigger("move",[y,p.elem||p],c)?(delete y.adjusted,e===E||!z||isNaN(y.left)||isNaN(y.top)||"mouse"===m||!d.isFunction(l.effect)?k.css(y):d.isFunction(l.effect)&&(l.effect.call(k,this,d.extend({},y)),k.queue(function(a){d(this).css({opacity:"",height:""}),db.ie&&this.style.removeAttribute("filter"),a()})),this.positioning=E,this):this},z.reposition.offset=function(a,c,e){function f(a,b){c.left+=b*a.scrollLeft(),c.top+=b*a.scrollTop()}if(!e[0])return c;var g,h,i,j,k=d(a[0].ownerDocument),l=!!db.ie&&"CSS1Compat"!==b.compatMode,m=e[0];do"static"!==(h=d.css(m,"position"))&&("fixed"===h?(i=m.getBoundingClientRect(),f(k,-1)):(i=d(m).position(),i.left+=parseFloat(d.css(m,"borderLeftWidth"))||0,i.top+=parseFloat(d.css(m,"borderTopWidth"))||0),c.left-=i.left+(parseFloat(d.css(m,"marginLeft"))||0),c.top-=i.top+(parseFloat(d.css(m,"marginTop"))||0),g||"hidden"===(j=d.css(m,"overflow"))||"visible"===j||(g=d(m)));while(m=m.offsetParent);return g&&(g[0]!==k[0]||l)&&f(g,1),c};var gb=(A=z.reposition.Corner=function(a,b){a=(""+a).replace(/([A-Z])/," $1").replace(/middle/gi,O).toLowerCase(),this.x=(a.match(/left|right/i)||a.match(/center/)||["inherit"])[0].toLowerCase(),this.y=(a.match(/top|bottom|center/i)||["inherit"])[0].toLowerCase(),this.forceY=!!b;var c=a.charAt(0);this.precedance="t"===c||"b"===c?H:G}).prototype;gb.invert=function(a,b){this[a]=this[a]===L?N:this[a]===N?L:b||this[a]},gb.string=function(a){var b=this.x,c=this.y,d=b!==c?"center"===b||"center"!==c&&(this.precedance===H||this.forceY)?[c,b]:[b,c]:[b];return a!==!1?d.join(" "):d},gb.abbrev=function(){var a=this.string(!1);return a[0].charAt(0)+(a[1]&&a[1].charAt(0)||"")},gb.clone=function(){return new A(this.string(),this.forceY)},z.toggle=function(a,c){var e=this.cache,f=this.options,g=this.tooltip;if(c){if(/over|enter/.test(c.type)&&e.event&&/out|leave/.test(e.event.type)&&f.show.target.add(c.target).length===f.show.target.length&&g.has(c.relatedTarget).length)return this;e.event=d.event.fix(c)}if(this.waiting&&!a&&(this.hiddenDuringWait=D),!this.rendered)return a?this.render(1):this;if(this.destroyed||this.disabled)return this;var h,i,j,k=a?"show":"hide",l=this.options[k],m=(this.options[a?"hide":"show"],this.options.position),n=this.options.content,o=this.tooltip.css("width"),p=this.tooltip.is(":visible"),q=a||1===l.target.length,r=!c||l.target.length<2||e.target[0]===c.target;return(typeof a).search("boolean|number")&&(a=!p),h=!g.is(":animated")&&p===a&&r,i=h?F:!!this._trigger(k,[90]),this.destroyed?this:(i!==E&&a&&this.focus(c),!i||h?this:(d.attr(g[0],"aria-hidden",!a),a?(this.mouse&&(e.origin=d.event.fix(this.mouse)),d.isFunction(n.text)&&this._updateContent(n.text,E),d.isFunction(n.title)&&this._updateTitle(n.title,E),!C&&"mouse"===m.target&&m.adjust.mouse&&(d(b).bind("mousemove."+S,this._storeMouse),C=D),o||g.css("width",g.outerWidth(E)),this.reposition(c,arguments[2]),o||g.css("width",""),l.solo&&("string"==typeof l.solo?d(l.solo):d(W,l.solo)).not(g).not(l.target).qtip("hide",d.Event("tooltipsolo"))):(clearTimeout(this.timers.show),delete e.origin,C&&!d(W+'[tracking="true"]:visible',l.solo).not(g).length&&(d(b).unbind("mousemove."+S),C=E),this.blur(c)),j=d.proxy(function(){a?(db.ie&&g[0].style.removeAttribute("filter"),g.css("overflow",""),"string"==typeof l.autofocus&&d(this.options.show.autofocus,g).focus(),this.options.show.target.trigger("qtip-"+this.id+"-inactive")):g.css({display:"",visibility:"",opacity:"",left:"",top:""}),this._trigger(a?"visible":"hidden")},this),l.effect===E||q===E?(g[k](),j()):d.isFunction(l.effect)?(g.stop(1,1),l.effect.call(g,this),g.queue("fx",function(a){j(),a()})):g.fadeTo(90,a?1:0,j),a&&l.target.trigger("qtip-"+this.id+"-inactive"),this))},z.show=function(a){return this.toggle(D,a)},z.hide=function(a){return this.toggle(E,a)},z.focus=function(a){if(!this.rendered||this.destroyed)return this;var b=d(W),c=this.tooltip,e=parseInt(c[0].style.zIndex,10),f=y.zindex+b.length;return c.hasClass($)||this._trigger("focus",[f],a)&&(e!==f&&(b.each(function(){this.style.zIndex>e&&(this.style.zIndex=this.style.zIndex-1)}),b.filter("."+$).qtip("blur",a)),c.addClass($)[0].style.zIndex=f),this},z.blur=function(a){return!this.rendered||this.destroyed?this:(this.tooltip.removeClass($),this._trigger("blur",[this.tooltip.css("zIndex")],a),this)},z.disable=function(a){return this.destroyed?this:("toggle"===a?a=!(this.rendered?this.tooltip.hasClass(ab):this.disabled):"boolean"!=typeof a&&(a=D),this.rendered&&this.tooltip.toggleClass(ab,a).attr("aria-disabled",a),this.disabled=!!a,this)},z.enable=function(){return this.disable(E)},z._createButton=function(){var a=this,b=this.elements,c=b.tooltip,e=this.options.content.button,f="string"==typeof e,g=f?e:"Close tooltip";b.button&&b.button.remove(),b.button=e.jquery?e:d("<a />",{"class":"qtip-close "+(this.options.style.widget?"":S+"-icon"),title:g,"aria-label":g}).prepend(d("<span />",{"class":"ui-icon ui-icon-close",html:"&times;"})),b.button.appendTo(b.titlebar||c).attr("role","button").click(function(b){return c.hasClass(ab)||a.hide(b),E})},z._updateButton=function(a){if(!this.rendered)return E;var b=this.elements.button;a?this._createButton():b.remove()},z._setWidget=function(){var a=this.options.style.widget,b=this.elements,c=b.tooltip,d=c.hasClass(ab);c.removeClass(ab),ab=a?"ui-state-disabled":"qtip-disabled",c.toggleClass(ab,d),c.toggleClass("ui-helper-reset "+k(),a).toggleClass(Z,this.options.style.def&&!a),b.content&&b.content.toggleClass(k("content"),a),b.titlebar&&b.titlebar.toggleClass(k("header"),a),b.button&&b.button.toggleClass(S+"-icon",!a)},z._storeMouse=function(a){return(this.mouse=d.event.fix(a)).type="mousemove",this},z._bind=function(a,b,c,e,f){if(a&&c&&b.length){var g="."+this._id+(e?"-"+e:"");return d(a).bind((b.split?b:b.join(g+" "))+g,d.proxy(c,f||this)),this}},z._unbind=function(a,b){return a&&d(a).unbind("."+this._id+(b?"-"+b:"")),this},z._trigger=function(a,b,c){var e=d.Event("tooltip"+a);return e.originalEvent=c&&d.extend({},c)||this.cache.event||F,this.triggering=a,this.tooltip.trigger(e,[this].concat(b||[])),this.triggering=E,!e.isDefaultPrevented()},z._bindEvents=function(a,b,c,e,f,g){var h=c.filter(e).add(e.filter(c)),i=[];h.length&&(d.each(b,function(b,c){var e=d.inArray(c,a);e>-1&&i.push(a.splice(e,1)[0])}),i.length&&(this._bind(h,i,function(a){var b=this.rendered?this.tooltip[0].offsetWidth>0:!1;(b?g:f).call(this,a)}),c=c.not(h),e=e.not(h))),this._bind(c,a,f),this._bind(e,b,g)},z._assignInitialEvents=function(a){function b(a){return this.disabled||this.destroyed?E:(this.cache.event=a&&d.event.fix(a),this.cache.target=a&&d(a.target),clearTimeout(this.timers.show),void(this.timers.show=l.call(this,function(){this.render("object"==typeof a||c.show.ready)},c.prerender?0:c.show.delay)))}var c=this.options,e=c.show.target,f=c.hide.target,g=c.show.event?d.trim(""+c.show.event).split(" "):[],h=c.hide.event?d.trim(""+c.hide.event).split(" "):[];this._bind(this.elements.target,["remove","removeqtip"],function(){this.destroy(!0)},"destroy"),/mouse(over|enter)/i.test(c.show.event)&&!/mouse(out|leave)/i.test(c.hide.event)&&h.push("mouseleave"),this._bind(e,"mousemove",function(a){this._storeMouse(a),this.cache.onTarget=D}),this._bindEvents(g,h,e,f,b,function(){return this.timers?void clearTimeout(this.timers.show):E}),(c.show.ready||c.prerender)&&b.call(this,a)},z._assignEvents=function(){var c=this,e=this.options,f=e.position,g=this.tooltip,h=e.show.target,i=e.hide.target,j=f.container,k=f.viewport,l=d(b),q=(d(b.body),d(a)),r=e.show.event?d.trim(""+e.show.event).split(" "):[],s=e.hide.event?d.trim(""+e.hide.event).split(" "):[];d.each(e.events,function(a,b){c._bind(g,"toggle"===a?["tooltipshow","tooltiphide"]:["tooltip"+a],b,null,g)}),/mouse(out|leave)/i.test(e.hide.event)&&"window"===e.hide.leave&&this._bind(l,["mouseout","blur"],function(a){/select|option/.test(a.target.nodeName)||a.relatedTarget||this.hide(a)}),e.hide.fixed?i=i.add(g.addClass(Y)):/mouse(over|enter)/i.test(e.show.event)&&this._bind(i,"mouseleave",function(){clearTimeout(this.timers.show)}),(""+e.hide.event).indexOf("unfocus")>-1&&this._bind(j.closest("html"),["mousedown","touchstart"],function(a){var b=d(a.target),c=this.rendered&&!this.tooltip.hasClass(ab)&&this.tooltip[0].offsetWidth>0,e=b.parents(W).filter(this.tooltip[0]).length>0;b[0]===this.target[0]||b[0]===this.tooltip[0]||e||this.target.has(b[0]).length||!c||this.hide(a)}),"number"==typeof e.hide.inactive&&(this._bind(h,"qtip-"+this.id+"-inactive",o,"inactive"),this._bind(i.add(g),y.inactiveEvents,o)),this._bindEvents(r,s,h,i,m,n),this._bind(h.add(g),"mousemove",function(a){if("number"==typeof e.hide.distance){var b=this.cache.origin||{},c=this.options.hide.distance,d=Math.abs;(d(a.pageX-b.pageX)>=c||d(a.pageY-b.pageY)>=c)&&this.hide(a)}this._storeMouse(a)}),"mouse"===f.target&&f.adjust.mouse&&(e.hide.event&&this._bind(h,["mouseenter","mouseleave"],function(a){return this.cache?void(this.cache.onTarget="mouseenter"===a.type):E}),this._bind(l,"mousemove",function(a){this.rendered&&this.cache.onTarget&&!this.tooltip.hasClass(ab)&&this.tooltip[0].offsetWidth>0&&this.reposition(a)})),(f.adjust.resize||k.length)&&this._bind(d.event.special.resize?k:q,"resize",p),f.adjust.scroll&&this._bind(q.add(f.container),"scroll",p)},z._unassignEvents=function(){var c=this.options,e=c.show.target,f=c.hide.target,g=d.grep([this.elements.target[0],this.rendered&&this.tooltip[0],c.position.container[0],c.position.viewport[0],c.position.container.closest("html")[0],a,b],function(a){return"object"==typeof a});e&&e.toArray&&(g=g.concat(e.toArray())),f&&f.toArray&&(g=g.concat(f.toArray())),this._unbind(g)._unbind(g,"destroy")._unbind(g,"inactive")},d(function(){q(W,["mouseenter","mouseleave"],function(a){var b="mouseenter"===a.type,c=d(a.currentTarget),e=d(a.relatedTarget||a.target),f=this.options;b?(this.focus(a),c.hasClass(Y)&&!c.hasClass(ab)&&clearTimeout(this.timers.hide)):"mouse"===f.position.target&&f.position.adjust.mouse&&f.hide.event&&f.show.target&&!e.closest(f.show.target[0]).length&&this.hide(a),c.toggleClass(_,b)}),q("["+U+"]",X,o)}),y=d.fn.qtip=function(a,b,e){var f=(""+a).toLowerCase(),g=F,i=d.makeArray(arguments).slice(1),j=i[i.length-1],k=this[0]?d.data(this[0],S):F;return!arguments.length&&k||"api"===f?k:"string"==typeof a?(this.each(function(){var a=d.data(this,S);if(!a)return D;if(j&&j.timeStamp&&(a.cache.event=j),!b||"option"!==f&&"options"!==f)a[f]&&a[f].apply(a,i);else{if(e===c&&!d.isPlainObject(b))return g=a.get(b),E;a.set(b,e)}}),g!==F?g:this):"object"!=typeof a&&arguments.length?void 0:(k=h(d.extend(D,{},a)),this.each(function(a){var b,c;return c=d.isArray(k.id)?k.id[a]:k.id,c=!c||c===E||c.length<1||y.api[c]?y.nextid++:c,b=r(d(this),c,k),b===E?D:(y.api[c]=b,d.each(R,function(){"initialize"===this.initialize&&this(b)}),void b._assignInitialEvents(j))}))},d.qtip=e,y.api={},d.each({attr:function(a,b){if(this.length){var c=this[0],e="title",f=d.data(c,"qtip");if(a===e&&f&&"object"==typeof f&&f.options.suppress)return arguments.length<2?d.attr(c,cb):(f&&f.options.content.attr===e&&f.cache.attr&&f.set("content.text",b),this.attr(cb,b))}return d.fn["attr"+bb].apply(this,arguments)},clone:function(a){var b=(d([]),d.fn["clone"+bb].apply(this,arguments));return a||b.filter("["+cb+"]").attr("title",function(){return d.attr(this,cb)}).removeAttr(cb),b}},function(a,b){if(!b||d.fn[a+bb])return D;var c=d.fn[a+bb]=d.fn[a];d.fn[a]=function(){return b.apply(this,arguments)||c.apply(this,arguments)}}),d.ui||(d["cleanData"+bb]=d.cleanData,d.cleanData=function(a){for(var b,c=0;(b=d(a[c])).length;c++)if(b.attr(T))try{b.triggerHandler("removeqtip")}catch(e){}d["cleanData"+bb].apply(this,arguments)}),y.version="2.2.1",y.nextid=0,y.inactiveEvents=X,y.zindex=15e3,y.defaults={prerender:E,id:E,overwrite:D,suppress:D,content:{text:D,attr:"title",title:E,button:E},position:{my:"top left",at:"bottom right",target:E,container:E,viewport:E,adjust:{x:0,y:0,mouse:D,scroll:D,resize:D,method:"flipinvert flipinvert"},effect:function(a,b){d(this).animate(b,{duration:200,queue:E})}},show:{target:E,event:"mouseenter",effect:D,delay:90,solo:E,ready:E,autofocus:E},hide:{target:E,event:"mouseleave",effect:D,delay:0,fixed:E,inactive:E,leave:"window",distance:E},style:{classes:"",widget:E,width:E,height:E,def:D},events:{render:F,move:F,show:F,hide:F,toggle:F,visible:F,hidden:F,focus:F,blur:F}};var hb,ib="margin",jb="border",kb="color",lb="background-color",mb="transparent",nb=" !important",ob=!!b.createElement("canvas").getContext,pb=/rgba?\(0, 0, 0(, 0)?\)|transparent|#123456/i,qb={},rb=["Webkit","O","Moz","ms"];if(ob)var sb=a.devicePixelRatio||1,tb=function(){var a=b.createElement("canvas").getContext("2d");return a.backingStorePixelRatio||a.webkitBackingStorePixelRatio||a.mozBackingStorePixelRatio||a.msBackingStorePixelRatio||a.oBackingStorePixelRatio||1}(),ub=sb/tb;else var vb=function(a,b,c){return"<qtipvml:"+a+' xmlns="urn:schemas-microsoft.com:vml" class="qtip-vml" '+(b||"")+' style="behavior: url(#default#VML); '+(c||"")+'" />'};d.extend(v.prototype,{init:function(a){var b,c;c=this.element=a.elements.tip=d("<div />",{"class":S+"-tip"}).prependTo(a.tooltip),ob?(b=d("<canvas />").appendTo(this.element)[0].getContext("2d"),b.lineJoin="miter",b.miterLimit=1e5,b.save()):(b=vb("shape",'coordorigin="0,0"',"position:absolute;"),this.element.html(b+b),a._bind(d("*",c).add(c),["click","mousedown"],function(a){a.stopPropagation()},this._ns)),a._bind(a.tooltip,"tooltipmove",this.reposition,this._ns,this),this.create()},_swapDimensions:function(){this.size[0]=this.options.height,this.size[1]=this.options.width},_resetDimensions:function(){this.size[0]=this.options.width,this.size[1]=this.options.height},_useTitle:function(a){var b=this.qtip.elements.titlebar;return b&&(a.y===K||a.y===O&&this.element.position().top+this.size[1]/2+this.options.offset<b.outerHeight(D))},_parseCorner:function(a){var b=this.qtip.options.position.my;return a===E||b===E?a=E:a===D?a=new A(b.string()):a.string||(a=new A(a),a.fixed=D),a},_parseWidth:function(a,b,c){var d=this.qtip.elements,e=jb+s(b)+"Width";return(c?u(c,e):u(d.content,e)||u(this._useTitle(a)&&d.titlebar||d.content,e)||u(d.tooltip,e))||0},_parseRadius:function(a){var b=this.qtip.elements,c=jb+s(a.y)+s(a.x)+"Radius";return db.ie<9?0:u(this._useTitle(a)&&b.titlebar||b.content,c)||u(b.tooltip,c)||0},_invalidColour:function(a,b,c){var d=a.css(b);return!d||c&&d===a.css(c)||pb.test(d)?E:d},_parseColours:function(a){var b=this.qtip.elements,c=this.element.css("cssText",""),e=jb+s(a[a.precedance])+s(kb),f=this._useTitle(a)&&b.titlebar||b.content,g=this._invalidColour,h=[];return h[0]=g(c,lb)||g(f,lb)||g(b.content,lb)||g(b.tooltip,lb)||c.css(lb),h[1]=g(c,e,kb)||g(f,e,kb)||g(b.content,e,kb)||g(b.tooltip,e,kb)||b.tooltip.css(e),d("*",c).add(c).css("cssText",lb+":"+mb+nb+";"+jb+":0"+nb+";"),h},_calculateSize:function(a){var b,c,d,e=a.precedance===H,f=this.options.width,g=this.options.height,h="c"===a.abbrev(),i=(e?f:g)*(h?.5:1),j=Math.pow,k=Math.round,l=Math.sqrt(j(i,2)+j(g,2)),m=[this.border/i*l,this.border/g*l];return m[2]=Math.sqrt(j(m[0],2)-j(this.border,2)),m[3]=Math.sqrt(j(m[1],2)-j(this.border,2)),b=l+m[2]+m[3]+(h?0:m[0]),c=b/l,d=[k(c*f),k(c*g)],e?d:d.reverse()},_calculateTip:function(a,b,c){c=c||1,b=b||this.size;var d=b[0]*c,e=b[1]*c,f=Math.ceil(d/2),g=Math.ceil(e/2),h={br:[0,0,d,e,d,0],bl:[0,0,d,0,0,e],tr:[0,e,d,0,d,e],tl:[0,0,0,e,d,e],tc:[0,e,f,0,d,e],bc:[0,0,d,0,f,e],rc:[0,0,d,g,0,e],lc:[d,0,d,e,0,g]};return h.lt=h.br,h.rt=h.bl,h.lb=h.tr,h.rb=h.tl,h[a.abbrev()]},_drawCoords:function(a,b){a.beginPath(),a.moveTo(b[0],b[1]),a.lineTo(b[2],b[3]),a.lineTo(b[4],b[5]),a.closePath()},create:function(){var a=this.corner=(ob||db.ie)&&this._parseCorner(this.options.corner);return(this.enabled=!!this.corner&&"c"!==this.corner.abbrev())&&(this.qtip.cache.corner=a.clone(),this.update()),this.element.toggle(this.enabled),this.corner},update:function(b,c){if(!this.enabled)return this;var e,f,g,h,i,j,k,l,m=this.qtip.elements,n=this.element,o=n.children(),p=this.options,q=this.size,r=p.mimic,s=Math.round;b||(b=this.qtip.cache.corner||this.corner),r===E?r=b:(r=new A(r),r.precedance=b.precedance,"inherit"===r.x?r.x=b.x:"inherit"===r.y?r.y=b.y:r.x===r.y&&(r[b.precedance]=b[b.precedance])),f=r.precedance,b.precedance===G?this._swapDimensions():this._resetDimensions(),e=this.color=this._parseColours(b),e[1]!==mb?(l=this.border=this._parseWidth(b,b[b.precedance]),p.border&&1>l&&!pb.test(e[1])&&(e[0]=e[1]),this.border=l=p.border!==D?p.border:l):this.border=l=0,k=this.size=this._calculateSize(b),n.css({width:k[0],height:k[1],lineHeight:k[1]+"px"}),j=b.precedance===H?[s(r.x===L?l:r.x===N?k[0]-q[0]-l:(k[0]-q[0])/2),s(r.y===K?k[1]-q[1]:0)]:[s(r.x===L?k[0]-q[0]:0),s(r.y===K?l:r.y===M?k[1]-q[1]-l:(k[1]-q[1])/2)],ob?(g=o[0].getContext("2d"),g.restore(),g.save(),g.clearRect(0,0,6e3,6e3),h=this._calculateTip(r,q,ub),i=this._calculateTip(r,this.size,ub),o.attr(I,k[0]*ub).attr(J,k[1]*ub),o.css(I,k[0]).css(J,k[1]),this._drawCoords(g,i),g.fillStyle=e[1],g.fill(),g.translate(j[0]*ub,j[1]*ub),this._drawCoords(g,h),g.fillStyle=e[0],g.fill()):(h=this._calculateTip(r),h="m"+h[0]+","+h[1]+" l"+h[2]+","+h[3]+" "+h[4]+","+h[5]+" xe",j[2]=l&&/^(r|b)/i.test(b.string())?8===db.ie?2:1:0,o.css({coordsize:k[0]+l+" "+(k[1]+l),antialias:""+(r.string().indexOf(O)>-1),left:j[0]-j[2]*Number(f===G),top:j[1]-j[2]*Number(f===H),width:k[0]+l,height:k[1]+l}).each(function(a){var b=d(this);b[b.prop?"prop":"attr"]({coordsize:k[0]+l+" "+(k[1]+l),path:h,fillcolor:e[0],filled:!!a,stroked:!a}).toggle(!(!l&&!a)),!a&&b.html(vb("stroke",'weight="'+2*l+'px" color="'+e[1]+'" miterlimit="1000" joinstyle="miter"'))})),a.opera&&setTimeout(function(){m.tip.css({display:"inline-block",visibility:"visible"})},1),c!==E&&this.calculate(b,k)},calculate:function(a,b){if(!this.enabled)return E;var c,e,f=this,g=this.qtip.elements,h=this.element,i=this.options.offset,j=(g.tooltip.hasClass("ui-widget"),{});return a=a||this.corner,c=a.precedance,b=b||this._calculateSize(a),e=[a.x,a.y],c===G&&e.reverse(),d.each(e,function(d,e){var h,k,l;
 e===O?(h=c===H?L:K,j[h]="50%",j[ib+"-"+h]=-Math.round(b[c===H?0:1]/2)+i):(h=f._parseWidth(a,e,g.tooltip),k=f._parseWidth(a,e,g.content),l=f._parseRadius(a),j[e]=Math.max(-f.border,d?k:i+(l>h?l:-h)))}),j[a[c]]-=b[c===G?0:1],h.css({margin:"",top:"",bottom:"",left:"",right:""}).css(j),j},reposition:function(a,b,d){function e(a,b,c,d,e){a===Q&&j.precedance===b&&k[d]&&j[c]!==O?j.precedance=j.precedance===G?H:G:a!==Q&&k[d]&&(j[b]=j[b]===O?k[d]>0?d:e:j[b]===d?e:d)}function f(a,b,e){j[a]===O?p[ib+"-"+b]=o[a]=g[ib+"-"+b]-k[b]:(h=g[e]!==c?[k[b],-g[b]]:[-k[b],g[b]],(o[a]=Math.max(h[0],h[1]))>h[0]&&(d[b]-=k[b],o[b]=E),p[g[e]!==c?e:b]=o[a])}if(this.enabled){var g,h,i=b.cache,j=this.corner.clone(),k=d.adjusted,l=b.options.position.adjust.method.split(" "),m=l[0],n=l[1]||l[0],o={left:E,top:E,x:0,y:0},p={};this.corner.fixed!==D&&(e(m,G,H,L,N),e(n,H,G,K,M),(j.string()!==i.corner.string()||i.cornerTop!==k.top||i.cornerLeft!==k.left)&&this.update(j,E)),g=this.calculate(j),g.right!==c&&(g.left=-g.right),g.bottom!==c&&(g.top=-g.bottom),g.user=this.offset,(o.left=m===Q&&!!k.left)&&f(G,L,N),(o.top=n===Q&&!!k.top)&&f(H,K,M),this.element.css(p).toggle(!(o.x&&o.y||j.x===O&&o.y||j.y===O&&o.x)),d.left-=g.left.charAt?g.user:m!==Q||o.top||!o.left&&!o.top?g.left+this.border:0,d.top-=g.top.charAt?g.user:n!==Q||o.left||!o.left&&!o.top?g.top+this.border:0,i.cornerLeft=k.left,i.cornerTop=k.top,i.corner=j.clone()}},destroy:function(){this.qtip._unbind(this.qtip.tooltip,this._ns),this.qtip.elements.tip&&this.qtip.elements.tip.find("*").remove().end().remove()}}),hb=R.tip=function(a){return new v(a,a.options.style.tip)},hb.initialize="render",hb.sanitize=function(a){if(a.style&&"tip"in a.style){var b=a.style.tip;"object"!=typeof b&&(b=a.style.tip={corner:b}),/string|boolean/i.test(typeof b.corner)||(b.corner=D)}},B.tip={"^position.my|style.tip.(corner|mimic|border)$":function(){this.create(),this.qtip.reposition()},"^style.tip.(height|width)$":function(a){this.size=[a.width,a.height],this.update(),this.qtip.reposition()},"^content.title|style.(classes|widget)$":function(){this.update()}},d.extend(D,y.defaults,{style:{tip:{corner:D,mimic:E,width:6,height:6,border:D,offset:0}}});var wb,xb,yb="qtip-modal",zb="."+yb;xb=function(){function a(a){if(d.expr[":"].focusable)return d.expr[":"].focusable;var b,c,e,f=!isNaN(d.attr(a,"tabindex")),g=a.nodeName&&a.nodeName.toLowerCase();return"area"===g?(b=a.parentNode,c=b.name,a.href&&c&&"map"===b.nodeName.toLowerCase()?(e=d("img[usemap=#"+c+"]")[0],!!e&&e.is(":visible")):!1):/input|select|textarea|button|object/.test(g)?!a.disabled:"a"===g?a.href||f:f}function c(a){k.length<1&&a.length?a.not("body").blur():k.first().focus()}function e(a){if(i.is(":visible")){var b,e=d(a.target),h=f.tooltip,j=e.closest(W);b=j.length<1?E:parseInt(j[0].style.zIndex,10)>parseInt(h[0].style.zIndex,10),b||e.closest(W)[0]===h[0]||c(e),g=a.target===k[k.length-1]}}var f,g,h,i,j=this,k={};d.extend(j,{init:function(){return i=j.elem=d("<div />",{id:"qtip-overlay",html:"<div></div>",mousedown:function(){return E}}).hide(),d(b.body).bind("focusin"+zb,e),d(b).bind("keydown"+zb,function(a){f&&f.options.show.modal.escape&&27===a.keyCode&&f.hide(a)}),i.bind("click"+zb,function(a){f&&f.options.show.modal.blur&&f.hide(a)}),j},update:function(b){f=b,k=b.options.show.modal.stealfocus!==E?b.tooltip.find("*").filter(function(){return a(this)}):[]},toggle:function(a,e,g){var k=(d(b.body),a.tooltip),l=a.options.show.modal,m=l.effect,n=e?"show":"hide",o=i.is(":visible"),p=d(zb).filter(":visible:not(:animated)").not(k);return j.update(a),e&&l.stealfocus!==E&&c(d(":focus")),i.toggleClass("blurs",l.blur),e&&i.appendTo(b.body),i.is(":animated")&&o===e&&h!==E||!e&&p.length?j:(i.stop(D,E),d.isFunction(m)?m.call(i,e):m===E?i[n]():i.fadeTo(parseInt(g,10)||90,e?1:0,function(){e||i.hide()}),e||i.queue(function(a){i.css({left:"",top:""}),d(zb).length||i.detach(),a()}),h=e,f.destroyed&&(f=F),j)}}),j.init()},xb=new xb,d.extend(w.prototype,{init:function(a){var b=a.tooltip;return this.options.on?(a.elements.overlay=xb.elem,b.addClass(yb).css("z-index",y.modal_zindex+d(zb).length),a._bind(b,["tooltipshow","tooltiphide"],function(a,c,e){var f=a.originalEvent;if(a.target===b[0])if(f&&"tooltiphide"===a.type&&/mouse(leave|enter)/.test(f.type)&&d(f.relatedTarget).closest(xb.elem[0]).length)try{a.preventDefault()}catch(g){}else(!f||f&&"tooltipsolo"!==f.type)&&this.toggle(a,"tooltipshow"===a.type,e)},this._ns,this),a._bind(b,"tooltipfocus",function(a,c){if(!a.isDefaultPrevented()&&a.target===b[0]){var e=d(zb),f=y.modal_zindex+e.length,g=parseInt(b[0].style.zIndex,10);xb.elem[0].style.zIndex=f-1,e.each(function(){this.style.zIndex>g&&(this.style.zIndex-=1)}),e.filter("."+$).qtip("blur",a.originalEvent),b.addClass($)[0].style.zIndex=f,xb.update(c);try{a.preventDefault()}catch(h){}}},this._ns,this),void a._bind(b,"tooltiphide",function(a){a.target===b[0]&&d(zb).filter(":visible").not(b).last().qtip("focus",a)},this._ns,this)):this},toggle:function(a,b,c){return a&&a.isDefaultPrevented()?this:void xb.toggle(this.qtip,!!b,c)},destroy:function(){this.qtip.tooltip.removeClass(yb),this.qtip._unbind(this.qtip.tooltip,this._ns),xb.toggle(this.qtip,E),delete this.qtip.elements.overlay}}),wb=R.modal=function(a){return new w(a,a.options.show.modal)},wb.sanitize=function(a){a.show&&("object"!=typeof a.show.modal?a.show.modal={on:!!a.show.modal}:"undefined"==typeof a.show.modal.on&&(a.show.modal.on=D))},y.modal_zindex=y.zindex-200,wb.initialize="render",B.modal={"^show.modal.(on|blur)$":function(){this.destroy(),this.init(),this.qtip.elems.overlay.toggle(this.qtip.tooltip[0].offsetWidth>0)}},d.extend(D,y.defaults,{show:{modal:{on:E,effect:D,blur:D,stealfocus:D,escape:D}}}),R.viewport=function(c,d,e,f,g,h,i){function j(a,b,c,e,f,g,h,i,j){var k=d[f],s=u[a],t=v[a],w=c===Q,x=s===f?j:s===g?-j:-j/2,y=t===f?i:t===g?-i:-i/2,z=q[f]+r[f]-(n?0:m[f]),A=z-k,B=k+j-(h===I?o:p)-z,C=x-(u.precedance===a||s===u[b]?y:0)-(t===O?i/2:0);return w?(C=(s===f?1:-1)*x,d[f]+=A>0?A:B>0?-B:0,d[f]=Math.max(-m[f]+r[f],k-C,Math.min(Math.max(-m[f]+r[f]+(h===I?o:p),k+C),d[f],"center"===s?k-x:1e9))):(e*=c===P?2:0,A>0&&(s!==f||B>0)?(d[f]-=C+e,l.invert(a,f)):B>0&&(s!==g||A>0)&&(d[f]-=(s===O?-C:C)+e,l.invert(a,g)),d[f]<q&&-d[f]>B&&(d[f]=k,l=u.clone())),d[f]-k}var k,l,m,n,o,p,q,r,s=e.target,t=c.elements.tooltip,u=e.my,v=e.at,w=e.adjust,x=w.method.split(" "),y=x[0],z=x[1]||x[0],A=e.viewport,B=e.container,C=(c.cache,{left:0,top:0});return A.jquery&&s[0]!==a&&s[0]!==b.body&&"none"!==w.method?(m=B.offset()||C,n="static"===B.css("position"),k="fixed"===t.css("position"),o=A[0]===a?A.width():A.outerWidth(E),p=A[0]===a?A.height():A.outerHeight(E),q={left:k?0:A.scrollLeft(),top:k?0:A.scrollTop()},r=A.offset()||C,("shift"!==y||"shift"!==z)&&(l=u.clone()),C={left:"none"!==y?j(G,H,y,w.x,L,N,I,f,h):0,top:"none"!==z?j(H,G,z,w.y,K,M,J,g,i):0,my:l}):C},R.polys={polygon:function(a,b){var c,d,e,f={width:0,height:0,position:{top:1e10,right:0,bottom:0,left:1e10},adjustable:E},g=0,h=[],i=1,j=1,k=0,l=0;for(g=a.length;g--;)c=[parseInt(a[--g],10),parseInt(a[g+1],10)],c[0]>f.position.right&&(f.position.right=c[0]),c[0]<f.position.left&&(f.position.left=c[0]),c[1]>f.position.bottom&&(f.position.bottom=c[1]),c[1]<f.position.top&&(f.position.top=c[1]),h.push(c);if(d=f.width=Math.abs(f.position.right-f.position.left),e=f.height=Math.abs(f.position.bottom-f.position.top),"c"===b.abbrev())f.position={left:f.position.left+f.width/2,top:f.position.top+f.height/2};else{for(;d>0&&e>0&&i>0&&j>0;)for(d=Math.floor(d/2),e=Math.floor(e/2),b.x===L?i=d:b.x===N?i=f.width-d:i+=Math.floor(d/2),b.y===K?j=e:b.y===M?j=f.height-e:j+=Math.floor(e/2),g=h.length;g--&&!(h.length<2);)k=h[g][0]-f.position.left,l=h[g][1]-f.position.top,(b.x===L&&k>=i||b.x===N&&i>=k||b.x===O&&(i>k||k>f.width-i)||b.y===K&&l>=j||b.y===M&&j>=l||b.y===O&&(j>l||l>f.height-j))&&h.splice(g,1);f.position={left:h[0][0],top:h[0][1]}}return f},rect:function(a,b,c,d){return{width:Math.abs(c-a),height:Math.abs(d-b),position:{left:Math.min(a,c),top:Math.min(b,d)}}},_angles:{tc:1.5,tr:7/4,tl:5/4,bc:.5,br:.25,bl:.75,rc:2,lc:1,c:0},ellipse:function(a,b,c,d,e){var f=R.polys._angles[e.abbrev()],g=0===f?0:c*Math.cos(f*Math.PI),h=d*Math.sin(f*Math.PI);return{width:2*c-Math.abs(g),height:2*d-Math.abs(h),position:{left:a+g,top:b+h},adjustable:E}},circle:function(a,b,c,d){return R.polys.ellipse(a,b,c,c,d)}},R.svg=function(a,c,e){for(var f,g,h,i,j,k,l,m,n,o=(d(b),c[0]),p=d(o.ownerSVGElement),q=o.ownerDocument,r=(parseInt(c.css("stroke-width"),10)||0)/2;!o.getBBox;)o=o.parentNode;if(!o.getBBox||!o.parentNode)return E;switch(o.nodeName){case"ellipse":case"circle":m=R.polys.ellipse(o.cx.baseVal.value,o.cy.baseVal.value,(o.rx||o.r).baseVal.value+r,(o.ry||o.r).baseVal.value+r,e);break;case"line":case"polygon":case"polyline":for(l=o.points||[{x:o.x1.baseVal.value,y:o.y1.baseVal.value},{x:o.x2.baseVal.value,y:o.y2.baseVal.value}],m=[],k=-1,i=l.numberOfItems||l.length;++k<i;)j=l.getItem?l.getItem(k):l[k],m.push.apply(m,[j.x,j.y]);m=R.polys.polygon(m,e);break;default:m=o.getBBox(),m={width:m.width,height:m.height,position:{left:m.x,top:m.y}}}return n=m.position,p=p[0],p.createSVGPoint&&(g=o.getScreenCTM(),l=p.createSVGPoint(),l.x=n.left,l.y=n.top,h=l.matrixTransform(g),n.left=h.x,n.top=h.y),q!==b&&"mouse"!==a.position.target&&(f=d((q.defaultView||q.parentWindow).frameElement).offset(),f&&(n.left+=f.left,n.top+=f.top)),q=d(q),n.left+=q.scrollLeft(),n.top+=q.scrollTop(),m},R.imagemap=function(a,b,c){b.jquery||(b=d(b));var e,f,g,h,i,j=(b.attr("shape")||"rect").toLowerCase().replace("poly","polygon"),k=d('img[usemap="#'+b.parent("map").attr("name")+'"]'),l=d.trim(b.attr("coords")),m=l.replace(/,$/,"").split(",");if(!k.length)return E;if("polygon"===j)h=R.polys.polygon(m,c);else{if(!R.polys[j])return E;for(g=-1,i=m.length,f=[];++g<i;)f.push(parseInt(m[g],10));h=R.polys[j].apply(this,f.concat(c))}return e=k.offset(),e.left+=Math.ceil((k.outerWidth(E)-k.width())/2),e.top+=Math.ceil((k.outerHeight(E)-k.height())/2),h.position.left+=e.left,h.position.top+=e.top,h};var Ab,Bb='<iframe class="qtip-bgiframe" frameborder="0" tabindex="-1" src="javascript:\'\';"  style="display:block; position:absolute; z-index:-1; filter:alpha(opacity=0); -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";"></iframe>';d.extend(x.prototype,{_scroll:function(){var b=this.qtip.elements.overlay;b&&(b[0].style.top=d(a).scrollTop()+"px")},init:function(c){var e=c.tooltip;d("select, object").length<1&&(this.bgiframe=c.elements.bgiframe=d(Bb).appendTo(e),c._bind(e,"tooltipmove",this.adjustBGIFrame,this._ns,this)),this.redrawContainer=d("<div/>",{id:S+"-rcontainer"}).appendTo(b.body),c.elements.overlay&&c.elements.overlay.addClass("qtipmodal-ie6fix")&&(c._bind(a,["scroll","resize"],this._scroll,this._ns,this),c._bind(e,["tooltipshow"],this._scroll,this._ns,this)),this.redraw()},adjustBGIFrame:function(){var a,b,c=this.qtip.tooltip,d={height:c.outerHeight(E),width:c.outerWidth(E)},e=this.qtip.plugins.tip,f=this.qtip.elements.tip;b=parseInt(c.css("borderLeftWidth"),10)||0,b={left:-b,top:-b},e&&f&&(a="x"===e.corner.precedance?[I,L]:[J,K],b[a[1]]-=f[a[0]]()),this.bgiframe.css(b).css(d)},redraw:function(){if(this.qtip.rendered<1||this.drawing)return this;var a,b,c,d,e=this.qtip.tooltip,f=this.qtip.options.style,g=this.qtip.options.position.container;return this.qtip.drawing=1,f.height&&e.css(J,f.height),f.width?e.css(I,f.width):(e.css(I,"").appendTo(this.redrawContainer),b=e.width(),1>b%2&&(b+=1),c=e.css("maxWidth")||"",d=e.css("minWidth")||"",a=(c+d).indexOf("%")>-1?g.width()/100:0,c=(c.indexOf("%")>-1?a:1)*parseInt(c,10)||b,d=(d.indexOf("%")>-1?a:1)*parseInt(d,10)||0,b=c+d?Math.min(Math.max(b,d),c):b,e.css(I,Math.round(b)).appendTo(g)),this.drawing=0,this},destroy:function(){this.bgiframe&&this.bgiframe.remove(),this.qtip._unbind([a,this.qtip.tooltip],this._ns)}}),Ab=R.ie6=function(a){return 6===db.ie?new x(a):E},Ab.initialize="render",B.ie6={"^content|style$":function(){this.redraw()}}})}(window,document);
 //# sourceMappingURL=jquery.qtip.min.map
+// Spectrum Colorpicker v1.8.0
+// https://github.com/bgrins/spectrum
+// Author: Brian Grinstead
+// License: MIT
+
+(function (factory) {
+    "use strict";
+
+    if (typeof define === 'function' && define.amd) { // AMD
+        define(['jquery'], factory);
+    }
+    else if (typeof exports == "object" && typeof module == "object") { // CommonJS
+        module.exports = factory(require('jquery'));
+    }
+    else { // Browser
+        factory(jQuery);
+    }
+})(function($, undefined) {
+    "use strict";
+
+    var defaultOpts = {
+
+        // Callbacks
+        beforeShow: noop,
+        move: noop,
+        change: noop,
+        show: noop,
+        hide: noop,
+
+        // Options
+        color: false,
+        flat: false,
+        showInput: false,
+        allowEmpty: false,
+        showButtons: true,
+        clickoutFiresChange: true,
+        showInitial: false,
+        showPalette: false,
+        showPaletteOnly: false,
+        hideAfterPaletteSelect: false,
+        togglePaletteOnly: false,
+        showSelectionPalette: true,
+        localStorageKey: false,
+        appendTo: "body",
+        maxSelectionSize: 7,
+        cancelText: "cancel",
+        chooseText: "choose",
+        togglePaletteMoreText: "more",
+        togglePaletteLessText: "less",
+        clearText: "Clear Color Selection",
+        noColorSelectedText: "No Color Selected",
+        preferredFormat: false,
+        className: "", // Deprecated - use containerClassName and replacerClassName instead.
+        containerClassName: "",
+        replacerClassName: "",
+        showAlpha: false,
+        theme: "sp-light",
+        palette: [["#ffffff", "#000000", "#ff0000", "#ff8000", "#ffff00", "#008000", "#0000ff", "#4b0082", "#9400d3"]],
+        selectionPalette: [],
+        disabled: false,
+        offset: null
+    },
+    spectrums = [],
+    IE = !!/msie/i.exec( window.navigator.userAgent ),
+    rgbaSupport = (function() {
+        function contains( str, substr ) {
+            return !!~('' + str).indexOf(substr);
+        }
+
+        var elem = document.createElement('div');
+        var style = elem.style;
+        style.cssText = 'background-color:rgba(0,0,0,.5)';
+        return contains(style.backgroundColor, 'rgba') || contains(style.backgroundColor, 'hsla');
+    })(),
+    replaceInput = [
+        "<div class='sp-replacer'>",
+            "<div class='sp-preview'><div class='sp-preview-inner'></div></div>",
+            "<div class='sp-dd'>&#9660;</div>",
+        "</div>"
+    ].join(''),
+    markup = (function () {
+
+        // IE does not support gradients with multiple stops, so we need to simulate
+        //  that for the rainbow slider with 8 divs that each have a single gradient
+        var gradientFix = "";
+        if (IE) {
+            for (var i = 1; i <= 6; i++) {
+                gradientFix += "<div class='sp-" + i + "'></div>";
+            }
+        }
+
+        return [
+            "<div class='sp-container sp-hidden'>",
+                "<div class='sp-palette-container'>",
+                    "<div class='sp-palette sp-thumb sp-cf'></div>",
+                    "<div class='sp-palette-button-container sp-cf'>",
+                        "<button type='button' class='sp-palette-toggle'></button>",
+                    "</div>",
+                "</div>",
+                "<div class='sp-picker-container'>",
+                    "<div class='sp-top sp-cf'>",
+                        "<div class='sp-fill'></div>",
+                        "<div class='sp-top-inner'>",
+                            "<div class='sp-color'>",
+                                "<div class='sp-sat'>",
+                                    "<div class='sp-val'>",
+                                        "<div class='sp-dragger'></div>",
+                                    "</div>",
+                                "</div>",
+                            "</div>",
+                            "<div class='sp-clear sp-clear-display'>",
+                            "</div>",
+                            "<div class='sp-hue'>",
+                                "<div class='sp-slider'></div>",
+                                gradientFix,
+                            "</div>",
+                        "</div>",
+                        "<div class='sp-alpha'><div class='sp-alpha-inner'><div class='sp-alpha-handle'></div></div></div>",
+                    "</div>",
+                    "<div class='sp-input-container sp-cf'>",
+                        "<input class='sp-input' type='text' spellcheck='false'  />",
+                    "</div>",
+                    "<div class='sp-initial sp-thumb sp-cf'></div>",
+                    "<div class='sp-button-container sp-cf'>",
+                        "<a class='sp-cancel' href='#'></a>",
+                        "<button type='button' class='sp-choose'></button>",
+                    "</div>",
+                "</div>",
+            "</div>"
+        ].join("");
+    })();
+
+    function paletteTemplate (p, color, className, opts) {
+        var html = [];
+        for (var i = 0; i < p.length; i++) {
+            var current = p[i];
+            if(current) {
+                var tiny = tinycolor(current);
+                var c = tiny.toHsl().l < 0.5 ? "sp-thumb-el sp-thumb-dark" : "sp-thumb-el sp-thumb-light";
+                c += (tinycolor.equals(color, current)) ? " sp-thumb-active" : "";
+                var formattedString = tiny.toString(opts.preferredFormat || "rgb");
+                var swatchStyle = rgbaSupport ? ("background-color:" + tiny.toRgbString()) : "filter:" + tiny.toFilter();
+                html.push('<span title="' + formattedString + '" data-color="' + tiny.toRgbString() + '" class="' + c + '"><span class="sp-thumb-inner" style="' + swatchStyle + ';" /></span>');
+            } else {
+                var cls = 'sp-clear-display';
+                html.push($('<div />')
+                    .append($('<span data-color="" style="background-color:transparent;" class="' + cls + '"></span>')
+                        .attr('title', opts.noColorSelectedText)
+                    )
+                    .html()
+                );
+            }
+        }
+        return "<div class='sp-cf " + className + "'>" + html.join('') + "</div>";
+    }
+
+    function hideAll() {
+        for (var i = 0; i < spectrums.length; i++) {
+            if (spectrums[i]) {
+                spectrums[i].hide();
+            }
+        }
+    }
+
+    function instanceOptions(o, callbackContext) {
+        var opts = $.extend({}, defaultOpts, o);
+        opts.callbacks = {
+            'move': bind(opts.move, callbackContext),
+            'change': bind(opts.change, callbackContext),
+            'show': bind(opts.show, callbackContext),
+            'hide': bind(opts.hide, callbackContext),
+            'beforeShow': bind(opts.beforeShow, callbackContext)
+        };
+
+        return opts;
+    }
+
+    function spectrum(element, o) {
+
+        var opts = instanceOptions(o, element),
+            flat = opts.flat,
+            showSelectionPalette = opts.showSelectionPalette,
+            localStorageKey = opts.localStorageKey,
+            theme = opts.theme,
+            callbacks = opts.callbacks,
+            resize = throttle(reflow, 10),
+            visible = false,
+            isDragging = false,
+            dragWidth = 0,
+            dragHeight = 0,
+            dragHelperHeight = 0,
+            slideHeight = 0,
+            slideWidth = 0,
+            alphaWidth = 0,
+            alphaSlideHelperWidth = 0,
+            slideHelperHeight = 0,
+            currentHue = 0,
+            currentSaturation = 0,
+            currentValue = 0,
+            currentAlpha = 1,
+            palette = [],
+            paletteArray = [],
+            paletteLookup = {},
+            selectionPalette = opts.selectionPalette.slice(0),
+            maxSelectionSize = opts.maxSelectionSize,
+            draggingClass = "sp-dragging",
+            shiftMovementDirection = null;
+
+        var doc = element.ownerDocument,
+            body = doc.body,
+            boundElement = $(element),
+            disabled = false,
+            container = $(markup, doc).addClass(theme),
+            pickerContainer = container.find(".sp-picker-container"),
+            dragger = container.find(".sp-color"),
+            dragHelper = container.find(".sp-dragger"),
+            slider = container.find(".sp-hue"),
+            slideHelper = container.find(".sp-slider"),
+            alphaSliderInner = container.find(".sp-alpha-inner"),
+            alphaSlider = container.find(".sp-alpha"),
+            alphaSlideHelper = container.find(".sp-alpha-handle"),
+            textInput = container.find(".sp-input"),
+            paletteContainer = container.find(".sp-palette"),
+            initialColorContainer = container.find(".sp-initial"),
+            cancelButton = container.find(".sp-cancel"),
+            clearButton = container.find(".sp-clear"),
+            chooseButton = container.find(".sp-choose"),
+            toggleButton = container.find(".sp-palette-toggle"),
+            isInput = boundElement.is("input"),
+            isInputTypeColor = isInput && boundElement.attr("type") === "color" && inputTypeColorSupport(),
+            shouldReplace = isInput && !flat,
+            replacer = (shouldReplace) ? $(replaceInput).addClass(theme).addClass(opts.className).addClass(opts.replacerClassName) : $([]),
+            offsetElement = (shouldReplace) ? replacer : boundElement,
+            previewElement = replacer.find(".sp-preview-inner"),
+            initialColor = opts.color || (isInput && boundElement.val()),
+            colorOnShow = false,
+            currentPreferredFormat = opts.preferredFormat,
+            clickoutFiresChange = !opts.showButtons || opts.clickoutFiresChange,
+            isEmpty = !initialColor,
+            allowEmpty = opts.allowEmpty && !isInputTypeColor;
+
+        function applyOptions() {
+
+            if (opts.showPaletteOnly) {
+                opts.showPalette = true;
+            }
+
+            toggleButton.text(opts.showPaletteOnly ? opts.togglePaletteMoreText : opts.togglePaletteLessText);
+
+            if (opts.palette) {
+                palette = opts.palette.slice(0);
+                paletteArray = $.isArray(palette[0]) ? palette : [palette];
+                paletteLookup = {};
+                for (var i = 0; i < paletteArray.length; i++) {
+                    for (var j = 0; j < paletteArray[i].length; j++) {
+                        var rgb = tinycolor(paletteArray[i][j]).toRgbString();
+                        paletteLookup[rgb] = true;
+                    }
+                }
+            }
+
+            container.toggleClass("sp-flat", flat);
+            container.toggleClass("sp-input-disabled", !opts.showInput);
+            container.toggleClass("sp-alpha-enabled", opts.showAlpha);
+            container.toggleClass("sp-clear-enabled", allowEmpty);
+            container.toggleClass("sp-buttons-disabled", !opts.showButtons);
+            container.toggleClass("sp-palette-buttons-disabled", !opts.togglePaletteOnly);
+            container.toggleClass("sp-palette-disabled", !opts.showPalette);
+            container.toggleClass("sp-palette-only", opts.showPaletteOnly);
+            container.toggleClass("sp-initial-disabled", !opts.showInitial);
+            container.addClass(opts.className).addClass(opts.containerClassName);
+
+            reflow();
+        }
+
+        function initialize() {
+
+            if (IE) {
+                container.find("*:not(input)").attr("unselectable", "on");
+            }
+
+            applyOptions();
+
+            if (shouldReplace) {
+                boundElement.after(replacer).hide();
+            }
+
+            if (!allowEmpty) {
+                clearButton.hide();
+            }
+
+            if (flat) {
+                boundElement.after(container).hide();
+            }
+            else {
+
+                var appendTo = opts.appendTo === "parent" ? boundElement.parent() : $(opts.appendTo);
+                if (appendTo.length !== 1) {
+                    appendTo = $("body");
+                }
+
+                appendTo.append(container);
+            }
+
+            updateSelectionPaletteFromStorage();
+
+            offsetElement.bind("click.spectrum touchstart.spectrum", function (e) {
+                if (!disabled) {
+                    toggle();
+                }
+
+                e.stopPropagation();
+
+                if (!$(e.target).is("input")) {
+                    e.preventDefault();
+                }
+            });
+
+            if(boundElement.is(":disabled") || (opts.disabled === true)) {
+                disable();
+            }
+
+            // Prevent clicks from bubbling up to document.  This would cause it to be hidden.
+            container.click(stopPropagation);
+
+            // Handle user typed input
+            textInput.change(setFromTextInput);
+            textInput.bind("paste", function () {
+                setTimeout(setFromTextInput, 1);
+            });
+            textInput.keydown(function (e) { if (e.keyCode == 13) { setFromTextInput(); } });
+
+            cancelButton.text(opts.cancelText);
+            cancelButton.bind("click.spectrum", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                revert();
+                hide();
+            });
+
+            clearButton.attr("title", opts.clearText);
+            clearButton.bind("click.spectrum", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                isEmpty = true;
+                move();
+
+                if(flat) {
+                    //for the flat style, this is a change event
+                    updateOriginalInput(true);
+                }
+            });
+
+            chooseButton.text(opts.chooseText);
+            chooseButton.bind("click.spectrum", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                if (IE && textInput.is(":focus")) {
+                    textInput.trigger('change');
+                }
+
+                if (isValid()) {
+                    updateOriginalInput(true);
+                    hide();
+                }
+            });
+
+            toggleButton.text(opts.showPaletteOnly ? opts.togglePaletteMoreText : opts.togglePaletteLessText);
+            toggleButton.bind("click.spectrum", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                opts.showPaletteOnly = !opts.showPaletteOnly;
+
+                // To make sure the Picker area is drawn on the right, next to the
+                // Palette area (and not below the palette), first move the Palette
+                // to the left to make space for the picker, plus 5px extra.
+                // The 'applyOptions' function puts the whole container back into place
+                // and takes care of the button-text and the sp-palette-only CSS class.
+                if (!opts.showPaletteOnly && !flat) {
+                    container.css('left', '-=' + (pickerContainer.outerWidth(true) + 5));
+                }
+                applyOptions();
+            });
+
+            draggable(alphaSlider, function (dragX, dragY, e) {
+                currentAlpha = (dragX / alphaWidth);
+                isEmpty = false;
+                if (e.shiftKey) {
+                    currentAlpha = Math.round(currentAlpha * 10) / 10;
+                }
+
+                move();
+            }, dragStart, dragStop);
+
+            draggable(slider, function (dragX, dragY) {
+                currentHue = parseFloat(dragY / slideHeight);
+                isEmpty = false;
+                if (!opts.showAlpha) {
+                    currentAlpha = 1;
+                }
+                move();
+            }, dragStart, dragStop);
+
+            draggable(dragger, function (dragX, dragY, e) {
+
+                // shift+drag should snap the movement to either the x or y axis.
+                if (!e.shiftKey) {
+                    shiftMovementDirection = null;
+                }
+                else if (!shiftMovementDirection) {
+                    var oldDragX = currentSaturation * dragWidth;
+                    var oldDragY = dragHeight - (currentValue * dragHeight);
+                    var furtherFromX = Math.abs(dragX - oldDragX) > Math.abs(dragY - oldDragY);
+
+                    shiftMovementDirection = furtherFromX ? "x" : "y";
+                }
+
+                var setSaturation = !shiftMovementDirection || shiftMovementDirection === "x";
+                var setValue = !shiftMovementDirection || shiftMovementDirection === "y";
+
+                if (setSaturation) {
+                    currentSaturation = parseFloat(dragX / dragWidth);
+                }
+                if (setValue) {
+                    currentValue = parseFloat((dragHeight - dragY) / dragHeight);
+                }
+
+                isEmpty = false;
+                if (!opts.showAlpha) {
+                    currentAlpha = 1;
+                }
+
+                move();
+
+            }, dragStart, dragStop);
+
+            if (!!initialColor) {
+                set(initialColor);
+
+                // In case color was black - update the preview UI and set the format
+                // since the set function will not run (default color is black).
+                updateUI();
+                currentPreferredFormat = opts.preferredFormat || tinycolor(initialColor).format;
+
+                addColorToSelectionPalette(initialColor);
+            }
+            else {
+                updateUI();
+            }
+
+            if (flat) {
+                show();
+            }
+
+            function paletteElementClick(e) {
+                if (e.data && e.data.ignore) {
+                    set($(e.target).closest(".sp-thumb-el").data("color"));
+                    move();
+                }
+                else {
+                    set($(e.target).closest(".sp-thumb-el").data("color"));
+                    move();
+                    updateOriginalInput(true);
+                    if (opts.hideAfterPaletteSelect) {
+                      hide();
+                    }
+                }
+
+                return false;
+            }
+
+            var paletteEvent = IE ? "mousedown.spectrum" : "click.spectrum touchstart.spectrum";
+            paletteContainer.delegate(".sp-thumb-el", paletteEvent, paletteElementClick);
+            initialColorContainer.delegate(".sp-thumb-el:nth-child(1)", paletteEvent, { ignore: true }, paletteElementClick);
+        }
+
+        function updateSelectionPaletteFromStorage() {
+
+            if (localStorageKey && window.localStorage) {
+
+                // Migrate old palettes over to new format.  May want to remove this eventually.
+                try {
+                    var oldPalette = window.localStorage[localStorageKey].split(",#");
+                    if (oldPalette.length > 1) {
+                        delete window.localStorage[localStorageKey];
+                        $.each(oldPalette, function(i, c) {
+                             addColorToSelectionPalette(c);
+                        });
+                    }
+                }
+                catch(e) { }
+
+                try {
+                    selectionPalette = window.localStorage[localStorageKey].split(";");
+                }
+                catch (e) { }
+            }
+        }
+
+        function addColorToSelectionPalette(color) {
+            if (showSelectionPalette) {
+                var rgb = tinycolor(color).toRgbString();
+                if (!paletteLookup[rgb] && $.inArray(rgb, selectionPalette) === -1) {
+                    selectionPalette.push(rgb);
+                    while(selectionPalette.length > maxSelectionSize) {
+                        selectionPalette.shift();
+                    }
+                }
+
+                if (localStorageKey && window.localStorage) {
+                    try {
+                        window.localStorage[localStorageKey] = selectionPalette.join(";");
+                    }
+                    catch(e) { }
+                }
+            }
+        }
+
+        function getUniqueSelectionPalette() {
+            var unique = [];
+            if (opts.showPalette) {
+                for (var i = 0; i < selectionPalette.length; i++) {
+                    var rgb = tinycolor(selectionPalette[i]).toRgbString();
+
+                    if (!paletteLookup[rgb]) {
+                        unique.push(selectionPalette[i]);
+                    }
+                }
+            }
+
+            return unique.reverse().slice(0, opts.maxSelectionSize);
+        }
+
+        function drawPalette() {
+
+            var currentColor = get();
+
+            var html = $.map(paletteArray, function (palette, i) {
+                return paletteTemplate(palette, currentColor, "sp-palette-row sp-palette-row-" + i, opts);
+            });
+
+            updateSelectionPaletteFromStorage();
+
+            if (selectionPalette) {
+                html.push(paletteTemplate(getUniqueSelectionPalette(), currentColor, "sp-palette-row sp-palette-row-selection", opts));
+            }
+
+            paletteContainer.html(html.join(""));
+        }
+
+        function drawInitial() {
+            if (opts.showInitial) {
+                var initial = colorOnShow;
+                var current = get();
+                initialColorContainer.html(paletteTemplate([initial, current], current, "sp-palette-row-initial", opts));
+            }
+        }
+
+        function dragStart() {
+            if (dragHeight <= 0 || dragWidth <= 0 || slideHeight <= 0) {
+                reflow();
+            }
+            isDragging = true;
+            container.addClass(draggingClass);
+            shiftMovementDirection = null;
+            boundElement.trigger('dragstart.spectrum', [ get() ]);
+        }
+
+        function dragStop() {
+            isDragging = false;
+            container.removeClass(draggingClass);
+            boundElement.trigger('dragstop.spectrum', [ get() ]);
+        }
+
+        function setFromTextInput() {
+
+            var value = textInput.val();
+
+            if ((value === null || value === "") && allowEmpty) {
+                set(null);
+                updateOriginalInput(true);
+            }
+            else {
+                var tiny = tinycolor(value);
+                if (tiny.isValid()) {
+                    set(tiny);
+                    updateOriginalInput(true);
+                }
+                else {
+                    textInput.addClass("sp-validation-error");
+                }
+            }
+        }
+
+        function toggle() {
+            if (visible) {
+                hide();
+            }
+            else {
+                show();
+            }
+        }
+
+        function show() {
+            var event = $.Event('beforeShow.spectrum');
+
+            if (visible) {
+                reflow();
+                return;
+            }
+
+            boundElement.trigger(event, [ get() ]);
+
+            if (callbacks.beforeShow(get()) === false || event.isDefaultPrevented()) {
+                return;
+            }
+
+            hideAll();
+            visible = true;
+
+            $(doc).bind("keydown.spectrum", onkeydown);
+            $(doc).bind("click.spectrum", clickout);
+            $(window).bind("resize.spectrum", resize);
+            replacer.addClass("sp-active");
+            container.removeClass("sp-hidden");
+
+            reflow();
+            updateUI();
+
+            colorOnShow = get();
+
+            drawInitial();
+            callbacks.show(colorOnShow);
+            boundElement.trigger('show.spectrum', [ colorOnShow ]);
+        }
+
+        function onkeydown(e) {
+            // Close on ESC
+            if (e.keyCode === 27) {
+                hide();
+            }
+        }
+
+        function clickout(e) {
+            // Return on right click.
+            if (e.button == 2) { return; }
+
+            // If a drag event was happening during the mouseup, don't hide
+            // on click.
+            if (isDragging) { return; }
+
+            if (clickoutFiresChange) {
+                updateOriginalInput(true);
+            }
+            else {
+                revert();
+            }
+            hide();
+        }
+
+        function hide() {
+            // Return if hiding is unnecessary
+            if (!visible || flat) { return; }
+            visible = false;
+
+            $(doc).unbind("keydown.spectrum", onkeydown);
+            $(doc).unbind("click.spectrum", clickout);
+            $(window).unbind("resize.spectrum", resize);
+
+            replacer.removeClass("sp-active");
+            container.addClass("sp-hidden");
+
+            callbacks.hide(get());
+            boundElement.trigger('hide.spectrum', [ get() ]);
+        }
+
+        function revert() {
+            set(colorOnShow, true);
+        }
+
+        function set(color, ignoreFormatChange) {
+            if (tinycolor.equals(color, get())) {
+                // Update UI just in case a validation error needs
+                // to be cleared.
+                updateUI();
+                return;
+            }
+
+            var newColor, newHsv;
+            if (!color && allowEmpty) {
+                isEmpty = true;
+            } else {
+                isEmpty = false;
+                newColor = tinycolor(color);
+                newHsv = newColor.toHsv();
+
+                currentHue = (newHsv.h % 360) / 360;
+                currentSaturation = newHsv.s;
+                currentValue = newHsv.v;
+                currentAlpha = newHsv.a;
+            }
+            updateUI();
+
+            if (newColor && newColor.isValid() && !ignoreFormatChange) {
+                currentPreferredFormat = opts.preferredFormat || newColor.getFormat();
+            }
+        }
+
+        function get(opts) {
+            opts = opts || { };
+
+            if (allowEmpty && isEmpty) {
+                return null;
+            }
+
+            return tinycolor.fromRatio({
+                h: currentHue,
+                s: currentSaturation,
+                v: currentValue,
+                a: Math.round(currentAlpha * 100) / 100
+            }, { format: opts.format || currentPreferredFormat });
+        }
+
+        function isValid() {
+            return !textInput.hasClass("sp-validation-error");
+        }
+
+        function move() {
+            updateUI();
+
+            callbacks.move(get());
+            boundElement.trigger('move.spectrum', [ get() ]);
+        }
+
+        function updateUI() {
+
+            textInput.removeClass("sp-validation-error");
+
+            updateHelperLocations();
+
+            // Update dragger background color (gradients take care of saturation and value).
+            var flatColor = tinycolor.fromRatio({ h: currentHue, s: 1, v: 1 });
+            dragger.css("background-color", flatColor.toHexString());
+
+            // Get a format that alpha will be included in (hex and names ignore alpha)
+            var format = currentPreferredFormat;
+            if (currentAlpha < 1 && !(currentAlpha === 0 && format === "name")) {
+                if (format === "hex" || format === "hex3" || format === "hex6" || format === "name") {
+                    format = "rgb";
+                }
+            }
+
+            var realColor = get({ format: format }),
+                displayColor = '';
+
+             //reset background info for preview element
+            previewElement.removeClass("sp-clear-display");
+            previewElement.css('background-color', 'transparent');
+
+            if (!realColor && allowEmpty) {
+                // Update the replaced elements background with icon indicating no color selection
+                previewElement.addClass("sp-clear-display");
+            }
+            else {
+                var realHex = realColor.toHexString(),
+                    realRgb = realColor.toRgbString();
+
+                // Update the replaced elements background color (with actual selected color)
+                if (rgbaSupport || realColor.alpha === 1) {
+                    previewElement.css("background-color", realRgb);
+                }
+                else {
+                    previewElement.css("background-color", "transparent");
+                    previewElement.css("filter", realColor.toFilter());
+                }
+
+                if (opts.showAlpha) {
+                    var rgb = realColor.toRgb();
+                    rgb.a = 0;
+                    var realAlpha = tinycolor(rgb).toRgbString();
+                    var gradient = "linear-gradient(left, " + realAlpha + ", " + realHex + ")";
+
+                    if (IE) {
+                        alphaSliderInner.css("filter", tinycolor(realAlpha).toFilter({ gradientType: 1 }, realHex));
+                    }
+                    else {
+                        alphaSliderInner.css("background", "-webkit-" + gradient);
+                        alphaSliderInner.css("background", "-moz-" + gradient);
+                        alphaSliderInner.css("background", "-ms-" + gradient);
+                        // Use current syntax gradient on unprefixed property.
+                        alphaSliderInner.css("background",
+                            "linear-gradient(to right, " + realAlpha + ", " + realHex + ")");
+                    }
+                }
+
+                displayColor = realColor.toString(format);
+            }
+
+            // Update the text entry input as it changes happen
+            if (opts.showInput) {
+                textInput.val(displayColor);
+            }
+
+            if (opts.showPalette) {
+                drawPalette();
+            }
+
+            drawInitial();
+        }
+
+        function updateHelperLocations() {
+            var s = currentSaturation;
+            var v = currentValue;
+
+            if(allowEmpty && isEmpty) {
+                //if selected color is empty, hide the helpers
+                alphaSlideHelper.hide();
+                slideHelper.hide();
+                dragHelper.hide();
+            }
+            else {
+                //make sure helpers are visible
+                alphaSlideHelper.show();
+                slideHelper.show();
+                dragHelper.show();
+
+                // Where to show the little circle in that displays your current selected color
+                var dragX = s * dragWidth;
+                var dragY = dragHeight - (v * dragHeight);
+                dragX = Math.max(
+                    -dragHelperHeight,
+                    Math.min(dragWidth - dragHelperHeight, dragX - dragHelperHeight)
+                );
+                dragY = Math.max(
+                    -dragHelperHeight,
+                    Math.min(dragHeight - dragHelperHeight, dragY - dragHelperHeight)
+                );
+                dragHelper.css({
+                    "top": dragY + "px",
+                    "left": dragX + "px"
+                });
+
+                var alphaX = currentAlpha * alphaWidth;
+                alphaSlideHelper.css({
+                    "left": (alphaX - (alphaSlideHelperWidth / 2)) + "px"
+                });
+
+                // Where to show the bar that displays your current selected hue
+                var slideY = (currentHue) * slideHeight;
+                slideHelper.css({
+                    "top": (slideY - slideHelperHeight) + "px"
+                });
+            }
+        }
+
+        function updateOriginalInput(fireCallback) {
+            var color = get(),
+                displayColor = '',
+                hasChanged = !tinycolor.equals(color, colorOnShow);
+
+            if (color) {
+                displayColor = color.toString(currentPreferredFormat);
+                // Update the selection palette with the current color
+                addColorToSelectionPalette(color);
+            }
+
+            if (isInput) {
+                boundElement.val(displayColor);
+            }
+
+            if (fireCallback && hasChanged) {
+                callbacks.change(color);
+                boundElement.trigger('change', [ color ]);
+            }
+        }
+
+        function reflow() {
+            if (!visible) {
+                return; // Calculations would be useless and wouldn't be reliable anyways
+            }
+            dragWidth = dragger.width();
+            dragHeight = dragger.height();
+            dragHelperHeight = dragHelper.height();
+            slideWidth = slider.width();
+            slideHeight = slider.height();
+            slideHelperHeight = slideHelper.height();
+            alphaWidth = alphaSlider.width();
+            alphaSlideHelperWidth = alphaSlideHelper.width();
+
+            if (!flat) {
+                container.css("position", "absolute");
+                if (opts.offset) {
+                    container.offset(opts.offset);
+                } else {
+                    container.offset(getOffset(container, offsetElement));
+                }
+            }
+
+            updateHelperLocations();
+
+            if (opts.showPalette) {
+                drawPalette();
+            }
+
+            boundElement.trigger('reflow.spectrum');
+        }
+
+        function destroy() {
+            boundElement.show();
+            offsetElement.unbind("click.spectrum touchstart.spectrum");
+            container.remove();
+            replacer.remove();
+            spectrums[spect.id] = null;
+        }
+
+        function option(optionName, optionValue) {
+            if (optionName === undefined) {
+                return $.extend({}, opts);
+            }
+            if (optionValue === undefined) {
+                return opts[optionName];
+            }
+
+            opts[optionName] = optionValue;
+
+            if (optionName === "preferredFormat") {
+                currentPreferredFormat = opts.preferredFormat;
+            }
+            applyOptions();
+        }
+
+        function enable() {
+            disabled = false;
+            boundElement.attr("disabled", false);
+            offsetElement.removeClass("sp-disabled");
+        }
+
+        function disable() {
+            hide();
+            disabled = true;
+            boundElement.attr("disabled", true);
+            offsetElement.addClass("sp-disabled");
+        }
+
+        function setOffset(coord) {
+            opts.offset = coord;
+            reflow();
+        }
+
+        initialize();
+
+        var spect = {
+            show: show,
+            hide: hide,
+            toggle: toggle,
+            reflow: reflow,
+            option: option,
+            enable: enable,
+            disable: disable,
+            offset: setOffset,
+            set: function (c) {
+                set(c);
+                updateOriginalInput();
+            },
+            get: get,
+            destroy: destroy,
+            container: container
+        };
+
+        spect.id = spectrums.push(spect) - 1;
+
+        return spect;
+    }
+
+    /**
+    * checkOffset - get the offset below/above and left/right element depending on screen position
+    * Thanks https://github.com/jquery/jquery-ui/blob/master/ui/jquery.ui.datepicker.js
+    */
+    function getOffset(picker, input) {
+        var extraY = 0;
+        var dpWidth = picker.outerWidth();
+        var dpHeight = picker.outerHeight();
+        var inputHeight = input.outerHeight();
+        var doc = picker[0].ownerDocument;
+        var docElem = doc.documentElement;
+        var viewWidth = docElem.clientWidth + $(doc).scrollLeft();
+        var viewHeight = docElem.clientHeight + $(doc).scrollTop();
+        var offset = input.offset();
+        offset.top += inputHeight;
+
+        offset.left -=
+            Math.min(offset.left, (offset.left + dpWidth > viewWidth && viewWidth > dpWidth) ?
+            Math.abs(offset.left + dpWidth - viewWidth) : 0);
+
+        offset.top -=
+            Math.min(offset.top, ((offset.top + dpHeight > viewHeight && viewHeight > dpHeight) ?
+            Math.abs(dpHeight + inputHeight - extraY) : extraY));
+
+        return offset;
+    }
+
+    /**
+    * noop - do nothing
+    */
+    function noop() {
+
+    }
+
+    /**
+    * stopPropagation - makes the code only doing this a little easier to read in line
+    */
+    function stopPropagation(e) {
+        e.stopPropagation();
+    }
+
+    /**
+    * Create a function bound to a given object
+    * Thanks to underscore.js
+    */
+    function bind(func, obj) {
+        var slice = Array.prototype.slice;
+        var args = slice.call(arguments, 2);
+        return function () {
+            return func.apply(obj, args.concat(slice.call(arguments)));
+        };
+    }
+
+    /**
+    * Lightweight drag helper.  Handles containment within the element, so that
+    * when dragging, the x is within [0,element.width] and y is within [0,element.height]
+    */
+    function draggable(element, onmove, onstart, onstop) {
+        onmove = onmove || function () { };
+        onstart = onstart || function () { };
+        onstop = onstop || function () { };
+        var doc = document;
+        var dragging = false;
+        var offset = {};
+        var maxHeight = 0;
+        var maxWidth = 0;
+        var hasTouch = ('ontouchstart' in window);
+
+        var duringDragEvents = {};
+        duringDragEvents["selectstart"] = prevent;
+        duringDragEvents["dragstart"] = prevent;
+        duringDragEvents["touchmove mousemove"] = move;
+        duringDragEvents["touchend mouseup"] = stop;
+
+        function prevent(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.returnValue = false;
+        }
+
+        function move(e) {
+            if (dragging) {
+                // Mouseup happened outside of window
+                if (IE && doc.documentMode < 9 && !e.button) {
+                    return stop();
+                }
+
+                var t0 = e.originalEvent && e.originalEvent.touches && e.originalEvent.touches[0];
+                var pageX = t0 && t0.pageX || e.pageX;
+                var pageY = t0 && t0.pageY || e.pageY;
+
+                var dragX = Math.max(0, Math.min(pageX - offset.left, maxWidth));
+                var dragY = Math.max(0, Math.min(pageY - offset.top, maxHeight));
+
+                if (hasTouch) {
+                    // Stop scrolling in iOS
+                    prevent(e);
+                }
+
+                onmove.apply(element, [dragX, dragY, e]);
+            }
+        }
+
+        function start(e) {
+            var rightclick = (e.which) ? (e.which == 3) : (e.button == 2);
+
+            if (!rightclick && !dragging) {
+                if (onstart.apply(element, arguments) !== false) {
+                    dragging = true;
+                    maxHeight = $(element).height();
+                    maxWidth = $(element).width();
+                    offset = $(element).offset();
+
+                    $(doc).bind(duringDragEvents);
+                    $(doc.body).addClass("sp-dragging");
+
+                    move(e);
+
+                    prevent(e);
+                }
+            }
+        }
+
+        function stop() {
+            if (dragging) {
+                $(doc).unbind(duringDragEvents);
+                $(doc.body).removeClass("sp-dragging");
+
+                // Wait a tick before notifying observers to allow the click event
+                // to fire in Chrome.
+                setTimeout(function() {
+                    onstop.apply(element, arguments);
+                }, 0);
+            }
+            dragging = false;
+        }
+
+        $(element).bind("touchstart mousedown", start);
+    }
+
+    function throttle(func, wait, debounce) {
+        var timeout;
+        return function () {
+            var context = this, args = arguments;
+            var throttler = function () {
+                timeout = null;
+                func.apply(context, args);
+            };
+            if (debounce) clearTimeout(timeout);
+            if (debounce || !timeout) timeout = setTimeout(throttler, wait);
+        };
+    }
+
+    function inputTypeColorSupport() {
+        return $.fn.spectrum.inputTypeColorSupport();
+    }
+
+    /**
+    * Define a jQuery plugin
+    */
+    var dataID = "spectrum.id";
+    $.fn.spectrum = function (opts, extra) {
+
+        if (typeof opts == "string") {
+
+            var returnValue = this;
+            var args = Array.prototype.slice.call( arguments, 1 );
+
+            this.each(function () {
+                var spect = spectrums[$(this).data(dataID)];
+                if (spect) {
+                    var method = spect[opts];
+                    if (!method) {
+                        throw new Error( "Spectrum: no such method: '" + opts + "'" );
+                    }
+
+                    if (opts == "get") {
+                        returnValue = spect.get();
+                    }
+                    else if (opts == "container") {
+                        returnValue = spect.container;
+                    }
+                    else if (opts == "option") {
+                        returnValue = spect.option.apply(spect, args);
+                    }
+                    else if (opts == "destroy") {
+                        spect.destroy();
+                        $(this).removeData(dataID);
+                    }
+                    else {
+                        method.apply(spect, args);
+                    }
+                }
+            });
+
+            return returnValue;
+        }
+
+        // Initializing a new instance of spectrum
+        return this.spectrum("destroy").each(function () {
+            var options = $.extend({}, opts, $(this).data());
+            var spect = spectrum(this, options);
+            $(this).data(dataID, spect.id);
+        });
+    };
+
+    $.fn.spectrum.load = true;
+    $.fn.spectrum.loadOpts = {};
+    $.fn.spectrum.draggable = draggable;
+    $.fn.spectrum.defaults = defaultOpts;
+    $.fn.spectrum.inputTypeColorSupport = function inputTypeColorSupport() {
+        if (typeof inputTypeColorSupport._cachedResult === "undefined") {
+            var colorInput = $("<input type='color'/>")[0]; // if color element is supported, value will default to not null
+            inputTypeColorSupport._cachedResult = colorInput.type === "color" && colorInput.value !== "";
+        }
+        return inputTypeColorSupport._cachedResult;
+    };
+
+    $.spectrum = { };
+    $.spectrum.localization = { };
+    $.spectrum.palettes = { };
+
+    $.fn.spectrum.processNativeColorInputs = function () {
+        var colorInputs = $("input[type=color]");
+        if (colorInputs.length && !inputTypeColorSupport()) {
+            colorInputs.spectrum({
+                preferredFormat: "hex6"
+            });
+        }
+    };
+
+    // TinyColor v1.1.2
+    // https://github.com/bgrins/TinyColor
+    // Brian Grinstead, MIT License
+
+    (function() {
+
+    var trimLeft = /^[\s,#]+/,
+        trimRight = /\s+$/,
+        tinyCounter = 0,
+        math = Math,
+        mathRound = math.round,
+        mathMin = math.min,
+        mathMax = math.max,
+        mathRandom = math.random;
+
+    var tinycolor = function(color, opts) {
+
+        color = (color) ? color : '';
+        opts = opts || { };
+
+        // If input is already a tinycolor, return itself
+        if (color instanceof tinycolor) {
+           return color;
+        }
+        // If we are called as a function, call using new instead
+        if (!(this instanceof tinycolor)) {
+            return new tinycolor(color, opts);
+        }
+
+        var rgb = inputToRGB(color);
+        this._originalInput = color,
+        this._r = rgb.r,
+        this._g = rgb.g,
+        this._b = rgb.b,
+        this._a = rgb.a,
+        this._roundA = mathRound(100*this._a) / 100,
+        this._format = opts.format || rgb.format;
+        this._gradientType = opts.gradientType;
+
+        // Don't let the range of [0,255] come back in [0,1].
+        // Potentially lose a little bit of precision here, but will fix issues where
+        // .5 gets interpreted as half of the total, instead of half of 1
+        // If it was supposed to be 128, this was already taken care of by `inputToRgb`
+        if (this._r < 1) { this._r = mathRound(this._r); }
+        if (this._g < 1) { this._g = mathRound(this._g); }
+        if (this._b < 1) { this._b = mathRound(this._b); }
+
+        this._ok = rgb.ok;
+        this._tc_id = tinyCounter++;
+    };
+
+    tinycolor.prototype = {
+        isDark: function() {
+            return this.getBrightness() < 128;
+        },
+        isLight: function() {
+            return !this.isDark();
+        },
+        isValid: function() {
+            return this._ok;
+        },
+        getOriginalInput: function() {
+          return this._originalInput;
+        },
+        getFormat: function() {
+            return this._format;
+        },
+        getAlpha: function() {
+            return this._a;
+        },
+        getBrightness: function() {
+            var rgb = this.toRgb();
+            return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        },
+        setAlpha: function(value) {
+            this._a = boundAlpha(value);
+            this._roundA = mathRound(100*this._a) / 100;
+            return this;
+        },
+        toHsv: function() {
+            var hsv = rgbToHsv(this._r, this._g, this._b);
+            return { h: hsv.h * 360, s: hsv.s, v: hsv.v, a: this._a };
+        },
+        toHsvString: function() {
+            var hsv = rgbToHsv(this._r, this._g, this._b);
+            var h = mathRound(hsv.h * 360), s = mathRound(hsv.s * 100), v = mathRound(hsv.v * 100);
+            return (this._a == 1) ?
+              "hsv("  + h + ", " + s + "%, " + v + "%)" :
+              "hsva(" + h + ", " + s + "%, " + v + "%, "+ this._roundA + ")";
+        },
+        toHsl: function() {
+            var hsl = rgbToHsl(this._r, this._g, this._b);
+            return { h: hsl.h * 360, s: hsl.s, l: hsl.l, a: this._a };
+        },
+        toHslString: function() {
+            var hsl = rgbToHsl(this._r, this._g, this._b);
+            var h = mathRound(hsl.h * 360), s = mathRound(hsl.s * 100), l = mathRound(hsl.l * 100);
+            return (this._a == 1) ?
+              "hsl("  + h + ", " + s + "%, " + l + "%)" :
+              "hsla(" + h + ", " + s + "%, " + l + "%, "+ this._roundA + ")";
+        },
+        toHex: function(allow3Char) {
+            return rgbToHex(this._r, this._g, this._b, allow3Char);
+        },
+        toHexString: function(allow3Char) {
+            return '#' + this.toHex(allow3Char);
+        },
+        toHex8: function() {
+            return rgbaToHex(this._r, this._g, this._b, this._a);
+        },
+        toHex8String: function() {
+            return '#' + this.toHex8();
+        },
+        toRgb: function() {
+            return { r: mathRound(this._r), g: mathRound(this._g), b: mathRound(this._b), a: this._a };
+        },
+        toRgbString: function() {
+            return (this._a == 1) ?
+              "rgb("  + mathRound(this._r) + ", " + mathRound(this._g) + ", " + mathRound(this._b) + ")" :
+              "rgba(" + mathRound(this._r) + ", " + mathRound(this._g) + ", " + mathRound(this._b) + ", " + this._roundA + ")";
+        },
+        toPercentageRgb: function() {
+            return { r: mathRound(bound01(this._r, 255) * 100) + "%", g: mathRound(bound01(this._g, 255) * 100) + "%", b: mathRound(bound01(this._b, 255) * 100) + "%", a: this._a };
+        },
+        toPercentageRgbString: function() {
+            return (this._a == 1) ?
+              "rgb("  + mathRound(bound01(this._r, 255) * 100) + "%, " + mathRound(bound01(this._g, 255) * 100) + "%, " + mathRound(bound01(this._b, 255) * 100) + "%)" :
+              "rgba(" + mathRound(bound01(this._r, 255) * 100) + "%, " + mathRound(bound01(this._g, 255) * 100) + "%, " + mathRound(bound01(this._b, 255) * 100) + "%, " + this._roundA + ")";
+        },
+        toName: function() {
+            if (this._a === 0) {
+                return "transparent";
+            }
+
+            if (this._a < 1) {
+                return false;
+            }
+
+            return hexNames[rgbToHex(this._r, this._g, this._b, true)] || false;
+        },
+        toFilter: function(secondColor) {
+            var hex8String = '#' + rgbaToHex(this._r, this._g, this._b, this._a);
+            var secondHex8String = hex8String;
+            var gradientType = this._gradientType ? "GradientType = 1, " : "";
+
+            if (secondColor) {
+                var s = tinycolor(secondColor);
+                secondHex8String = s.toHex8String();
+            }
+
+            return "progid:DXImageTransform.Microsoft.gradient("+gradientType+"startColorstr="+hex8String+",endColorstr="+secondHex8String+")";
+        },
+        toString: function(format) {
+            var formatSet = !!format;
+            format = format || this._format;
+
+            var formattedString = false;
+            var hasAlpha = this._a < 1 && this._a >= 0;
+            var needsAlphaFormat = !formatSet && hasAlpha && (format === "hex" || format === "hex6" || format === "hex3" || format === "name");
+
+            if (needsAlphaFormat) {
+                // Special case for "transparent", all other non-alpha formats
+                // will return rgba when there is transparency.
+                if (format === "name" && this._a === 0) {
+                    return this.toName();
+                }
+                return this.toRgbString();
+            }
+            if (format === "rgb") {
+                formattedString = this.toRgbString();
+            }
+            if (format === "prgb") {
+                formattedString = this.toPercentageRgbString();
+            }
+            if (format === "hex" || format === "hex6") {
+                formattedString = this.toHexString();
+            }
+            if (format === "hex3") {
+                formattedString = this.toHexString(true);
+            }
+            if (format === "hex8") {
+                formattedString = this.toHex8String();
+            }
+            if (format === "name") {
+                formattedString = this.toName();
+            }
+            if (format === "hsl") {
+                formattedString = this.toHslString();
+            }
+            if (format === "hsv") {
+                formattedString = this.toHsvString();
+            }
+
+            return formattedString || this.toHexString();
+        },
+
+        _applyModification: function(fn, args) {
+            var color = fn.apply(null, [this].concat([].slice.call(args)));
+            this._r = color._r;
+            this._g = color._g;
+            this._b = color._b;
+            this.setAlpha(color._a);
+            return this;
+        },
+        lighten: function() {
+            return this._applyModification(lighten, arguments);
+        },
+        brighten: function() {
+            return this._applyModification(brighten, arguments);
+        },
+        darken: function() {
+            return this._applyModification(darken, arguments);
+        },
+        desaturate: function() {
+            return this._applyModification(desaturate, arguments);
+        },
+        saturate: function() {
+            return this._applyModification(saturate, arguments);
+        },
+        greyscale: function() {
+            return this._applyModification(greyscale, arguments);
+        },
+        spin: function() {
+            return this._applyModification(spin, arguments);
+        },
+
+        _applyCombination: function(fn, args) {
+            return fn.apply(null, [this].concat([].slice.call(args)));
+        },
+        analogous: function() {
+            return this._applyCombination(analogous, arguments);
+        },
+        complement: function() {
+            return this._applyCombination(complement, arguments);
+        },
+        monochromatic: function() {
+            return this._applyCombination(monochromatic, arguments);
+        },
+        splitcomplement: function() {
+            return this._applyCombination(splitcomplement, arguments);
+        },
+        triad: function() {
+            return this._applyCombination(triad, arguments);
+        },
+        tetrad: function() {
+            return this._applyCombination(tetrad, arguments);
+        }
+    };
+
+    // If input is an object, force 1 into "1.0" to handle ratios properly
+    // String input requires "1.0" as input, so 1 will be treated as 1
+    tinycolor.fromRatio = function(color, opts) {
+        if (typeof color == "object") {
+            var newColor = {};
+            for (var i in color) {
+                if (color.hasOwnProperty(i)) {
+                    if (i === "a") {
+                        newColor[i] = color[i];
+                    }
+                    else {
+                        newColor[i] = convertToPercentage(color[i]);
+                    }
+                }
+            }
+            color = newColor;
+        }
+
+        return tinycolor(color, opts);
+    };
+
+    // Given a string or object, convert that input to RGB
+    // Possible string inputs:
+    //
+    //     "red"
+    //     "#f00" or "f00"
+    //     "#ff0000" or "ff0000"
+    //     "#ff000000" or "ff000000"
+    //     "rgb 255 0 0" or "rgb (255, 0, 0)"
+    //     "rgb 1.0 0 0" or "rgb (1, 0, 0)"
+    //     "rgba (255, 0, 0, 1)" or "rgba 255, 0, 0, 1"
+    //     "rgba (1.0, 0, 0, 1)" or "rgba 1.0, 0, 0, 1"
+    //     "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
+    //     "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
+    //     "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
+    //
+    function inputToRGB(color) {
+
+        var rgb = { r: 0, g: 0, b: 0 };
+        var a = 1;
+        var ok = false;
+        var format = false;
+
+        if (typeof color == "string") {
+            color = stringInputToObject(color);
+        }
+
+        if (typeof color == "object") {
+            if (color.hasOwnProperty("r") && color.hasOwnProperty("g") && color.hasOwnProperty("b")) {
+                rgb = rgbToRgb(color.r, color.g, color.b);
+                ok = true;
+                format = String(color.r).substr(-1) === "%" ? "prgb" : "rgb";
+            }
+            else if (color.hasOwnProperty("h") && color.hasOwnProperty("s") && color.hasOwnProperty("v")) {
+                color.s = convertToPercentage(color.s);
+                color.v = convertToPercentage(color.v);
+                rgb = hsvToRgb(color.h, color.s, color.v);
+                ok = true;
+                format = "hsv";
+            }
+            else if (color.hasOwnProperty("h") && color.hasOwnProperty("s") && color.hasOwnProperty("l")) {
+                color.s = convertToPercentage(color.s);
+                color.l = convertToPercentage(color.l);
+                rgb = hslToRgb(color.h, color.s, color.l);
+                ok = true;
+                format = "hsl";
+            }
+
+            if (color.hasOwnProperty("a")) {
+                a = color.a;
+            }
+        }
+
+        a = boundAlpha(a);
+
+        return {
+            ok: ok,
+            format: color.format || format,
+            r: mathMin(255, mathMax(rgb.r, 0)),
+            g: mathMin(255, mathMax(rgb.g, 0)),
+            b: mathMin(255, mathMax(rgb.b, 0)),
+            a: a
+        };
+    }
+
+
+    // Conversion Functions
+    // --------------------
+
+    // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
+    // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
+
+    // `rgbToRgb`
+    // Handle bounds / percentage checking to conform to CSS color spec
+    // <http://www.w3.org/TR/css3-color/>
+    // *Assumes:* r, g, b in [0, 255] or [0, 1]
+    // *Returns:* { r, g, b } in [0, 255]
+    function rgbToRgb(r, g, b){
+        return {
+            r: bound01(r, 255) * 255,
+            g: bound01(g, 255) * 255,
+            b: bound01(b, 255) * 255
+        };
+    }
+
+    // `rgbToHsl`
+    // Converts an RGB color value to HSL.
+    // *Assumes:* r, g, and b are contained in [0, 255] or [0, 1]
+    // *Returns:* { h, s, l } in [0,1]
+    function rgbToHsl(r, g, b) {
+
+        r = bound01(r, 255);
+        g = bound01(g, 255);
+        b = bound01(b, 255);
+
+        var max = mathMax(r, g, b), min = mathMin(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if(max == min) {
+            h = s = 0; // achromatic
+        }
+        else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+
+            h /= 6;
+        }
+
+        return { h: h, s: s, l: l };
+    }
+
+    // `hslToRgb`
+    // Converts an HSL color value to RGB.
+    // *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
+    // *Returns:* { r, g, b } in the set [0, 255]
+    function hslToRgb(h, s, l) {
+        var r, g, b;
+
+        h = bound01(h, 360);
+        s = bound01(s, 100);
+        l = bound01(l, 100);
+
+        function hue2rgb(p, q, t) {
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        if(s === 0) {
+            r = g = b = l; // achromatic
+        }
+        else {
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return { r: r * 255, g: g * 255, b: b * 255 };
+    }
+
+    // `rgbToHsv`
+    // Converts an RGB color value to HSV
+    // *Assumes:* r, g, and b are contained in the set [0, 255] or [0, 1]
+    // *Returns:* { h, s, v } in [0,1]
+    function rgbToHsv(r, g, b) {
+
+        r = bound01(r, 255);
+        g = bound01(g, 255);
+        b = bound01(b, 255);
+
+        var max = mathMax(r, g, b), min = mathMin(r, g, b);
+        var h, s, v = max;
+
+        var d = max - min;
+        s = max === 0 ? 0 : d / max;
+
+        if(max == min) {
+            h = 0; // achromatic
+        }
+        else {
+            switch(max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return { h: h, s: s, v: v };
+    }
+
+    // `hsvToRgb`
+    // Converts an HSV color value to RGB.
+    // *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
+    // *Returns:* { r, g, b } in the set [0, 255]
+     function hsvToRgb(h, s, v) {
+
+        h = bound01(h, 360) * 6;
+        s = bound01(s, 100);
+        v = bound01(v, 100);
+
+        var i = math.floor(h),
+            f = h - i,
+            p = v * (1 - s),
+            q = v * (1 - f * s),
+            t = v * (1 - (1 - f) * s),
+            mod = i % 6,
+            r = [v, q, p, p, t, v][mod],
+            g = [t, v, v, q, p, p][mod],
+            b = [p, p, t, v, v, q][mod];
+
+        return { r: r * 255, g: g * 255, b: b * 255 };
+    }
+
+    // `rgbToHex`
+    // Converts an RGB color to hex
+    // Assumes r, g, and b are contained in the set [0, 255]
+    // Returns a 3 or 6 character hex
+    function rgbToHex(r, g, b, allow3Char) {
+
+        var hex = [
+            pad2(mathRound(r).toString(16)),
+            pad2(mathRound(g).toString(16)),
+            pad2(mathRound(b).toString(16))
+        ];
+
+        // Return a 3 character hex if possible
+        if (allow3Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1)) {
+            return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
+        }
+
+        return hex.join("");
+    }
+        // `rgbaToHex`
+        // Converts an RGBA color plus alpha transparency to hex
+        // Assumes r, g, b and a are contained in the set [0, 255]
+        // Returns an 8 character hex
+        function rgbaToHex(r, g, b, a) {
+
+            var hex = [
+                pad2(convertDecimalToHex(a)),
+                pad2(mathRound(r).toString(16)),
+                pad2(mathRound(g).toString(16)),
+                pad2(mathRound(b).toString(16))
+            ];
+
+            return hex.join("");
+        }
+
+    // `equals`
+    // Can be called with any tinycolor input
+    tinycolor.equals = function (color1, color2) {
+        if (!color1 || !color2) { return false; }
+        return tinycolor(color1).toRgbString() == tinycolor(color2).toRgbString();
+    };
+    tinycolor.random = function() {
+        return tinycolor.fromRatio({
+            r: mathRandom(),
+            g: mathRandom(),
+            b: mathRandom()
+        });
+    };
+
+
+    // Modification Functions
+    // ----------------------
+    // Thanks to less.js for some of the basics here
+    // <https://github.com/cloudhead/less.js/blob/master/lib/less/functions.js>
+
+    function desaturate(color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.s -= amount / 100;
+        hsl.s = clamp01(hsl.s);
+        return tinycolor(hsl);
+    }
+
+    function saturate(color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.s += amount / 100;
+        hsl.s = clamp01(hsl.s);
+        return tinycolor(hsl);
+    }
+
+    function greyscale(color) {
+        return tinycolor(color).desaturate(100);
+    }
+
+    function lighten (color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.l += amount / 100;
+        hsl.l = clamp01(hsl.l);
+        return tinycolor(hsl);
+    }
+
+    function brighten(color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var rgb = tinycolor(color).toRgb();
+        rgb.r = mathMax(0, mathMin(255, rgb.r - mathRound(255 * - (amount / 100))));
+        rgb.g = mathMax(0, mathMin(255, rgb.g - mathRound(255 * - (amount / 100))));
+        rgb.b = mathMax(0, mathMin(255, rgb.b - mathRound(255 * - (amount / 100))));
+        return tinycolor(rgb);
+    }
+
+    function darken (color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.l -= amount / 100;
+        hsl.l = clamp01(hsl.l);
+        return tinycolor(hsl);
+    }
+
+    // Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
+    // Values outside of this range will be wrapped into this range.
+    function spin(color, amount) {
+        var hsl = tinycolor(color).toHsl();
+        var hue = (mathRound(hsl.h) + amount) % 360;
+        hsl.h = hue < 0 ? 360 + hue : hue;
+        return tinycolor(hsl);
+    }
+
+    // Combination Functions
+    // ---------------------
+    // Thanks to jQuery xColor for some of the ideas behind these
+    // <https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js>
+
+    function complement(color) {
+        var hsl = tinycolor(color).toHsl();
+        hsl.h = (hsl.h + 180) % 360;
+        return tinycolor(hsl);
+    }
+
+    function triad(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({ h: (h + 120) % 360, s: hsl.s, l: hsl.l }),
+            tinycolor({ h: (h + 240) % 360, s: hsl.s, l: hsl.l })
+        ];
+    }
+
+    function tetrad(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({ h: (h + 90) % 360, s: hsl.s, l: hsl.l }),
+            tinycolor({ h: (h + 180) % 360, s: hsl.s, l: hsl.l }),
+            tinycolor({ h: (h + 270) % 360, s: hsl.s, l: hsl.l })
+        ];
+    }
+
+    function splitcomplement(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({ h: (h + 72) % 360, s: hsl.s, l: hsl.l}),
+            tinycolor({ h: (h + 216) % 360, s: hsl.s, l: hsl.l})
+        ];
+    }
+
+    function analogous(color, results, slices) {
+        results = results || 6;
+        slices = slices || 30;
+
+        var hsl = tinycolor(color).toHsl();
+        var part = 360 / slices;
+        var ret = [tinycolor(color)];
+
+        for (hsl.h = ((hsl.h - (part * results >> 1)) + 720) % 360; --results; ) {
+            hsl.h = (hsl.h + part) % 360;
+            ret.push(tinycolor(hsl));
+        }
+        return ret;
+    }
+
+    function monochromatic(color, results) {
+        results = results || 6;
+        var hsv = tinycolor(color).toHsv();
+        var h = hsv.h, s = hsv.s, v = hsv.v;
+        var ret = [];
+        var modification = 1 / results;
+
+        while (results--) {
+            ret.push(tinycolor({ h: h, s: s, v: v}));
+            v = (v + modification) % 1;
+        }
+
+        return ret;
+    }
+
+    // Utility Functions
+    // ---------------------
+
+    tinycolor.mix = function(color1, color2, amount) {
+        amount = (amount === 0) ? 0 : (amount || 50);
+
+        var rgb1 = tinycolor(color1).toRgb();
+        var rgb2 = tinycolor(color2).toRgb();
+
+        var p = amount / 100;
+        var w = p * 2 - 1;
+        var a = rgb2.a - rgb1.a;
+
+        var w1;
+
+        if (w * a == -1) {
+            w1 = w;
+        } else {
+            w1 = (w + a) / (1 + w * a);
+        }
+
+        w1 = (w1 + 1) / 2;
+
+        var w2 = 1 - w1;
+
+        var rgba = {
+            r: rgb2.r * w1 + rgb1.r * w2,
+            g: rgb2.g * w1 + rgb1.g * w2,
+            b: rgb2.b * w1 + rgb1.b * w2,
+            a: rgb2.a * p  + rgb1.a * (1 - p)
+        };
+
+        return tinycolor(rgba);
+    };
+
+
+    // Readability Functions
+    // ---------------------
+    // <http://www.w3.org/TR/AERT#color-contrast>
+
+    // `readability`
+    // Analyze the 2 colors and returns an object with the following properties:
+    //    `brightness`: difference in brightness between the two colors
+    //    `color`: difference in color/hue between the two colors
+    tinycolor.readability = function(color1, color2) {
+        var c1 = tinycolor(color1);
+        var c2 = tinycolor(color2);
+        var rgb1 = c1.toRgb();
+        var rgb2 = c2.toRgb();
+        var brightnessA = c1.getBrightness();
+        var brightnessB = c2.getBrightness();
+        var colorDiff = (
+            Math.max(rgb1.r, rgb2.r) - Math.min(rgb1.r, rgb2.r) +
+            Math.max(rgb1.g, rgb2.g) - Math.min(rgb1.g, rgb2.g) +
+            Math.max(rgb1.b, rgb2.b) - Math.min(rgb1.b, rgb2.b)
+        );
+
+        return {
+            brightness: Math.abs(brightnessA - brightnessB),
+            color: colorDiff
+        };
+    };
+
+    // `readable`
+    // http://www.w3.org/TR/AERT#color-contrast
+    // Ensure that foreground and background color combinations provide sufficient contrast.
+    // *Example*
+    //    tinycolor.isReadable("#000", "#111") => false
+    tinycolor.isReadable = function(color1, color2) {
+        var readability = tinycolor.readability(color1, color2);
+        return readability.brightness > 125 && readability.color > 500;
+    };
+
+    // `mostReadable`
+    // Given a base color and a list of possible foreground or background
+    // colors for that base, returns the most readable color.
+    // *Example*
+    //    tinycolor.mostReadable("#123", ["#fff", "#000"]) => "#000"
+    tinycolor.mostReadable = function(baseColor, colorList) {
+        var bestColor = null;
+        var bestScore = 0;
+        var bestIsReadable = false;
+        for (var i=0; i < colorList.length; i++) {
+
+            // We normalize both around the "acceptable" breaking point,
+            // but rank brightness constrast higher than hue.
+
+            var readability = tinycolor.readability(baseColor, colorList[i]);
+            var readable = readability.brightness > 125 && readability.color > 500;
+            var score = 3 * (readability.brightness / 125) + (readability.color / 500);
+
+            if ((readable && ! bestIsReadable) ||
+                (readable && bestIsReadable && score > bestScore) ||
+                ((! readable) && (! bestIsReadable) && score > bestScore)) {
+                bestIsReadable = readable;
+                bestScore = score;
+                bestColor = tinycolor(colorList[i]);
+            }
+        }
+        return bestColor;
+    };
+
+
+    // Big List of Colors
+    // ------------------
+    // <http://www.w3.org/TR/css3-color/#svg-color>
+    var names = tinycolor.names = {
+        aliceblue: "f0f8ff",
+        antiquewhite: "faebd7",
+        aqua: "0ff",
+        aquamarine: "7fffd4",
+        azure: "f0ffff",
+        beige: "f5f5dc",
+        bisque: "ffe4c4",
+        black: "000",
+        blanchedalmond: "ffebcd",
+        blue: "00f",
+        blueviolet: "8a2be2",
+        brown: "a52a2a",
+        burlywood: "deb887",
+        burntsienna: "ea7e5d",
+        cadetblue: "5f9ea0",
+        chartreuse: "7fff00",
+        chocolate: "d2691e",
+        coral: "ff7f50",
+        cornflowerblue: "6495ed",
+        cornsilk: "fff8dc",
+        crimson: "dc143c",
+        cyan: "0ff",
+        darkblue: "00008b",
+        darkcyan: "008b8b",
+        darkgoldenrod: "b8860b",
+        darkgray: "a9a9a9",
+        darkgreen: "006400",
+        darkgrey: "a9a9a9",
+        darkkhaki: "bdb76b",
+        darkmagenta: "8b008b",
+        darkolivegreen: "556b2f",
+        darkorange: "ff8c00",
+        darkorchid: "9932cc",
+        darkred: "8b0000",
+        darksalmon: "e9967a",
+        darkseagreen: "8fbc8f",
+        darkslateblue: "483d8b",
+        darkslategray: "2f4f4f",
+        darkslategrey: "2f4f4f",
+        darkturquoise: "00ced1",
+        darkviolet: "9400d3",
+        deeppink: "ff1493",
+        deepskyblue: "00bfff",
+        dimgray: "696969",
+        dimgrey: "696969",
+        dodgerblue: "1e90ff",
+        firebrick: "b22222",
+        floralwhite: "fffaf0",
+        forestgreen: "228b22",
+        fuchsia: "f0f",
+        gainsboro: "dcdcdc",
+        ghostwhite: "f8f8ff",
+        gold: "ffd700",
+        goldenrod: "daa520",
+        gray: "808080",
+        green: "008000",
+        greenyellow: "adff2f",
+        grey: "808080",
+        honeydew: "f0fff0",
+        hotpink: "ff69b4",
+        indianred: "cd5c5c",
+        indigo: "4b0082",
+        ivory: "fffff0",
+        khaki: "f0e68c",
+        lavender: "e6e6fa",
+        lavenderblush: "fff0f5",
+        lawngreen: "7cfc00",
+        lemonchiffon: "fffacd",
+        lightblue: "add8e6",
+        lightcoral: "f08080",
+        lightcyan: "e0ffff",
+        lightgoldenrodyellow: "fafad2",
+        lightgray: "d3d3d3",
+        lightgreen: "90ee90",
+        lightgrey: "d3d3d3",
+        lightpink: "ffb6c1",
+        lightsalmon: "ffa07a",
+        lightseagreen: "20b2aa",
+        lightskyblue: "87cefa",
+        lightslategray: "789",
+        lightslategrey: "789",
+        lightsteelblue: "b0c4de",
+        lightyellow: "ffffe0",
+        lime: "0f0",
+        limegreen: "32cd32",
+        linen: "faf0e6",
+        magenta: "f0f",
+        maroon: "800000",
+        mediumaquamarine: "66cdaa",
+        mediumblue: "0000cd",
+        mediumorchid: "ba55d3",
+        mediumpurple: "9370db",
+        mediumseagreen: "3cb371",
+        mediumslateblue: "7b68ee",
+        mediumspringgreen: "00fa9a",
+        mediumturquoise: "48d1cc",
+        mediumvioletred: "c71585",
+        midnightblue: "191970",
+        mintcream: "f5fffa",
+        mistyrose: "ffe4e1",
+        moccasin: "ffe4b5",
+        navajowhite: "ffdead",
+        navy: "000080",
+        oldlace: "fdf5e6",
+        olive: "808000",
+        olivedrab: "6b8e23",
+        orange: "ffa500",
+        orangered: "ff4500",
+        orchid: "da70d6",
+        palegoldenrod: "eee8aa",
+        palegreen: "98fb98",
+        paleturquoise: "afeeee",
+        palevioletred: "db7093",
+        papayawhip: "ffefd5",
+        peachpuff: "ffdab9",
+        peru: "cd853f",
+        pink: "ffc0cb",
+        plum: "dda0dd",
+        powderblue: "b0e0e6",
+        purple: "800080",
+        rebeccapurple: "663399",
+        red: "f00",
+        rosybrown: "bc8f8f",
+        royalblue: "4169e1",
+        saddlebrown: "8b4513",
+        salmon: "fa8072",
+        sandybrown: "f4a460",
+        seagreen: "2e8b57",
+        seashell: "fff5ee",
+        sienna: "a0522d",
+        silver: "c0c0c0",
+        skyblue: "87ceeb",
+        slateblue: "6a5acd",
+        slategray: "708090",
+        slategrey: "708090",
+        snow: "fffafa",
+        springgreen: "00ff7f",
+        steelblue: "4682b4",
+        tan: "d2b48c",
+        teal: "008080",
+        thistle: "d8bfd8",
+        tomato: "ff6347",
+        turquoise: "40e0d0",
+        violet: "ee82ee",
+        wheat: "f5deb3",
+        white: "fff",
+        whitesmoke: "f5f5f5",
+        yellow: "ff0",
+        yellowgreen: "9acd32"
+    };
+
+    // Make it easy to access colors via `hexNames[hex]`
+    var hexNames = tinycolor.hexNames = flip(names);
+
+
+    // Utilities
+    // ---------
+
+    // `{ 'name1': 'val1' }` becomes `{ 'val1': 'name1' }`
+    function flip(o) {
+        var flipped = { };
+        for (var i in o) {
+            if (o.hasOwnProperty(i)) {
+                flipped[o[i]] = i;
+            }
+        }
+        return flipped;
+    }
+
+    // Return a valid alpha value [0,1] with all invalid values being set to 1
+    function boundAlpha(a) {
+        a = parseFloat(a);
+
+        if (isNaN(a) || a < 0 || a > 1) {
+            a = 1;
+        }
+
+        return a;
+    }
+
+    // Take input from [0, n] and return it as [0, 1]
+    function bound01(n, max) {
+        if (isOnePointZero(n)) { n = "100%"; }
+
+        var processPercent = isPercentage(n);
+        n = mathMin(max, mathMax(0, parseFloat(n)));
+
+        // Automatically convert percentage into number
+        if (processPercent) {
+            n = parseInt(n * max, 10) / 100;
+        }
+
+        // Handle floating point rounding errors
+        if ((math.abs(n - max) < 0.000001)) {
+            return 1;
+        }
+
+        // Convert into [0, 1] range if it isn't already
+        return (n % max) / parseFloat(max);
+    }
+
+    // Force a number between 0 and 1
+    function clamp01(val) {
+        return mathMin(1, mathMax(0, val));
+    }
+
+    // Parse a base-16 hex value into a base-10 integer
+    function parseIntFromHex(val) {
+        return parseInt(val, 16);
+    }
+
+    // Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
+    // <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
+    function isOnePointZero(n) {
+        return typeof n == "string" && n.indexOf('.') != -1 && parseFloat(n) === 1;
+    }
+
+    // Check to see if string passed in is a percentage
+    function isPercentage(n) {
+        return typeof n === "string" && n.indexOf('%') != -1;
+    }
+
+    // Force a hex value to have 2 characters
+    function pad2(c) {
+        return c.length == 1 ? '0' + c : '' + c;
+    }
+
+    // Replace a decimal with it's percentage value
+    function convertToPercentage(n) {
+        if (n <= 1) {
+            n = (n * 100) + "%";
+        }
+
+        return n;
+    }
+
+    // Converts a decimal to a hex value
+    function convertDecimalToHex(d) {
+        return Math.round(parseFloat(d) * 255).toString(16);
+    }
+    // Converts a hex value to a decimal
+    function convertHexToDecimal(h) {
+        return (parseIntFromHex(h) / 255);
+    }
+
+    var matchers = (function() {
+
+        // <http://www.w3.org/TR/css3-values/#integers>
+        var CSS_INTEGER = "[-\\+]?\\d+%?";
+
+        // <http://www.w3.org/TR/css3-values/#number-value>
+        var CSS_NUMBER = "[-\\+]?\\d*\\.\\d+%?";
+
+        // Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
+        var CSS_UNIT = "(?:" + CSS_NUMBER + ")|(?:" + CSS_INTEGER + ")";
+
+        // Actual matching.
+        // Parentheses and commas are optional, but not required.
+        // Whitespace can take the place of commas or opening paren
+        var PERMISSIVE_MATCH3 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
+        var PERMISSIVE_MATCH4 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
+
+        return {
+            rgb: new RegExp("rgb" + PERMISSIVE_MATCH3),
+            rgba: new RegExp("rgba" + PERMISSIVE_MATCH4),
+            hsl: new RegExp("hsl" + PERMISSIVE_MATCH3),
+            hsla: new RegExp("hsla" + PERMISSIVE_MATCH4),
+            hsv: new RegExp("hsv" + PERMISSIVE_MATCH3),
+            hsva: new RegExp("hsva" + PERMISSIVE_MATCH4),
+            hex3: /^([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+            hex6: /^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
+            hex8: /^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
+        };
+    })();
+
+    // `stringInputToObject`
+    // Permissive string parsing.  Take in a number of formats, and output an object
+    // based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
+    function stringInputToObject(color) {
+
+        color = color.replace(trimLeft,'').replace(trimRight, '').toLowerCase();
+        var named = false;
+        if (names[color]) {
+            color = names[color];
+            named = true;
+        }
+        else if (color == 'transparent') {
+            return { r: 0, g: 0, b: 0, a: 0, format: "name" };
+        }
+
+        // Try to match string input using regular expressions.
+        // Keep most of the number bounding out of this function - don't worry about [0,1] or [0,100] or [0,360]
+        // Just return an object and let the conversion functions handle that.
+        // This way the result will be the same whether the tinycolor is initialized with string or object.
+        var match;
+        if ((match = matchers.rgb.exec(color))) {
+            return { r: match[1], g: match[2], b: match[3] };
+        }
+        if ((match = matchers.rgba.exec(color))) {
+            return { r: match[1], g: match[2], b: match[3], a: match[4] };
+        }
+        if ((match = matchers.hsl.exec(color))) {
+            return { h: match[1], s: match[2], l: match[3] };
+        }
+        if ((match = matchers.hsla.exec(color))) {
+            return { h: match[1], s: match[2], l: match[3], a: match[4] };
+        }
+        if ((match = matchers.hsv.exec(color))) {
+            return { h: match[1], s: match[2], v: match[3] };
+        }
+        if ((match = matchers.hsva.exec(color))) {
+            return { h: match[1], s: match[2], v: match[3], a: match[4] };
+        }
+        if ((match = matchers.hex8.exec(color))) {
+            return {
+                a: convertHexToDecimal(match[1]),
+                r: parseIntFromHex(match[2]),
+                g: parseIntFromHex(match[3]),
+                b: parseIntFromHex(match[4]),
+                format: named ? "name" : "hex8"
+            };
+        }
+        if ((match = matchers.hex6.exec(color))) {
+            return {
+                r: parseIntFromHex(match[1]),
+                g: parseIntFromHex(match[2]),
+                b: parseIntFromHex(match[3]),
+                format: named ? "name" : "hex"
+            };
+        }
+        if ((match = matchers.hex3.exec(color))) {
+            return {
+                r: parseIntFromHex(match[1] + '' + match[1]),
+                g: parseIntFromHex(match[2] + '' + match[2]),
+                b: parseIntFromHex(match[3] + '' + match[3]),
+                format: named ? "name" : "hex"
+            };
+        }
+
+        return false;
+    }
+
+    window.tinycolor = tinycolor;
+    })();
+
+    $(function () {
+        if ($.fn.spectrum.load) {
+            $.fn.spectrum.processNativeColorInputs();
+        }
+    });
+
+});

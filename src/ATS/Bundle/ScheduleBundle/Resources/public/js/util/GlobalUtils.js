@@ -38,9 +38,9 @@ let GlobalUtils;
         let button = $('#btn-export');
         
         if (scheduler.getSectionIds().length) {
-            button.removeProp('disabled');
+            button.removeAttr('disabled');
         } else {
-            button.prop('disabled', 'disabled');
+            button.attr('disabled', 'disabled');
         }
     };
 

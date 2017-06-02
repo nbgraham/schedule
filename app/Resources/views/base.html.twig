@@ -17,6 +17,7 @@
                 'assets/vendor/font-awesome/css/font-awesome.min.css'
                 'assets/vendor/chosen/chosen.css'
                 'assets/vendor/qtip2/jquery.qtip.min.css'
+                'assets/vendor/spectrum/spectrum.css'
                 output='assets/compiled/css/libraries.css'
                 filter='cssrewrite'
             %}
@@ -24,6 +25,7 @@
             {% endstylesheets %}
             
             {% stylesheets
+                '@ATSScheduleBundle/Resources/public/css/chosen-bootstrap-theme.css'
                 '@ATSScheduleBundle/Resources/public/less/controller/Default/index.less'
                 output='assets/compiled/css/app.css'
                 filter='cssrewrite,less'
@@ -55,6 +57,7 @@
                 'assets/vendor/fullcalendar/dist/fullcalendar.min.js'
                 'assets/vendor/chosen/chosen.jquery.js'
                 'assets/vendor/qtip2/jquery.qtip.min.js'
+                'assets/vendor/spectrum/spectrum.js'
                 output='assets/compiled/js/libraries.js'
             %}
                 <script src="{{ asset_url }}"></script>

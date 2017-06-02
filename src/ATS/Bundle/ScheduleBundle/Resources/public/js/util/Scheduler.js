@@ -14,9 +14,23 @@ const Scheduler = (function ($) {
         }
         
         this.calendar = $(calendar);
+        this.shades   = {'subject': {}, 'instructor': {}};
     };
     
     Scheduler.prototype = {
+        /**
+         * Set a background color for a grouping of events.
+         * 
+         * @param type
+         * @param id
+         * @param value
+         */
+        setColor: function (type, id, value) {
+            this.shades['subject'][id] = value;
+            
+            updateColors(this, 'subject', id, value);
+        },
+        
         /**
          * Initialize the calendar.
          * 
@@ -95,7 +109,7 @@ const Scheduler = (function ($) {
                     context.loadCourseClass(data.responseJSON);
                 },
                 error: function (xhr) {
-                    console.log('error:');
+                    alert("An error occurred while fetching your request. Please try again.");
                     console.log(xhr);
                     
                     GlobalUtils.toggleExportBtn(context);
@@ -150,7 +164,7 @@ const Scheduler = (function ($) {
             let events;
             
             if (data.hasOwnProperty('classes')) {
-                events = loadEventAsClass(data.classes);
+                events = loadEventAsClass(this, data.classes);
             } else {
                 events = getClasses(data.courses);
             }
@@ -200,6 +214,7 @@ const Scheduler = (function ($) {
          */
         wipe : function () {
             this.calendar.fullCalendar('removeEventSources');
+            GlobalUtils.toggleExportBtn(this);
             
             return this;
         },
@@ -230,6 +245,63 @@ const Scheduler = (function ($) {
             return ids;
         }
     };
+
+    /**
+     * Update the background colors for an event after it's been rendered.
+     * 
+     * @param instance
+     * @param type
+     * @param id
+     * @param color
+     */
+    function updateColors (instance, type, id, color)
+    {
+        let events, idx, event;
+        events = instance.calendar.fullCalendar('clientEvents');
+        
+        if (!events.length) {
+            return;
+        }
+        
+        for (idx in events) {
+            if (!events.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            event = events[idx];
+            
+            if ('subject' === type && id === event.section.subject.name) {
+                event.backgroundColor = color;
+            }
+        }
+        
+        instance.calendar.fullCalendar('rerenderEvents');
+    }
+
+    /**
+     * Get the color value for an event.
+     * 
+     * @param scheduler
+     * @param event
+     * @param defaultColor
+     * @returns {*}
+     */
+    function getColor(scheduler, event, defaultColor)
+    {
+        let collection = scheduler.shades['instructor'];
+        
+        if (collection.hasOwnProperty(event.instructor.name)) {
+            return collection[event.instructor.name];
+        }
+        
+        collection = scheduler.shades['subject'];
+        
+        if (collection.hasOwnProperty(event.subject.name)) {
+            return collection[event.subject.name];
+        }
+        
+        return defaultColor;
+    }
 
     /**
      * Get an markup class for the class based on it's current capacity.
@@ -336,14 +408,15 @@ const Scheduler = (function ($) {
         
         return output;
     }
-
+    
     /**
      * Parse the JSON API data and turn them into event objects.
      * 
+     * @param scheduler
      * @param classes
      * @returns {Array}
      */
-    function loadEventAsClass(classes)
+    function loadEventAsClass(scheduler, classes)
     {
         let events, color, border, i;
         events = [];
@@ -373,7 +446,7 @@ const Scheduler = (function ($) {
                 dow:   getDays(cls.days),
                 description:     cls.instructor.name,
                 borderColor:     border,
-                backgroundColor: color
+                backgroundColor: getColor(scheduler, cls, color)
             });
         }
         

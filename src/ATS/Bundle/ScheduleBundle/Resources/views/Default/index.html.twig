@@ -3,7 +3,8 @@
 {% block title %}Class Scheduling{% endblock %}
 
 {% block body %}
-    {% include '@ATSSchedule/Default/components/filter-modal-wrapper.html.twig' %}
+    {% embed '@ATSSchedule/Default/components/filter-modal-wrapper.html.twig' %}
+    {% endembed %}
     
     <div class="container-fluid scheduler-header-wrapper">
         <div class="row scheduler-header">
@@ -14,7 +15,7 @@
                         Search
                     </button>
                     
-                    <button id="btn-export" type="button" class="btn" disabled="disabled">Export</button>
+                    <button id="btn-export" type="button" class="btn hidden-xs" disabled="disabled">Export</button>
                 </div>
             </div>
             

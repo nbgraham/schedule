@@ -32,23 +32,44 @@ div.calendar-container {
   }
 }
 
+/* Styles for the title text of the QTip overlay. */ 
 .ttTitle {
   text-decoration: bold;
   font-size: 0.8em;
   
-  .ttCapacity-over-capacity {
-    color: red;
+  .ttCapacity {
+    &-over-capacity {
+      color: red;
+    }
+    
+    &-alert {
+      color: lightsalmon;
+    }
+    
+    &-warning {
+      color: lightpink;
+    }
+    
+    &-lightsalmon-default {
+      color: lightgreen;
+    }
   }
-  
-  .ttCapacity-alert {
-    color: lightsalmon;
+}
+
+/* The bootstrap chosen add-on's close button is misaligned - correct it. */
+.chosen-container {
+  &#term_chosen {
+    abbr.search-choice-close {
+      margin-top: 5em;
+    }
   }
-  
-  .ttCapacity-warning {
-    color: lightpink;
-  }
-  
-  .lightsalmon-default {
-    color: lightgreen;
+}
+
+/* Make room in the chosen choice container for the color picker. */
+div.chosen-container {
+  li.search-choice input[type="color"] {
+    margin-top: 0.25em;
+    width: 3em;
+    height: 0.5em;
   }
 }

@@ -26,6 +26,7 @@
         
         populateFilters();
         buttonActions();
+        bindDelegated();
     });
 
     /**
@@ -39,24 +40,6 @@
         
         bindSemesterChange();
         bindSubjectChange();
-        
-        $('.modal-body').on('keydown', function (e) {
-            if (e.keyCode !== 27) {
-                return;
-            }
-            
-            let element = $(e.target);
-            if (!element.hasClass('chosen-search-input')) {
-                return;
-            }
-            
-            element
-                .blur()
-                .focus()
-            ;
-            
-            e.stopImmediatePropagation();
-        });
     }
 
     /**
@@ -163,15 +146,15 @@
     function bindSubjectChange()
     {
         $('#subject').on('change', function (event, params) {
-            // params is undefined when you deselect a subject.
+            let select, subjects, subject, idx;
+            select   = $('#number');
+            subjects = GlobalUtils.getSubjects();
+            
             if (!params) {
-                $('#number').chosen('destroy');
+                // params is undefined when you deselect a subject.
+                select.chosen('destroy');
                 return;
             }
-            
-            let subjects, select, subject, idx;
-            subjects = GlobalUtils.getSubjects();
-            select   = $('#number');
             
             if (params.hasOwnProperty('deselected')) {
                 select
@@ -188,6 +171,7 @@
                 return;
             }
             
+            let changed = false;
             for (idx in subjects) {
                 if (!subjects.hasOwnProperty(idx)) {
                     continue;
@@ -204,11 +188,29 @@
                     .attr('data-subject', subject.id)
                 ;
                 
+                changed = true;
+            }
+            
+            if (changed) {
                 select.trigger('chosen:updated');
             }
+            
+            // Add color-pickers to the selected subjects.
+            $('#subject_chosen li.search-choice').each(function () {
+                // Ignore if the element already has a color picker.
+                if ($(this).children('input[type="color"]')[0]) {
+                    return;
+                }
+                
+                $('<input>').attr({
+                    'type':         'color',
+                    'value':        '#001505',
+                    'data-subject': $(this).text()
+                }).prependTo(this);
+            });
         });
     }
-
+    
     /**
      * Binds the page buttons to the related actions.
      */
@@ -232,9 +234,42 @@
         $('#btn-export').on('click', function () {
             fetchCsvExport();
         });
+    }
+
+    /**
+     * Bind selectors that aren't on the page initially.
+     */
+    function bindDelegated()
+    {
+        $('.modal-body').on('keydown', function (e) {
+            if (e.keyCode !== 27) {
+                return;
+            }
+            
+            let element = $(e.target);
+            if (!element.hasClass('chosen-search-input')) {
+                return;
+            }
+            
+            element
+                .blur()
+                .focus()
+            ;
+            
+            e.stopImmediatePropagation();
+        });
         
-        // Something is removing the disabled attr - add it back.
-        GlobalUtils.toggleExportBtn(scheduler);
+        $('.modal-body .chosen-container .chosen-choices').on('click mousedown mouseup', '.search-choice input[type="color"]', function (e) {
+            // Prevent the options drop-down menu when the color-picker is clicked.
+            e.stopPropagation();
+        }).on('change', 'input[type="color"]', function (e) {
+            // Update the event background color.
+            let target, type;
+            target = $(e.currentTarget);
+            type   = target.data('subject') ? 'subject' : 'instructor';
+            
+            scheduler.setColor(type, target.data('subject'), target.val());
+        });
     }
 
     /**
@@ -246,6 +281,12 @@
         
         uri = '';
         ids = scheduler.getSectionIds();
+        
+        if (!ids.length) {
+            GlobalUtils.toggleExportBtn(scheduler);
+            alert("Please select a subset of classes first.");
+            return;
+        }
         
         for (i in ids) {
             if (!ids.hasOwnProperty(i)) {

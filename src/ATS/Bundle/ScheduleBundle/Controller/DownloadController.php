@@ -22,6 +22,7 @@ class DownloadController extends AbstractController
      * Exports the section information.
      * 
      * @QueryParam(name="section", nullable=true)
+     * @see https://vauly.com/symfony2-export-csv
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
