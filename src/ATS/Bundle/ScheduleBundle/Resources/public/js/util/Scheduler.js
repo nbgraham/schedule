@@ -57,8 +57,6 @@ const Scheduler = (function ($) {
                     hideDateColumnHeader();
                 },
                 eventRender: function (event, element) {
-                    element.addClass(getCapacityClass(event.section));
-                    
                     if (event.hasOwnProperty('description')) {
                         element.find('.fc-title')
                             .append("<br/>" + event.description)
@@ -315,10 +313,10 @@ const Scheduler = (function ($) {
      */
     function getCapacityClass(event)
     {
-        let section, num_seats, seats_percent;
-        section       = event.hasOwnProperty('section') ? event.section : event;
-        num_seats     = section.maximum_enrollment - section.num_enrolled;
-        seats_percent = num_seats / section.maximum_enrollment;
+        let num_seats, seats_percent;
+        
+        num_seats     = event.maximum_enrollment - event.num_enrolled;
+        seats_percent = num_seats / event.maximum_enrollment;
         
         switch (true) {
             case seats_percent < 0.00:
@@ -346,7 +344,7 @@ const Scheduler = (function ($) {
         
         section = event.section;
         course  = event.course;
-        output  = $('<p>')
+        /*output  = $('<p>')
             .append(
                 $('<div>')
                     .addClass('row ttTitle')
@@ -354,18 +352,38 @@ const Scheduler = (function ($) {
                         $('<div>').addClass('col-lg-9')
                             .html(section.subject.name + ": " + course.name)
                     ).append(
-                        $('<div>').addClass('col-lg-3')
+                        $('<div>').addClass('col-lg-3 nowrap')
                             .html(section.num_enrolled + " / " + section.maximum_enrollment)
+                    )
+            );
+        */
+        
+        output  = $('<p>')
+            .append(
+                $('<div>')
+                    .addClass('row ttTitle')
+                    .append(
+                        $('<div>').addClass('col-lg-9')
+                            .text(section.subject.name + ' ' + course.number)
+                    ).append(
+                        $('<div>').addClass('col-lg-3 nowrap')
+                            .text(section.num_enrolled + " / " + section.maximum_enrollment)
+                    ).append(
+                        $('<div>').addClass('col-lg-12')
+                            .text(course.name)
                     )
             );
         
         output.append(
-            "Campus: "     + section.campus.name + "<br />"
-            + "Building: " + section.building.name + "<br />"
-            + "Room: "     + section.room.number + "<br />"
-            
-            + "<br />"
-            + "Instructor: " + section.instructor.name
+            $('<p>').append(
+                '<hr />'
+                + "Campus: "     + section.campus.name + "<br />"
+                + "Building: " + section.building.name + "<br />"
+                + "Room: "     + section.room.number + "<br />"
+                
+                + "<br />"
+                + "Instructor: " + section.instructor.name
+            )
         );
         
         return output;
@@ -432,10 +450,9 @@ const Scheduler = (function ($) {
      */
     function loadEventAsClass(scheduler, classes)
     {
-        let events, color, border, i;
+        let events, color, i;
         events = [];
         color  = '#001505';
-        border = '#992600';
         
         for (i in classes) {
             let cls, course, days, subject;
@@ -447,7 +464,7 @@ const Scheduler = (function ($) {
             if (days && !days.length) {
                 continue;
             }
-            
+            console.log(getCapacityClass(cls), cls);
             events.push({
                 section: cls,
                 course:  course,
@@ -459,7 +476,7 @@ const Scheduler = (function ($) {
                 end:   getTime(cls.end_time),
                 dow:   getDays(cls.days),
                 description:     cls.instructor.name,
-                borderColor:     getCapacityClass(cls),
+                className:       getCapacityClass(cls),
                 backgroundColor: getColor(scheduler, cls, color)
             });
         }

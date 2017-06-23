@@ -136,6 +136,12 @@ select.form-control + .chosen-container-multi .chosen-results li.result-selected
   background-color: white;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+.qtip-content hr {
+  margin-top: 0px;
+}
 div.scheduler-header-wrapper div.scheduler-header {
   background: #5f1414;
   padding: 0.5em 0;
@@ -159,16 +165,16 @@ div.calendar-container .capacity {
   border-width: 0.33em;
 }
 div.calendar-container .capacity-over-capacity {
-  background: red;
+  border-color: red;
 }
 div.calendar-container .capacity-alert {
-  background: lightsalmon;
+  border-color: lightsalmon;
 }
 div.calendar-container .capacity-warning {
-  background: lightpink;
+  border-color: lightpink;
 }
 div.calendar-container .capacity-lightsalmon-default {
-  background: lightgreen;
+  border-color: lightgreen;
 }
 #filtersModal #term_block_chosen,
 #filtersModal #number_chosen {
