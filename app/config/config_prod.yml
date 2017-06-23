@@ -22,7 +22,5 @@ monolog:
 
 assetic:
     filters:
-        cssrewrite: ~
         less:
-            node: /usr/bin/less
-            node_paths: [/usr/local/lib/node_modules]
+            bin: /usr/bin/less

@@ -22,7 +22,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 /**
  * The endpoint used when interacting with events.
  * 
- * @ApiDoc()
+ * @ApiDoc(
+ *     description="The main controller used by the front-end API."
+ * )
  * 
  * @RouteResource("class", pluralize=false)
  * 
@@ -33,13 +35,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class ClassController extends AbstractController implements ClassResourceInterface
 {
     /**
-     * Fetch a class.
+     * Fetch a subset of classes based on the provided filter criteria.
+     * 
+     * @ApiDoc(
+     *     resource=true
+     * )
      * 
      * @Route("")
-     * @QueryParam(name="block",      nullable=true)
-     * @QueryParam(name="subject",    nullable=true)
-     * @QueryParam(name="instructor", nullable=true)
-     * @QueryParam(name="number",     nullable=true)
+     * @QueryParam(name="block",      nullable=false, description="The block ID(s).")
+     * @QueryParam(name="subject",    nullable=true,  description="Optional. The subject ID(s).")
+     * @QueryParam(name="instructor", nullable=true,  description="Optional. The instructor ID(s) to filter on.")
+     * @QueryParam(name="number",     nullable=true,  description="Optional. The course number ID(s) to filter on.")
      * 
      * @View(serializerEnableMaxDepthChecks=true)
      */
@@ -84,57 +90,4 @@ class ClassController extends AbstractController implements ClassResourceInterfa
                 ])),
         ];
     }
-    
-    
-    /**
-     * @Route(path="/{block_id}/{subject_id}")
-     * 
-     * @ParamConverter("block", class="ATSScheduleBundle:TermBlock", options={
-     *    "mapping"={
-     *      "block_id": "id"
-     *    }
-     * })
-     * 
-     * @ParamConverter("subject", class="ATSScheduleBundle:Subject", options={
-     *    "mapping"={
-     *      "subject_id": "id"
-     *    }
-     * })
-     * 
-     * @QueryParam(name="instructor", nullable=true)
-     * 
-     * @View(serializerEnableMaxDepthChecks=true)
-     * 
-     * @return array
-     */
-    public function getSubjectAction(ParamFetcher $fetcher, TermBlock $block, Subject $subject)
-    {
-        /*$repo   = $this->getRepo('ATSScheduleBundle:ClassEvent');
-        $blocks = $term->getBlocks();
-        $output = [];
-        
-        foreach ($blocks as $block) {
-            $output = array_merge($output, $repo->findBy([
-                'subject' => $subject,
-                'block'   => $block,
-            ]));
-        }*/
-        
-        $instructor = null;
-        if ($instructor_id = $fetcher->get('instructor')) {
-            $instructor = $this->getRepo('ATSScheduleBundle:Instructor')
-                ->find($instructor_id)
-            ;
-        }
-        
-        return [
-            'classes' => $this->getRepo('ATSScheduleBundle:ClassEvent')
-                ->findBy(array_filter([
-                    'block'      => $block,
-                    'subject'    => $subject,
-                    'instructor' => $instructor
-                ])),
-        ];
-    }
-    
 }

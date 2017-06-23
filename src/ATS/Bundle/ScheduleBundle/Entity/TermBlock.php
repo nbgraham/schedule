@@ -76,11 +76,21 @@ class TermBlock extends AbstractEntity
             case 1:
                 return 'Full Semester';
             case 2:
-                return 'Module 1';
+                return 'Module 1 (1st Half)';
             case 3:
-                return 'Module 2';
+                return 'Module 2 (2nd Half)';
             case 'DEC':
                 return 'December';
+            case 'NCE':
+                return 'Norman Contract Enrollment';
+            case 'JNX':
+                return 'JANIX credit';
+            case 'L01':
+                return 'Liberal Studies 1';
+            case 'L02':
+                return 'Liberal Studies 2';
+            case 'L03':
+                return 'Liberal Studies 3';
             default:
                 return $this->getName();
         }

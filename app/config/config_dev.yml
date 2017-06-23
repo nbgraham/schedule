@@ -1,6 +1,12 @@
 imports:
     - { resource: config.yml }
 
+assetic:
+    filters:
+        less:
+            node: /usr/local/bin/node
+            node_paths: [/usr/local/lib/node_modules]
+
 framework:
     router:
         resource: "%kernel.root_dir%/config/routing_dev.yml"

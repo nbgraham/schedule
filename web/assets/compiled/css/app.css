@@ -155,6 +155,21 @@ div.scheduler-header-wrapper div.scheduler-header div.tool-bar {
 div.calendar-container {
   margin-top: 0.5em;
 }
+div.calendar-container .capacity {
+  border-width: 0.33em;
+}
+div.calendar-container .capacity-over-capacity {
+  background: red;
+}
+div.calendar-container .capacity-alert {
+  background: lightsalmon;
+}
+div.calendar-container .capacity-warning {
+  background: lightpink;
+}
+div.calendar-container .capacity-lightsalmon-default {
+  background: lightgreen;
+}
 #filtersModal #term_block_chosen,
 #filtersModal #number_chosen {
   margin: 0.25em 0;
@@ -163,18 +178,7 @@ div.calendar-container {
 .ttTitle {
   text-decoration: bold;
   font-size: 0.8em;
-}
-.ttTitle .ttCapacity-over-capacity {
-  color: red;
-}
-.ttTitle .ttCapacity-alert {
-  color: lightsalmon;
-}
-.ttTitle .ttCapacity-warning {
-  color: lightpink;
-}
-.ttTitle .ttCapacity-lightsalmon-default {
-  color: lightgreen;
+  font-weight: bold;
 }
 /* The bootstrap chosen add-on's close button is misaligned - correct it. */
 .chosen-container#term_chosen abbr.search-choice-close {
@@ -182,7 +186,8 @@ div.calendar-container {
 }
 /* Make room in the chosen choice container for the color picker. */
 div.chosen-container li.search-choice input[type="color"] {
-  margin-top: 0.25em;
   width: 3em;
-  height: 0.5em;
+}
+div.chosen-container li.search-choice span {
+  padding-left: 0.5em;
 }

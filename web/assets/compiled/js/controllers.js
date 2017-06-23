@@ -40,6 +40,7 @@
         
         bindSemesterChange();
         bindSubjectChange();
+        bindInstructorChange();
     }
 
     /**
@@ -195,19 +196,43 @@
                 select.trigger('chosen:updated');
             }
             
-            // Add color-pickers to the selected subjects.
-            $('#subject_chosen li.search-choice').each(function () {
-                // Ignore if the element already has a color picker.
-                if ($(this).children('input[type="color"]')[0]) {
-                    return;
-                }
-                
-                $('<input>').attr({
-                    'type':         'color',
-                    'value':        '#001505',
-                    'data-subject': $(this).text()
-                }).prependTo(this);
+            addColorPicker('subject');
+        });
+    }
+
+    /**
+     * Add a color-picker to the instructor field.
+     */
+    function bindInstructorChange()
+    {
+        $('#instructor').on('change', function (e) {
+            addColorPicker('instructor');
+        });
+    }
+
+    /**
+     * Add a color picker to a selected filter.
+     * 
+     * @param type
+     */
+    function addColorPicker(type)
+    {
+        $('#' + type + '_chosen li.search-choice').each(function () {
+            // Ignore if the element already has a color picker.
+            if ($(this).children('input[type="color"]')[0]) {
+                return;
+            }
+            
+            let data, ele;
+            data = 'data-' + type;
+            ele  = $('<input>').attr({
+                'type':  'text',
+                'value': '#001505',
+                data:    $(this).text()
             });
+            
+            ele.prependTo(this);
+            ele.spectrum();
         });
     }
     
@@ -268,7 +293,7 @@
             target = $(e.currentTarget);
             type   = target.data('subject') ? 'subject' : 'instructor';
             
-            scheduler.setColor(type, target.data('subject'), target.val());
+            scheduler.setColor(type, target.data(type), target.val());
         });
     }
 

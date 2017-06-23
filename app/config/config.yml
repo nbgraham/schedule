@@ -8,7 +8,8 @@ imports:
 parameters:
     locale: en
 
-nelmio_api_doc: ~
+nelmio_api_doc:
+  name: "Schedule Utility's API Documentation"
 
 fos_rest:
     routing_loader:
@@ -28,9 +29,6 @@ assetic:
     bundles:        [ ATSScheduleBundle ]
     filters:
         cssrewrite: ~
-        less:
-            node: /usr/local/bin/node
-            node_paths: [/usr/local/lib/node_modules]
 
 framework:
     #esi:             ~

@@ -26,6 +26,12 @@ class CourseController extends AbstractController implements ClassResourceInterf
     /**
      * Fetches all of the courses.
      * 
+     * @ApiDoc(
+     *     resource=true,
+     *     description="Fetch all the available courses.",
+     *     method="CGET"
+     * )
+     * 
      * @return Course[]
      */
     public function cgetAction()
@@ -38,7 +44,12 @@ class CourseController extends AbstractController implements ClassResourceInterf
     }
     
     /**
-     * Fetches all of the courses for a subject.
+     * Fetch a specific course.
+     * 
+     * @ApiDoc(
+     *     resource=true,
+     *     method="GET"
+     * )
      * 
      * @Route(
      *     requirements={

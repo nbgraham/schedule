@@ -26,9 +26,9 @@ const Scheduler = (function ($) {
          * @param value
          */
         setColor: function (type, id, value) {
-            this.shades['subject'][id] = value;
+            this.shades[type][id] = value;
             
-            updateColors(this, 'subject', id, value);
+            updateColors(this, type, id, value);
         },
         
         /**
@@ -57,20 +57,20 @@ const Scheduler = (function ($) {
                     hideDateColumnHeader();
                 },
                 eventRender: function (event, element) {
-                    if (!event.hasOwnProperty('description')) {
-                        return;
-                    }
+                    element.addClass(getCapacityClass(event.section));
                     
-                    element.find('.fc-title')
-                        .append("<br/>" + event.description)
-                    ;
+                    if (event.hasOwnProperty('description')) {
+                        element.find('.fc-title')
+                            .append("<br/>" + event.description)
+                        ;
+                    }
                     
                     $(element).qtip({
                         style: {
                             classes: "qtip-rounded qtip-shadow qtip-bootstrap"
                         },
                         position: {
-                            at: 'bottom center'
+                            at: 'bottom left'
                         },
                         content: {
                             text: getToolTipText(event, element)
@@ -273,6 +273,10 @@ const Scheduler = (function ($) {
             if ('subject' === type && id === event.section.subject.name) {
                 event.backgroundColor = color;
             }
+            
+            if ('instructor' === type && id === event.section.instructor.name) {
+                event.backgroundColor = color;
+            }
         }
         
         instance.calendar.fullCalendar('rerenderEvents');
@@ -311,19 +315,20 @@ const Scheduler = (function ($) {
      */
     function getCapacityClass(event)
     {
-        let num_seats, seats_percent;
-        num_seats     = event.section.maximum_enrollment - event.section.num_enrolled;
-        seats_percent = num_seats / event.section.maximum_enrollment;
+        let section, num_seats, seats_percent;
+        section       = event.hasOwnProperty('section') ? event.section : event;
+        num_seats     = section.maximum_enrollment - section.num_enrolled;
+        seats_percent = num_seats / section.maximum_enrollment;
         
         switch (true) {
             case seats_percent < 0.00:
-                return 'ttCapacity-over-capacity';
+                return 'capacity-over-capacity';
             case seats_percent < 0.10:
-                return 'ttCapacity-alert';
+                return 'capacity-alert';
             case seats_percent < 0.25:
-                return 'ttCapacity-warning';
+                return 'capacity-warning';
             default:
-                return 'ttCapacity-default';
+                return 'capacity-default';
         }
     }
     
@@ -337,22 +342,31 @@ const Scheduler = (function ($) {
      */
     function getToolTipText(event, element)
     {
-        let output;
+        let section, course, output;
         
-        output =
-            '<p class="ttTitle">'
-            + event.section.subject.name + ": " + event.course.name + " - "
-            + '<span class="' + getCapacityClass(event) + '">'
-                + event.section.num_enrolled + " / " + event.section.maximum_enrollment
-            + '</span>'
-            + "</p>"
+        section = event.section;
+        course  = event.course;
+        output  = $('<p>')
+            .append(
+                $('<div>')
+                    .addClass('row ttTitle')
+                    .append(
+                        $('<div>').addClass('col-lg-9')
+                            .html(section.subject.name + ": " + course.name)
+                    ).append(
+                        $('<div>').addClass('col-lg-3')
+                            .html(section.num_enrolled + " / " + section.maximum_enrollment)
+                    )
+            );
         
-        + "Campus: " + event.section.campus.name + "<br />"
-        + "Building: " + event.section.building.name + "<br />"
-        + "Room: " + event.section.room.number + "<br />"
-        
-        + "<br />"
-        + "Instructor: " + event.section.instructor.name;
+        output.append(
+            "Campus: "     + section.campus.name + "<br />"
+            + "Building: " + section.building.name + "<br />"
+            + "Room: "     + section.room.number + "<br />"
+            
+            + "<br />"
+            + "Instructor: " + section.instructor.name
+        );
         
         return output;
     }
@@ -445,7 +459,7 @@ const Scheduler = (function ($) {
                 end:   getTime(cls.end_time),
                 dow:   getDays(cls.days),
                 description:     cls.instructor.name,
-                borderColor:     border,
+                borderColor:     getCapacityClass(cls),
                 backgroundColor: getColor(scheduler, cls, color)
             });
         }

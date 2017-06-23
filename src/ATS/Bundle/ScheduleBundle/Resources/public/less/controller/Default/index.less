@@ -24,6 +24,26 @@ div.scheduler-header-wrapper {
 
 div.calendar-container {
   margin-top: 0.5em;
+
+  .capacity {
+    border-width: 0.33em;
+
+    &-over-capacity {
+      background: red;
+    }
+
+    &-alert {
+      background: lightsalmon;
+    }
+
+    &-warning {
+      background: lightpink;
+    }
+
+    &-lightsalmon-default {
+      background: lightgreen;
+    }
+  }
 }
 
 #filtersModal {
@@ -37,23 +57,7 @@ div.calendar-container {
   text-decoration: bold;
   font-size: 0.8em;
   
-  .ttCapacity {
-    &-over-capacity {
-      color: red;
-    }
-    
-    &-alert {
-      color: lightsalmon;
-    }
-    
-    &-warning {
-      color: lightpink;
-    }
-    
-    &-lightsalmon-default {
-      color: lightgreen;
-    }
-  }
+  font-weight: bold;
 }
 
 /* The bootstrap chosen add-on's close button is misaligned - correct it. */
@@ -67,9 +71,14 @@ div.calendar-container {
 
 /* Make room in the chosen choice container for the color picker. */
 div.chosen-container {
-  li.search-choice input[type="color"] {
-    margin-top: 0.25em;
-    width: 3em;
-    height: 0.5em;
+  li.search-choice {
+    
+    input[type="color"] {
+      width: 3em;
+    }
+    
+    span {
+      padding-left: 0.5em;
+    }
   }
 }
