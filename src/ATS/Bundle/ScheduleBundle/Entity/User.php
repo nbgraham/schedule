@@ -117,7 +117,7 @@ class User extends AbstractEntity implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'id' => $this->id,

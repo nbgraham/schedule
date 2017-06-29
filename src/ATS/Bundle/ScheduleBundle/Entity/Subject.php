@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use ForceUTF8\Encoding;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -16,7 +17,7 @@ class Subject extends AbstractEntity
 {
     /**
      * @Serializer\MaxDepth(2)
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Course", mappedBy="subject", cascade={"persist"}, fetch="EAGER")
      * @var Course[]
      */
@@ -24,23 +25,23 @@ class Subject extends AbstractEntity
     
     /**
      * @Serializer\Exclude()
-     * 
-     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="subject")
-     * @var ClassEvent[]
+     *
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="subject", cascade={"persist"})
+     * @var Section[]
      */
-    protected $classes;
+    protected $sections;
     
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
-     * 
+     *
      * @var Integer
      */
     protected $id;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
      * @var String
      */
     protected $name;
@@ -52,15 +53,16 @@ class Subject extends AbstractEntity
      */
     public function __construct($name)
     {
-        $this->name    = $name;
-        $this->courses = new ArrayCollection();
-        $this->classes = new ArrayCollection();
+        $this->setName($name);
+        
+        $this->courses  = new ArrayCollection();
+        $this->sections = new ArrayCollection();
     }
     
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'name' => $this->name,
@@ -77,17 +79,19 @@ class Subject extends AbstractEntity
     
     /**
      * Add a course.
-     * 
+     *
      * @param Course $course
      *
      * @return Subject
      */
     public function addCourse(Course $course)
     {
-        $this->courses->add($course);
-        
         if (!$course->getSubject()) {
             $course->setSubject($this);
+        }
+        
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
         }
         
         return $this;
@@ -102,6 +106,18 @@ class Subject extends AbstractEntity
     }
     
     /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    private function setName($name)
+    {
+        $this->name = Encoding::toUTF8($name);
+        
+        return $this;
+    }
+    
+    /**
      * @return String
      */
     public function getName()
@@ -110,24 +126,24 @@ class Subject extends AbstractEntity
     }
     
     /**
-     * @return ClassEvent[]|ArrayCollection
+     * @return Section[]|ArrayCollection
      */
-    public function getClasses()
+    public function getSections()
     {
-        return $this->classes;
+        return $this->sections;
     }
     
     /**
-     * @param ClassEvent $event
+     * @param Section $section
      *
      * @return Subject
      */
-    public function addClass(ClassEvent $event)
+    public function addSection(Section $section)
     {
-        $this->classes->add($event);
+        $this->sections->add($section);
         
-        if (!$event->getSubject()) {
-            $event->setSubject($this);
+        if (!$section->getSubject()) {
+            $section->setSubject($this);
         }
         
         return $this;

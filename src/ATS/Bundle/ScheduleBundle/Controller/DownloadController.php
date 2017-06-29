@@ -2,7 +2,7 @@
 
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
-use ATS\Bundle\ScheduleBundle\Entity\ClassEvent;
+use ATS\Bundle\ScheduleBundle\Entity\Section;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
@@ -37,13 +37,13 @@ class DownloadController extends AbstractController
     
             fputcsv($handle, ['Subject', 'Course', 'Section', 'CRN', 'Title', 'Instructor', 'Instructor ID', 'Max', 'Start Date', 'End Date', 'Bldg', 'Rm', 'Days', 'Start', 'End'],',');
             
-            $sections = $doctrine->getRepository('ATSScheduleBundle:ClassEvent')
+            $sections = $doctrine->getRepository('ATSScheduleBundle:Section')
                 ->findBy([
                     'id' => $section_ids,
                 ])
             ;
             
-            /* @var ClassEvent $section */
+            /* @var Section $section */
             foreach ($sections as $section) {
                 fputcsv($handle, [
                     $section->getSubject()->getName(),

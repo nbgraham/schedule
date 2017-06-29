@@ -2,6 +2,7 @@
 
 namespace ATS\Bundle\ScheduleBundle\Command;
 
+use ATS\Bundle\ScheduleBundle\Util\Parser\BookParser;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,7 +25,7 @@ class ParseBookCommand extends AbstractCommand
         $this
             ->setName('scheduler:parse-book')
             ->setDescription('Parses the CSV book file and loads its contents into the databse.')
-            ->addArgument('path', InputArgument::OPTIONAL, 'Path to the CSV file.', 'datastores/Classes.csv')
+            ->addArgument('path', InputArgument::OPTIONAL, 'Path to the CSV file.', BookParser::CSV_PATH)
             ->addOption('include_online', 'io', InputOption::VALUE_OPTIONAL, 'Flag to include online courses.', false)
         ;
     }

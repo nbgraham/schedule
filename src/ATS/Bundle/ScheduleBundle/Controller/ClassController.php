@@ -2,7 +2,7 @@
 
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
-use ATS\Bundle\ScheduleBundle\Entity\ClassEvent;
+use ATS\Bundle\ScheduleBundle\Entity\Section;
 use ATS\Bundle\ScheduleBundle\Entity\Course;
 use ATS\Bundle\ScheduleBundle\Entity\Instructor;
 use ATS\Bundle\ScheduleBundle\Entity\Subject;
@@ -81,7 +81,7 @@ class ClassController extends AbstractController implements ClassResourceInterfa
         }
         
         return [
-            'classes' => $this->getRepo('ATSScheduleBundle:ClassEvent')
+            'classes' => $this->getRepo('ATSScheduleBundle:Section')
                 ->findBy(array_filter([
                     'block'      => $block,
                     'subject'    => $subject,

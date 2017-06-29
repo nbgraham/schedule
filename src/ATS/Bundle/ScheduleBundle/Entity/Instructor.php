@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use ForceUTF8\Encoding;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -14,10 +15,10 @@ class Instructor extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * 
-     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="instructor")
-     * @var ClassEvent[]
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="instructor")
+     * @var Section[]
      */
-    protected $classes;
+    protected $sections;
     
     /**
      * @ORM\Id()
@@ -42,20 +43,37 @@ class Instructor extends AbstractEntity
      */
     public function __construct($id, $name)
     {
-        $this->id      = $id;
-        $this->name    = $name;
-        $this->classes = new ArrayCollection();
+        $this
+            ->setId($id)
+            ->setName($name)
+        ;
+        
+        $this->sections = new ArrayCollection();
     }
     
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'id'   => $this->id,
             'name' => $this->name,
         ];
+    }
+    
+    /**
+     * Set the instructor's ID.
+     * 
+     * @param integer $id
+     *
+     * @return $this
+     */
+    private function setId($id)
+    {
+        $this->id = $id;
+        
+        return $this;
     }
     
     /**
@@ -81,39 +99,39 @@ class Instructor extends AbstractEntity
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = Encoding::toUTF8($name);
         
         return $this;
     }
     
     /**
-     * @return ClassEvent[]
+     * @return Section[]
      */
-    public function getClasses()
+    public function getSections()
     {
-        return $this->classes;
+        return $this->sections;
     }
     
     /**
-     * @param ClassEvent $event
+     * @param Section $event
      *
      * @return Instructor
      */
-    public function addClass(ClassEvent $event)
+    public function addSection(Section $event)
     {
-        $this->classes->add($event);
+        $this->sections->add($event);
         
         return $this;
     }
     
     /**
-     * @param ClassEvent $class
+     * @param Section $class
      *
      * @return Instructor
      */
-    public function removeClass(ClassEvent $class)
+    public function removeSection(Section $class)
     {
-        $this->classes->removeElement($class);
+        $this->sections->removeElement($class);
         
         return $this;
     }

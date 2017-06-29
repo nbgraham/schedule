@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use ForceUTF8\Encoding;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -15,7 +16,7 @@ use JMS\Serializer\Annotation as Serializer;
 class Room extends AbstractEntity
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Building", inversedBy="rooms", fetch="EXTRA_LAZY", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Building", inversedBy="rooms", fetch="EXTRA_LAZY")
      * 
      * @var Building
      */
@@ -24,8 +25,8 @@ class Room extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * 
-     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="room")
-     * @var ClassEvent[]
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="room")
+     * @var Section[]
      */
     protected $classes;
     
@@ -52,7 +53,8 @@ class Room extends AbstractEntity
      */
     public function __construct(Building $building, $number)
     {
-        $this->number   = $number;
+        $this->setNumber($number);
+        
         $this->building = $building;
         $this->classes  = new ArrayCollection();
     }
@@ -60,7 +62,7 @@ class Room extends AbstractEntity
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'number'   => $this->number,
@@ -99,7 +101,7 @@ class Room extends AbstractEntity
      */
     public function setNumber($number)
     {
-        $this->number = $number;
+        $this->number = Encoding::toUTF8($number);
         
         return $this;
     }

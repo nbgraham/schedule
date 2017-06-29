@@ -20,8 +20,8 @@ class TermBlock extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * 
-     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="block", fetch="EXTRA_LAZY")
-     * @var ClassEvent[]
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="block", fetch="EXTRA_LAZY")
+     * @var Section[]
      */
     protected $classes;
     
@@ -59,7 +59,7 @@ class TermBlock extends AbstractEntity
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'term' => $this->getTerm()->getName(),

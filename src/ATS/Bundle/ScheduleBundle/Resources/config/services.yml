@@ -5,7 +5,15 @@ services:
             - "@doctrine"
         calls:
             - [setRootDir, ["%kernel.root_dir%"]]
-            
+    
+    schedule.book_import:
+        class: ATS\Bundle\ScheduleBundle\Util\Parser\BookImportDriver
+        arguments:
+            - "@doctrine"
+        calls:
+            - [setRootDir, ["%kernel.root_dir%"]]
+            - [init]
+    
 #    ats_schedule.example:
 #        class: ATS\Bundle\ScheduleBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]

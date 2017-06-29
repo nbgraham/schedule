@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use ForceUTF8\Encoding;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -17,7 +18,7 @@ class Campus extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * 
-     * @ORM\OneToMany(targetEntity="Building", mappedBy="campus", cascade={"ALL"})
+     * @ORM\OneToMany(targetEntity="Building", mappedBy="campus", cascade={"all"})
      * @var Building[]
      */
     protected $buildings;
@@ -25,10 +26,10 @@ class Campus extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * 
-     * @ORM\OneToMany(targetEntity="ClassEvent", mappedBy="campus")
-     * @var ClassEvent[]
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="campus")
+     * @var Section[]
      */
-    protected $classes;
+    protected $sections;
     
     /**
      * @ORM\Id()
@@ -56,13 +57,13 @@ class Campus extends AbstractEntity
         $this->setName($name);
         
         $this->buildings = new ArrayCollection();
-        $this->classes   = new ArrayCollection();
+        $this->sections  = new ArrayCollection();
     }
     
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'name' => $this->name,
@@ -104,7 +105,7 @@ class Campus extends AbstractEntity
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = Encoding::toUTF8($name);
         
         return $this;
     }
@@ -145,19 +146,21 @@ class Campus extends AbstractEntity
     /**
      * @return mixed
      */
-    public function getClasses()
+    public function getSections()
     {
-        return $this->classes;
+        return $this->sections;
     }
     
     /**
-     * @param ClassEvent $event
+     * @param Section $event
      *
      * @return Campus
      */
-    public function addClass(ClassEvent $event)
+    public function addSection(Section $section)
     {
-        $this->classes->add($event);
+        if (!$this->sections->contains($section)) {
+            $this->sections->add($section);
+        }
         
         return $this;
     }

@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use ForceUTF8\Encoding;
 
 /**
  * @ORM\Entity()
@@ -14,14 +15,14 @@ use Doctrine\ORM\Mapping as ORM;
 class Building extends AbstractEntity
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Campus", inversedBy="buildings")
+     * @ORM\ManyToOne(targetEntity="Campus", inversedBy="buildings", cascade={"all"})
      * 
      * @var Campus
      */
     protected $campus;
     
     /**
-     * @ORM\OneToMany(targetEntity="Room", mappedBy="building")
+     * @ORM\OneToMany(targetEntity="Room", mappedBy="building", cascade={"all"})
      * @var Room[]
      */
     protected $rooms;
@@ -60,7 +61,7 @@ class Building extends AbstractEntity
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'name'   => $this->name,
@@ -155,7 +156,7 @@ class Building extends AbstractEntity
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = Encoding::toUTF8($name);
         
         return $this;
     }

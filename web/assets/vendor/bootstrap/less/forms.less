@@ -39,8 +39,8 @@ label {
 
 // Normalize form controls
 //
-// While most of our form styles require extra classes, some basic normalization
-// is required to ensure optimum display with or without those classes to better
+// While most of our form styles require extra sections, some basic normalization
+// is required to ensure optimum display with or without those sections to better
 // address browser inconsistencies.
 
 // Override content-box in Normalize (* isn't specific enough)
@@ -208,7 +208,7 @@ input[type="search"] {
 // Form groups
 //
 // Designed to help with the organization and spacing of vertical forms. For
-// horizontal forms, use the predefined grid classes.
+// horizontal forms, use the predefined grid sections.
 
 .form-group {
   margin-bottom: @form-group-margin-bottom;
@@ -277,7 +277,7 @@ input[type="checkbox"] {
     cursor: @cursor-disabled;
   }
 }
-// These classes are used directly on <label>s
+// These sections are used directly on <label>s
 .radio-inline,
 .checkbox-inline {
   &.disabled,
@@ -285,7 +285,7 @@ input[type="checkbox"] {
     cursor: @cursor-disabled;
   }
 }
-// These classes are used on elements with <label> descendants
+// These sections are used on elements with <label> descendants
 .radio,
 .checkbox {
   &.disabled,
@@ -320,7 +320,7 @@ input[type="checkbox"] {
 
 // Form control sizing
 //
-// Build on `.form-control` with modifier classes to decrease or increase the
+// Build on `.form-control` with modifier sections to decrease or increase the
 // height and font-size of form controls.
 //
 // The `.form-group-* form-control` variations are sadly duplicated to avoid the
@@ -396,7 +396,7 @@ input[type="checkbox"] {
     padding-right: (@input-height-base * 1.25);
   }
 }
-// Feedback icon (requires .glyphicon classes)
+// Feedback icon (requires .glyphicon sections)
 .form-control-feedback {
   position: absolute;
   top: 0;
@@ -544,7 +544,7 @@ input[type="checkbox"] {
 
 // Horizontal forms
 //
-// Horizontal forms are built on grid classes and allow you to create forms with
+// Horizontal forms are built on grid sections and allow you to create forms with
 // labels on the left and inputs on the right.
 
 .form-horizontal {

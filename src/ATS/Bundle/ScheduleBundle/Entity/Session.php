@@ -66,7 +66,7 @@ class Session extends AbstractEntity
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'id' => $this->id,

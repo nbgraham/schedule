@@ -10,9 +10,9 @@ use JMS\Serializer\Annotation\Exclude;
  * The Event table represents instances of course classes.
  * 
  * @ORM\Entity()
- * @ORM\Table(name="`class`")
+ * @ORM\Table(name="section")
  */
-class ClassEvent extends AbstractEntity
+class Section extends AbstractEntity
 {
     const CANCELLED = -1;
     const INACTIVE  = 0;
@@ -22,7 +22,7 @@ class ClassEvent extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * #Serializer\Groups({"details"})
      * 
-     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="classes")
+     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="sections")
      * @var Subject
      */
     protected $subject;
@@ -31,7 +31,7 @@ class ClassEvent extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * #Serializer\Groups({"details"})
      * 
-     * @ORM\ManyToOne(targetEntity="Course", inversedBy="classes")
+     * @ORM\ManyToOne(targetEntity="Course", inversedBy="sections")
      * @var Course
      */
     protected $course;
@@ -40,7 +40,7 @@ class ClassEvent extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * @Serializer\Groups({"location"})
      * 
-     * @ORM\ManyToOne(targetEntity="Campus", inversedBy="classes")
+     * @ORM\ManyToOne(targetEntity="Campus", inversedBy="sections")
      * @var Campus
      */
     protected $campus;
@@ -58,7 +58,7 @@ class ClassEvent extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * @Serializer\Groups({"instructor"})
      * 
-     * @ORM\ManyToOne(targetEntity="Instructor", inversedBy="classes")
+     * @ORM\ManyToOne(targetEntity="Instructor", inversedBy="sections")
      * 
      * @var Instructor
      */
@@ -173,7 +173,7 @@ class ClassEvent extends AbstractEntity
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'crn'      => $this->crn,
@@ -210,7 +210,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param Course $course
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setCourse(Course $course)
     {
@@ -230,7 +230,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param Campus $campus
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setCampus(Campus $campus)
     {
@@ -250,7 +250,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param Instructor $instructor
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setInstructor(Instructor $instructor)
     {
@@ -270,7 +270,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param TermBlock $block
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setBlock(TermBlock $block)
     {
@@ -298,7 +298,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param int $crn
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setCrn($crn)
     {
@@ -335,7 +335,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param int $status
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setStatus($status)
     {
@@ -374,7 +374,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param int $section
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setSection($section)
     {
@@ -394,7 +394,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param String $days
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setDays($days)
     {
@@ -414,7 +414,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param string $start_time
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setStartTime($start_time)
     {
@@ -434,7 +434,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param string $end_time
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setEndTime($end_time)
     {
@@ -454,7 +454,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param int $num_enrolled
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setNumEnrolled($num_enrolled)
     {
@@ -474,7 +474,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param \DateTime $start_date
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setStartDate($start_date)
     {
@@ -494,7 +494,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param \DateTime $end_date
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setEndDate($end_date)
     {
@@ -514,7 +514,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param Room $room
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setRoom(Room $room)
     {
@@ -534,13 +534,13 @@ class ClassEvent extends AbstractEntity
     /**
      * @param Subject $subject
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setSubject(Subject $subject)
     {
         $this->subject = $subject;
         
-        $subject->addClass($this);
+        $subject->addSection($this);
         
         return $this;
     }
@@ -556,7 +556,7 @@ class ClassEvent extends AbstractEntity
     /**
      * @param int $maximum_enrollment
      *
-     * @return ClassEvent
+     * @return Section
      */
     public function setMaximumEnrollment($maximum_enrollment)
     {

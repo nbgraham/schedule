@@ -70,7 +70,7 @@ class Role extends AbstractEntity implements RoleInterface
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'name' => $this->name,

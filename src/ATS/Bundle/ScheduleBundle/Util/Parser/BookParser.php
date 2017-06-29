@@ -6,7 +6,7 @@ use ATS\Bundle\ScheduleBundle\Entity\AbstractEntity;
 use ATS\Bundle\ScheduleBundle\Entity\Building;
 use ATS\Bundle\ScheduleBundle\Entity\Campus;
 use ATS\Bundle\ScheduleBundle\Entity\Course;
-use ATS\Bundle\ScheduleBundle\Entity\ClassEvent;
+use ATS\Bundle\ScheduleBundle\Entity\Section;
 use ATS\Bundle\ScheduleBundle\Entity\Instructor;
 use ATS\Bundle\ScheduleBundle\Entity\Room;
 use ATS\Bundle\ScheduleBundle\Entity\Subject;
@@ -26,6 +26,8 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
  */
 class BookParser
 {
+    const CSV_PATH = 'datastores/Classes.csv';
+    
     /**
      * The project's root directory.
      * 
@@ -138,7 +140,7 @@ class BookParser
      *
      * @return bool
      */
-    protected function isValidEntry(array $data)
+    public function isValidEntry(array $data)
     {
         // 0 = semester - invalid entry. 8 = status.
         if ('...' === $data[0] || '...' === $data[8]) {
@@ -157,7 +159,7 @@ class BookParser
      * 
      * @param array $data
      *
-     * @return null|ClassEvent
+     * @return null|Section
      */
     protected function parseLine(array $data)
     {
@@ -356,6 +358,8 @@ class BookParser
             ->setLevel($data[36])
         ;
         
+        $subject->addCourse($object);
+        
         return $this->persist($instances, $key, $object);
     }
     
@@ -370,15 +374,15 @@ class BookParser
      * @param Campus     $campus
      * @param Room       $room
      *
-     * @return AbstractEntity|ClassEvent|object
+     * @return AbstractEntity|Section|object
      */
     protected function parseClass(array $data, TermBlock $block, Subject $subject, Course $course, Instructor $instructor, Campus $campus, Room $room)
     {
         static $instances;
         
         $key   = $this->getKey(['crn' => $data[4], 'semester' => $block->getId()]);
-        $repo  = $this->getManager()->getRepository('ATSScheduleBundle:ClassEvent');
-        $event = $this->getStored($instances, $key, $repo) ?: new ClassEvent();
+        $repo  = $this->getManager()->getRepository('ATSScheduleBundle:Section');
+        $event = $this->getStored($instances, $key, $repo) ?: new Section();
         
         $event
             ->setCrn($data[4])
@@ -424,7 +428,7 @@ class BookParser
      *
      * @return array
      */
-    private function parseBuilding(array $data)
+    public function parseBuilding(array $data)
     {
         if ('XCH' !== substr($data[18], 0, 3)) {
             return [
@@ -479,7 +483,7 @@ class BookParser
      *
      * @return TermBlock
      */
-    private function createBlock(Term $term, $block)
+    public function createBlock(Term $term, $block)
     {
         $object = new TermBlock($term, $block);
         $term->addBlock($object);
@@ -497,7 +501,7 @@ class BookParser
      *
      * @return array
      */
-    private function parseTerm(array $data)
+    public function parseTerm(array $data)
     {
         $parts = explode(' ', $data[0]);
         return [
@@ -512,7 +516,7 @@ class BookParser
      * 
      * @return resource
      */
-    protected function openFile()
+    public function openFile()
     {
         if (!$handle = fopen($this->path, 'r')) {
             throw new FileNotFoundException();
@@ -548,7 +552,7 @@ class BookParser
         
         /* @var AbstractEntity $item */
         foreach ($stored as $item) {
-            $instances[$this->getKey($item->getKey())] = $item;
+            $instances[$this->getKey($item->getKeyArr())] = $item;
         }
         
         return $this->getStored($instances, $key, $repo);
@@ -701,7 +705,7 @@ class BookParser
     /**
      * Save memory by disabling sql query logging.
      */
-    private function disableDoctrineLogging()
+    public function disableDoctrineLogging()
     {
         $this->doctrine
             ->getConnection()

@@ -8,13 +8,16 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity()
+ * @ORM\Table(name="term", indexes={
+ *    @ORM\Index(name="idx_year_semester", columns={"year", "semester"}),
+ * })
  */
 class Term extends AbstractEntity
 {
     /**
      * @Serializer\MaxDepth(2)
      * 
-     * @ORM\OneToMany(targetEntity="TermBlock", mappedBy="term")
+     * @ORM\OneToMany(targetEntity="TermBlock", mappedBy="term", fetch="EAGER")
      * @var TermBlock[]
      */
     protected $blocks;
@@ -65,7 +68,7 @@ class Term extends AbstractEntity
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKeyArr()
     {
         return [
             'year'     => $this->year,

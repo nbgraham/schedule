@@ -105,6 +105,7 @@ const Scheduler = (function ($) {
                 
                 complete : function (data) {
                     context.loadCourseClass(data.responseJSON);
+                    updateHeader(false);
                 },
                 error: function (xhr) {
                     alert("An error occurred while fetching your request. Please try again.");
@@ -114,7 +115,7 @@ const Scheduler = (function ($) {
                 }
             });
             
-            updateHeader();
+            updateHeader(true);
             
             return true;
         },
@@ -344,19 +345,6 @@ const Scheduler = (function ($) {
         
         section = event.section;
         course  = event.course;
-        /*output  = $('<p>')
-            .append(
-                $('<div>')
-                    .addClass('row ttTitle')
-                    .append(
-                        $('<div>').addClass('col-lg-9')
-                            .html(section.subject.name + ": " + course.name)
-                    ).append(
-                        $('<div>').addClass('col-lg-3 nowrap')
-                            .html(section.num_enrolled + " / " + section.maximum_enrollment)
-                    )
-            );
-        */
         
         output  = $('<p>')
             .append(
@@ -405,15 +393,25 @@ const Scheduler = (function ($) {
 
     /**
      * Update the header based on the semester.
+     *
+     * @param is_loading
      */
-    function updateHeader()
+    function updateHeader(is_loading)
     {
-        let title = $('#term option:selected').text();
+        let header, title
         
-        $('#calendar')
-            .find('.fc-header-toolbar h2')
-            .html(title ? title : 'No Semester')
-        ;
+        header = $('#calendar').find('.fc-header-toolbar h2');
+        title  = $('#term option:selected').text();
+        
+        if (is_loading) {
+            title = $('<div>').addClass('loadersmall');
+        } else {
+            header.find('.loadersmall').remove();
+            
+            title = title ? title : '';
+        }
+        
+        header.html(title);
     }
 
     /**
@@ -464,7 +462,7 @@ const Scheduler = (function ($) {
             if (days && !days.length) {
                 continue;
             }
-            console.log(getCapacityClass(cls), cls);
+            
             events.push({
                 section: cls,
                 course:  course,

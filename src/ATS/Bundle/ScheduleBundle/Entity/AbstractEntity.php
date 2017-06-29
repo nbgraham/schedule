@@ -13,5 +13,5 @@ abstract class AbstractEntity
      * Returns an array of identifiable information.
      * @return array
      */
-    public abstract function getKey();
+    public abstract function getKeyArr();
 }
