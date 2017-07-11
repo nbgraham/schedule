@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation\Exclude;
 /**
  * The Event table represents instances of course classes.
  * 
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="ATS\Bundle\ScheduleBundle\Entity\Repository\SectionRepository")
  * @ORM\Table(name="section")
  */
 class Section extends AbstractEntity
@@ -49,7 +49,7 @@ class Section extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * @Serializer\Groups({"location"})
      * 
-     * @ORM\ManyToOne(targetEntity="Room", inversedBy="classes")
+     * @ORM\ManyToOne(targetEntity="Room", inversedBy="sections")
      * @var Room
      */
     protected $room;
@@ -344,15 +344,12 @@ class Section extends AbstractEntity
             return $this;
         }
         
-        $status = strtolower($status);
-        if (!in_array($status, ['active', 'inactive', 'cancelled'])) {
-            throw new \InvalidArgumentException('Invalid status: ' . $status);
-        }
-        
-        switch ($status) {
+        switch (strtolower($status)) {
+            case 'a':
             case 'active':
                 $this->status = static::ACTIVE;
                 break;
+            case 'i':
             case 'inactive':
                 $this->status = static::INACTIVE;
                 break;

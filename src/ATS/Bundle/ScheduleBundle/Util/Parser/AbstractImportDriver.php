@@ -2,7 +2,6 @@
 
 namespace ATS\Bundle\ScheduleBundle\Util\Parser;
 
-
 use ATS\Bundle\ScheduleBundle\Entity\Building;
 use ATS\Bundle\ScheduleBundle\Entity\Campus;
 use ATS\Bundle\ScheduleBundle\Entity\Course;
@@ -11,6 +10,7 @@ use ATS\Bundle\ScheduleBundle\Entity\Room;
 use ATS\Bundle\ScheduleBundle\Entity\Section;
 use ATS\Bundle\ScheduleBundle\Entity\Subject;
 use ATS\Bundle\ScheduleBundle\Entity\TermBlock;
+use ATS\Bundle\ScheduleBundle\Util\Helper\ImportDriverHelper;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
 abstract class AbstractImportDriver
@@ -33,25 +33,39 @@ abstract class AbstractImportDriver
     private $entries;
     
     /**
-     * The data being analyzed for import (a single line).
-     * 
-     * @var String[]
-     */
-    private $data;
-    
-    /**
      * @var String
      */
     protected $location;
+    
+    /**
+     * @var Integer
+     */
+    protected $num_rows;
+    
+    /**
+     * @var Integer
+     */
+    protected $page;
+    
+    /**
+     * @var Integer
+     */
+    protected $limit;
+    
+    /**
+     * @var ImportDriverHelper
+     */
+    protected $helper;
     
     /**
      * AbstractImportDriver constructor.
      *
      * @param Registry $doctrine
      */
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, ImportDriverHelper $helper)
     {
         $this->doctrine = $doctrine;
+        $this->helper   = $helper;
         
         $this->entries = [];
         $this->data    = [];
@@ -61,12 +75,17 @@ abstract class AbstractImportDriver
         $this->disableDoctrineLogging();
     }
     
+    public abstract function getCount();
+    
     /**
      * Set the entries.
-     * 
+     *
+     * @param null $mixed
+     *
      * @return $this
+     *
      */
-    protected abstract function loadRawData();
+    protected abstract function loadRawData($mixed = null);
     
     /**
      * Initialize the import settings.
@@ -253,26 +272,6 @@ abstract class AbstractImportDriver
     public function getIncludeOnline()
     {
         return $this->online;
-    }
-    
-    /**
-     * @return \String[]
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-    
-    /**
-     * @param \String[] $data
-     *
-     * @return AbstractImportDriver
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-        
-        return $this;
     }
     
     /**

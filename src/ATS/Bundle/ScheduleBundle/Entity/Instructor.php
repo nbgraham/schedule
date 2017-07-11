@@ -8,7 +8,7 @@ use ForceUTF8\Encoding;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="ATS\Bundle\ScheduleBundle\Entity\Repository\InstructorRepository")
  */
 class Instructor extends AbstractEntity
 {
@@ -34,6 +34,12 @@ class Instructor extends AbstractEntity
      * @var String
      */
     protected $name;
+    
+    /**
+     * @ORM\Column(name="email", type="string", nullable=true)
+     * @var String
+     */
+    protected $email;
     
     /**
      * Instructor constructor.
@@ -132,6 +138,26 @@ class Instructor extends AbstractEntity
     public function removeSection(Section $class)
     {
         $this->sections->removeElement($class);
+        
+        return $this;
+    }
+    
+    /**
+     * @return String
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    
+    /**
+     * @param String $email
+     *
+     * @return Instructor
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email ?: '';
         
         return $this;
     }

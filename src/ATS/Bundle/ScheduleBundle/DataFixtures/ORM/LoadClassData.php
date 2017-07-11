@@ -11,24 +11,39 @@ class LoadClassData extends AbstractDataFixture
      */
     public function load(ObjectManager $manager)
     {
-        $importer = $this->getImporter(true);
-        $counter  = 0;
+        $prev_term = null;
+        $importer  = $this->getImporter(true);
+        $progress  = static::getProgressBar(count($importer->getEntries()));
+        
+        $progress->setMessage('Importing section data...');
         
         while ($entry = $importer->getEntry()) {
-            $counter++;
-            
             $subject = $this->getSubject();
             $course  = $this->getCourse($subject);
-            $this->getSection($course);
+            $section = $this->getSection($course);
+            $term    = $section->getBlock()->getTerm();
             
-            if (0 === ($counter % 1500)) {
+            if (!$prev_term) {
+                // First cycle.
+                $prev_term = $term;
+            }
+            
+            if ($prev_term->getId() !== $term->getId()) {
                 $manager->flush();
+                $manager->clear();
+                
+                $prev_term = $term;
             }
             
             $importer->nextEntry();
+            $progress->advance();
         }
         
         $manager->flush();
+        $progress->finish();
+        
+        // Clear the line.
+        static::getOutput()->writeln('Complete.');
     }
     
     /**

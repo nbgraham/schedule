@@ -54,7 +54,7 @@ class Course extends AbstractEntity
     protected $name;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true, unique=false)
      * @var string
      */
     protected $level;

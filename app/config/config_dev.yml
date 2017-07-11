@@ -38,3 +38,33 @@ monolog:
 
 #swiftmailer:
 #    delivery_addresses: ['me@example.com']
+
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver:   pdo_mysql
+                host:     "%database_host%"
+                port:     "%database_port%"
+                dbname:   "%database_name%"
+                user:     "%database_user%"
+                password: "%database_password%"
+                charset:  UTF8
+            ods:
+                driver:   pdo_mysql
+                host:     "%ods_db_host%"
+                port:     "%ods_db_port%"
+                dbname:   "%ods_db_name%"
+                user:     "%ods_db_user%"
+                password: "%ods_db_password%"
+                charset:  UTF8
+    orm:
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    ATSScheduleBundle: ~
+            ods:
+                connection: ods

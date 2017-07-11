@@ -17,7 +17,7 @@ class Term extends AbstractEntity
     /**
      * @Serializer\MaxDepth(2)
      * 
-     * @ORM\OneToMany(targetEntity="TermBlock", mappedBy="term", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="TermBlock", mappedBy="term", fetch="EAGER", cascade={"detach"})
      * @var TermBlock[]
      */
     protected $blocks;

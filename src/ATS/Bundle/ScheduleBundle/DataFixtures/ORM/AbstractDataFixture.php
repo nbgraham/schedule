@@ -18,6 +18,9 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -32,6 +35,16 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
      * @var String[]
      */
     protected $location;
+    
+    /**
+     * @var String
+     */
+    protected $service_id;
+    
+    /**
+     * @var OutputInterface
+     */
+    protected static $_output;
     
     /**
      * Load data fixtures with the passed EntityManager
@@ -52,7 +65,30 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
      */
     public function setContainer(ContainerInterface $container = null)
     {
-        $this->container = $container;
+        $helper = $container->get('schedule.import_helper');
+        
+        $this->container  = $container;
+        $this->service_id = $helper->getServiceId();
+    }
+    
+    public static function getOutput()
+    {
+        if (static::$_output) {
+            return static::$_output;
+        }
+        
+        return (static::$_output = new ConsoleOutput(
+            ConsoleOutput::VERBOSITY_DEBUG
+        ));
+    }
+    
+    public function getProgressBar($max = 0)
+    {
+        $progress = new ProgressBar(static::getOutput(), $max);
+        $progress->setFormat('debug');
+        $progress->setRedrawFrequency(100);
+        
+        return $progress;
     }
     
     /**
@@ -64,7 +100,7 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
      */
     protected function getImporter($reset = false)
     {
-        $importer = $this->container->get('schedule.book_import');
+        $importer = $this->container->get($this->service_id);
         
         if ($reset) {
             $importer->firstEntry();
@@ -244,15 +280,11 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
             ->setSubject($this->getSubject())
         ;
         
-        $key = $this->getKey($section);
-        
-        if ($obj = $this->getReference($key)) {
-            return $obj;
-        }
-        
         $course->addSection($section);
         
-        return $this->store($section, $key);
+        $this->getDoctrine()->getManager()->persist($section);
+        
+        return $section;
     }
     
     /**

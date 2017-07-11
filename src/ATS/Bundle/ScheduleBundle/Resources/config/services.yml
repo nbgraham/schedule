@@ -6,10 +6,25 @@ services:
         calls:
             - [setRootDir, ["%kernel.root_dir%"]]
     
-    schedule.book_import:
-        class: ATS\Bundle\ScheduleBundle\Util\Parser\BookImportDriver
+    schedule.import_helper:
+        class:  ATS\Bundle\ScheduleBundle\Util\Helper\ImportDriverHelper
         arguments:
             - "@doctrine"
+            - "%num_years%"
+    
+    schedule.book_import:
+        parent: schedule.abstract_import
+        class:  ATS\Bundle\ScheduleBundle\Util\Parser\BookImportDriver
+    
+    schedule.ods_import:
+        parent: schedule.abstract_import
+        class:  ATS\Bundle\ScheduleBundle\Util\Parser\OdsImportDriver
+    
+    schedule.abstract_import:
+        abstract: true
+        arguments:
+            - "@doctrine"
+            - "@schedule.import_helper"
         calls:
             - [setRootDir, ["%kernel.root_dir%"]]
             - [init]

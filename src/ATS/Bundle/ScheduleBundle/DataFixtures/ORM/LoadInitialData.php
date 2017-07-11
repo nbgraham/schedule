@@ -13,7 +13,15 @@ class LoadInitialData extends AbstractDataFixture
      */
     public function load(ObjectManager $manager)
     {
+        $this->container->get('schedule.import_helper')
+            ->toggleFKChecks(true)
+        ;
+        
         $importer = $this->getImporter(true);
+        $progress = static::getProgressBar(count($importer->getEntries()));
+        
+        $progress->start();
+        $progress->setMessage('Importing initial data...');
         
         while ($entry = $importer->getEntry()) {
             $this->getTerm();
@@ -21,9 +29,14 @@ class LoadInitialData extends AbstractDataFixture
             $this->getInstructor();
             
             $importer->nextEntry();
+            $progress->advance();
         }
         
         $manager->flush();
+        $progress->finish();
+        
+        // Clear the line.
+        static::getOutput()->writeln('');
     }
     
     /**

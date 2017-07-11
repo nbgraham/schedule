@@ -20,7 +20,7 @@ class TermBlock extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * 
-     * @ORM\OneToMany(targetEntity="Section", mappedBy="block", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="block", fetch="EXTRA_LAZY", cascade={"detach"})
      * @var Section[]
      */
     protected $classes;

@@ -28,7 +28,7 @@ class Room extends AbstractEntity
      * @ORM\OneToMany(targetEntity="Section", mappedBy="room")
      * @var Section[]
      */
-    protected $classes;
+    protected $sections;
     
     /**
      * @ORM\Id()
@@ -56,7 +56,7 @@ class Room extends AbstractEntity
         $this->setNumber($number);
         
         $this->building = $building;
-        $this->classes  = new ArrayCollection();
+        $this->sections = new ArrayCollection();
     }
     
     /**

@@ -2,7 +2,6 @@
 
 namespace ATS\Bundle\ScheduleBundle\Util\Parser;
 
-
 use ATS\Bundle\ScheduleBundle\Entity\Building;
 use ATS\Bundle\ScheduleBundle\Entity\Campus;
 use ATS\Bundle\ScheduleBundle\Entity\Course;
@@ -12,7 +11,6 @@ use ATS\Bundle\ScheduleBundle\Entity\Section;
 use ATS\Bundle\ScheduleBundle\Entity\Subject;
 use ATS\Bundle\ScheduleBundle\Entity\Term;
 use ATS\Bundle\ScheduleBundle\Entity\TermBlock;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class BookImportDriver extends AbstractImportDriver
@@ -20,11 +18,6 @@ class BookImportDriver extends AbstractImportDriver
     const CSV_PATH = 'datastores/Classes.csv';
     
     protected $path;
-    
-    public function __construct(Registry $doctrine)
-    {
-        parent::__construct($doctrine);
-    }
     
     /**
      * {@inheritdoc}
@@ -36,6 +29,14 @@ class BookImportDriver extends AbstractImportDriver
             ->setPath($mixed ?: static::CSV_PATH)
             ->loadRawData()
         ;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 1;
     }
     
     /**
@@ -147,12 +148,6 @@ class BookImportDriver extends AbstractImportDriver
             ->setSection($entry[3])
             ->setNumEnrolled($entry[12])
             ->setMaximumEnrollment($entry[11])
-            /*->setSubject($subject)
-            ->setCourse($course)
-            ->setCampus($this->createCampus())
-            ->setBlock($this->createTerm())
-            ->setInstructor($this->createInstructor())
-            ->setRoom($this->createRoom())*/
         ;
         
         return $section;
@@ -191,10 +186,14 @@ class BookImportDriver extends AbstractImportDriver
     
     /**
      * Read the CSV contents line by line and read the valid entries into memory.
-     * 
+     *
+     * @param integer $mixed
+     *
      * @return $this
+     * @internal param int $limit
+     *
      */
-    protected function loadRawData()
+    protected function loadRawData($mixed = null)
     {
         $handle = $this->openFile();
         $data   = [];
