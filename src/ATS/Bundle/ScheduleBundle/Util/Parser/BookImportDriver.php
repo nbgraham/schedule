@@ -36,7 +36,7 @@ class BookImportDriver extends AbstractImportDriver
      */
     public function getCount()
     {
-        return 1;
+        return count($this->getEntries());
     }
     
     /**
