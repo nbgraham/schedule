@@ -71,6 +71,31 @@ class Campus extends AbstractEntity
     }
     
     /**
+     * @Serializer\VirtualProperty()
+     */
+    public function getDisplayName()
+    {
+        switch ($this->getName()) {
+            case 'N':
+                return 'Norman - Main Campus';
+            case 'T':
+                return 'Tulsa Campus';
+            case 'I':
+                return 'Independent Campus';
+            case 'L':
+                return 'Liberal Studies';
+            case 'O':
+                return 'Outreach Academic Programs';
+            case 'R':
+                return 'Redlands at Norman CCE';
+            case 'S':
+                return 'Intersession';
+            default:
+                return $this->getName();
+        }
+    }
+    
+    /**
      * @return int
      */
     public function getId()

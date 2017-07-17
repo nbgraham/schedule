@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation\Exclude;
 /**
  * The Event table represents instances of course classes.
  * 
- * @ORM\Entity(repositoryClass="ATS\Bundle\ScheduleBundle\Entity\Repository\SectionRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="section")
  */
 class Section extends AbstractEntity

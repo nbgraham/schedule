@@ -504,7 +504,7 @@ const Scheduler = (function ($) {
         output.append(
             $('<p>').append(
                 '<hr />'
-                + "Campus: "     + section.campus.name + "<br />"
+                + "Campus: "     + section.campus.display_name + "<br />"
                 + "Building: " + section.building.name + "<br />"
                 + "Room: "     + section.room.number + "<br />"
                 
@@ -740,9 +740,14 @@ const Scheduler = (function ($) {
         }
         
         let dow, days, parts, idx;
-        dow   = ['Sun', 'M', 'T', 'W', 'R', 'F', 'Sat'];
+        dow   = ['U', 'M', 'T', 'W', 'R', 'F', 'S'];
         days  = [];
-        parts = strDays.split('/');
+        
+        if (-1 === strDays.indexOf('/')) {
+            parts = strDays;
+        } else {
+            parts = strDays.split('/');
+        }
         
         for (idx in parts) {
             let initial = parts[idx];

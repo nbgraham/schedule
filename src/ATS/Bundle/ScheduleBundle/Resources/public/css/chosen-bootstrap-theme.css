@@ -2,6 +2,17 @@
  * @see https://gist.githubusercontent.com/koenpunt/6424137/raw/8cd599e6f32c1ed8a2c575ed7500853b3608eef9/chosen-bootstrap.css
  */
 
+select.form-control + .chosen-container .chosen-results li.group-result,
+select.form-control + .chosen-container .chosen-results li.group-result:hover
+{
+    font-weight:bold;
+    color:#333;
+    text-decoration: none;
+    padding: 3px 10px;
+    background-color: #fff;
+    background-image:none;
+}
+
 select.form-control + .chosen-container.chosen-container-single .chosen-single {
     display: block;
     width: 100%;

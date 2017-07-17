@@ -35,14 +35,14 @@
     function populateFilters()
     {
         fillSelect('#subject', GlobalUtils.getSubjects());
-        fillSelect('#instructor', GlobalUtils.getInstructors());
         fillSelect('#term', GlobalUtils.getSemesters());
+        fillSelectWithGroup('#instructor', GlobalUtils.getInstructors());
         
         bindSemesterChange();
         bindSubjectChange();
         bindInstructorChange();
     }
-
+    
     /**
      * Fill a select field and set it up with Chosen.
      * 
@@ -67,6 +67,41 @@
             ;
         }
         
+        _buildChosen(select);
+    }
+
+    /**
+     * Build a select menu with that has subgroups.
+     * 
+     * @param id
+     * @param data
+     */
+    function fillSelectWithGroup(id, data)
+    {
+        let select, idx, group;
+        select = $(id);
+        
+        for (idx in data) {
+            if (!data.hasOwnProperty(idx)) {
+                return;
+            }
+            
+            if (group = _fillOptGroup(idx, data[idx])) {
+                group.appendTo(select);
+            }
+        }
+        
+        _buildChosen(select)
+    }
+
+    /**
+     * Build the chosen dialogue boxes with the default app settings.
+     * 
+     * @param select
+     * @private
+     */
+    function _buildChosen(select)
+    {
         // Chosen will initialize at 0px because it's in a modal.
         select.chosen({ 
             width: '100%',
@@ -77,6 +112,46 @@
             someone who wants to graduate and impress - what are you gonna do?
             max_selected_options:  3,*/
         });
+    }
+
+    /**
+     * Builds a optgroup subtree.
+     * 
+     * @param parent_id
+     * @param data
+     * @returns {*}
+     * @private
+     */
+    function _fillOptGroup(parent_id, data)
+    {
+        if (!data) {
+            return false;
+        }
+        
+        let group, instructors, idx;
+        
+        group       = $('<optgroup>').attr('label', data.name);
+        instructors = data['instructors'];
+        
+        for (idx in instructors) {
+            if (!instructors.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            let item = instructors[idx];
+            if (!item.hasOwnProperty('name') || !item.name.length) {
+                continue;
+            }
+            
+            $('<option>')
+                .attr('value', item.id)
+                .attr('data-subject', parent_id)
+                .text(determineChosenLabel(item))
+                .appendTo(group)
+            ;
+        }
+        
+        return group;
     }
 
     /**
@@ -147,6 +222,8 @@
     function bindSubjectChange()
     {
         $('#subject').on('change', function (event, params) {
+            _checkInstructorImpact(this, event, params);
+            
             let select, subjects, subject, idx;
             select   = $('#number');
             subjects = GlobalUtils.getSubjects();
@@ -200,6 +277,62 @@
         });
     }
 
+    /**
+     * Only show instructors that have taught for the selected subjects.
+     * 
+     * @param target
+     * @param event
+     * @param params
+     * @private
+     */
+    function _checkInstructorImpact(target, event, params)
+    {
+        let instructor, instructors, subject_ids, idx;
+        instructor  = $('#instructor');
+        instructors = GlobalUtils.getInstructors();
+        subject_ids = $(target).val();
+        
+        if (!params) {
+            instructor.val('');
+            fillSelectWithGroup(instructor, instructors);
+        }
+        
+        if (params.hasOwnProperty('deselected')) {
+            instructor
+                .find('option[data-subject="' + params.deselected + '"]')
+                .remove()
+            ;
+            
+            if (!subject_ids.length) {
+                fillSelectWithGroup(instructor, instructors);
+            }
+            
+            instructor.trigger('chosen:updated');
+            
+            return;
+        }
+        
+        instructor
+            .find('optgroup')
+            .remove()
+        ;
+        
+        for (idx in subject_ids) {
+            if (!subject_ids.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            let id, data;
+            id   = subject_ids[idx];
+            data = {};
+            data[id] = instructors[id];
+            
+            fillSelectWithGroup(instructor, data);
+        }
+        
+        instructor.trigger('chosen:updated');
+    }
+    
     /**
      * Add a color-picker to the instructor field.
      */

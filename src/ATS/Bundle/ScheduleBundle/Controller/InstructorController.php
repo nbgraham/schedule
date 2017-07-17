@@ -27,7 +27,7 @@ class InstructorController extends AbstractController implements ClassResourceIn
      */
     public function cgetAction()
     {
-        $instructors = $this->getRepo('ATSScheduleBundle:Instructor')
+        $instructors = $this->getRepo(Instructor::class)
             ->findAll()
         ;
         
@@ -60,5 +60,19 @@ class InstructorController extends AbstractController implements ClassResourceIn
         }
         
         return ['instructor' => $instructor];
+    }
+    
+    /**
+     * Fetches all the known instructors and groups them by subject name.
+     * 
+     * @View(serializerEnableMaxDepthChecks=true)
+     */
+    public function cgetBySubjectAction()
+    {
+        $instructors = $this->getRepo(Instructor::class)
+            ->getInstructorsBySubject()
+        ;
+        
+        return ['instructors' => $instructors];
     }
 }
