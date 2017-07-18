@@ -269,15 +269,25 @@ class OdsImportDriver extends AbstractImportDriver
         ];
     }
     
+    /**
+     * Parse the term data.
+     * 
+     * Semesters that end in 20 are Spring of the following year.
+     * IE: 201720 = Spring 2018
+     * 
+     * @param array $data
+     *
+     * @return array
+     */
     protected function parseTerm(array $data)
     {
         $term     = $data['academic_period'];
         $year     = substr($term, 0, 4);
-        $semester = substr($term, 4);
+        $code     = substr($term, 4);
         
         return [
-            'year'     => $year,
-            'semester' => $this->parseSemester($semester),
+            'year'     => $code < 20 ? $year : $year + 1,
+            'semester' => $this->parseSemester($code),
             'block'    => $data['sub_academic_period'],
         ];
     }

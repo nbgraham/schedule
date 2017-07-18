@@ -43,7 +43,7 @@ class LoadClassData extends AbstractDataFixture
         $progress->finish();
         
         // Clear the line.
-        static::getOutput()->writeln('Complete.');
+        static::getOutput()->writeln("\nComplete.");
     }
     
     /**

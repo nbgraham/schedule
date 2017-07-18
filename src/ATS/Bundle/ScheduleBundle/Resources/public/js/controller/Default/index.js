@@ -439,30 +439,7 @@
      */
     function fetchCsvExport()
     {
-        let uri, ids, i;
-        
-        uri = '';
-        ids = scheduler.getSectionIds();
-        
-        if (!ids.length) {
-            GlobalUtils.toggleExportBtn(scheduler);
-            alert("Please select a subset of classes first.");
-            return;
-        }
-        
-        for (i in ids) {
-            if (!ids.hasOwnProperty(i)) {
-                continue;
-            }
-            
-            if (uri.length) {
-                uri += '&';
-            }
-            
-            uri += 'section[]=' + ids[i];
-        }
-        
-        location.href = GlobalUtils.getAPIUrl('/download/export.json') + '?' + uri;
+        location.href = GlobalUtils.getAPIUrl('/download/export.json');
     }
     
 }) (jQuery);

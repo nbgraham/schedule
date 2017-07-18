@@ -7,7 +7,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale:    en
-    num_years: 5
+    num_years: 2
 
 nelmio_api_doc:
   name: "Schedule Utility's API Documentation"

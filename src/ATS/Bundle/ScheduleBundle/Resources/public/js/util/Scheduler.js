@@ -351,10 +351,10 @@ const Scheduler = (function ($) {
                 $('<div>')
                     .addClass('row ttTitle')
                     .append(
-                        $('<div>').addClass('col-lg-9')
+                        $('<div>').addClass('col-lg-9 col-md-9')
                             .text(section.subject.name + ' ' + course.number)
                     ).append(
-                        $('<div>').addClass('col-lg-3 nowrap')
+                        $('<div>').addClass('col-lg-3 col-md-3 nowrap')
                             .text(section.num_enrolled + " / " + section.maximum_enrollment)
                     ).append(
                         $('<div>').addClass('col-lg-12')

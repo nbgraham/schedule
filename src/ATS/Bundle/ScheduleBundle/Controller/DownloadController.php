@@ -3,10 +3,7 @@
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
 use ATS\Bundle\ScheduleBundle\Entity\Section;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Request\ParamFetcher;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -21,14 +18,13 @@ class DownloadController extends AbstractController
     /**
      * Exports the section information.
      * 
-     * @QueryParam(name="section", nullable=true)
      * @see https://vauly.com/symfony2-export-csv
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getExportAction(ParamFetcher $fetcher)
+    public function getExportAction()
     {
-        $section_ids = $fetcher->get('section');
+        $section_ids = $this->get('session')->get('last_results');
         $doctrine    = $this->getDoctrine();
         $response    = new StreamedResponse();
         

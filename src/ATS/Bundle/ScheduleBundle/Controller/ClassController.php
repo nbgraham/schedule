@@ -3,12 +3,6 @@
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
 use ATS\Bundle\ScheduleBundle\Entity\Section;
-use ATS\Bundle\ScheduleBundle\Entity\Course;
-use ATS\Bundle\ScheduleBundle\Entity\Instructor;
-use ATS\Bundle\ScheduleBundle\Entity\Subject;
-use ATS\Bundle\ScheduleBundle\Entity\Term;
-use ATS\Bundle\ScheduleBundle\Entity\TermBlock;
-use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Controller\Annotations\Prefix;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -17,7 +11,6 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * The endpoint used when interacting with events.
@@ -80,14 +73,23 @@ class ClassController extends AbstractController implements ClassResourceInterfa
             ;
         }
         
-        return [
-            'classes' => $this->getRepo('ATSScheduleBundle:Section')
-                ->findBy(array_filter([
-                    'block'      => $block,
-                    'subject'    => $subject,
-                    'course'     => $course,
-                    'instructor' => $instructor,
-                ])),
-        ];
+        $ids     = [];
+        $classes = $this->getRepo('ATSScheduleBundle:Section')
+            ->findBy(array_filter([
+                'block'      => $block,
+                'subject'    => $subject,
+                'course'     => $course,
+                'instructor' => $instructor,
+            ])
+        );
+        
+        foreach ($classes as $section) {
+            /* @var Section $section */
+            $ids[] = $section->getId();
+        }
+        
+        $this->get('session')->set('last_results', $ids);
+        
+        return ['classes' => $classes];
     }
 }

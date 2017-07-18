@@ -82,11 +82,19 @@ class ImportDriverHelper
      */
     public function setAcademicPeriod($period)
     {
-        if ($period) {
-            $this->academic_period = (int) ($period . '00');
-        } else {
+        if (!$period) {
             $this->academic_period = null;
+            
+            return $this;
         }
+        
+        if ('all' === $period) {
+            return $this->setAcademicPeriod(
+                date('Y') - $this->num_years
+            );
+        }
+        
+        $this->academic_period = ($period - 1) . '20';
         
         return $this;
     }
@@ -102,8 +110,12 @@ class ImportDriverHelper
      */
     public function assignAcademicPoints(&$start, &$stop)
     {
-        $year  = $this->academic_period ?: date('Y');
-        $start = (int) (($year - $this->num_years) . '00');
+        if ($this->academic_period) {
+            $start = $this->academic_period;
+        } else {
+            $start = (int) ((date('Y') - $this->num_years) . '00');
+        }
+        
         $stop  = 300000;
         //$stop  = (int) (date('Y') . '99');
         

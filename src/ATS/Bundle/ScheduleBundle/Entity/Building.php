@@ -5,6 +5,7 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ForceUTF8\Encoding;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity()
@@ -22,6 +23,8 @@ class Building extends AbstractEntity
     protected $campus;
     
     /**
+     * @Serializer\Exclude()
+     * 
      * @ORM\OneToMany(targetEntity="Room", mappedBy="building", cascade={"all"})
      * @var Room[]
      */
