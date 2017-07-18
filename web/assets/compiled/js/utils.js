@@ -210,7 +210,7 @@ const Scheduler = (function ($) {
                             at: 'bottom left'
                         },
                         content: {
-                            text: getToolTipText(event, element)
+                            text: getToolTipText(event)
                         }
                     });
                 }
@@ -474,11 +474,10 @@ const Scheduler = (function ($) {
      * Generate the text to display in the Tool Tip.
      * 
      * @param event
-     * @param element
      * 
      * @returns {string|*}
      */
-    function getToolTipText(event, element)
+    function getToolTipText(event)
     {
         let section, course, output;
         
@@ -502,14 +501,21 @@ const Scheduler = (function ($) {
             );
         
         output.append(
-            $('<p>').append(
-                '<hr />'
-                + "Campus: "     + section.campus.display_name + "<br />"
-                + "Building: " + section.building.name + "<br />"
-                + "Room: "     + section.room.number + "<br />"
-                
-                + "<br />"
-                + "Instructor: " + section.instructor.name
+            $('<p>').append('<hr />').append(
+                $('<div>').addClass('row')
+                    .append(
+                        $('<div>').addClass('col-md-4 ttLabel nowrap').text('Location:')
+                    ).append(
+                        $('<div>').addClass('col-md-8').text(section.campus.display_name)
+                    ).append(
+                        $('<div>').addClass('col-md-offset-4 col-md-8 ttDetail').text(
+                            section.building.name + ' - ' + section.room.number
+                        )
+                    ).append(
+                        $('<div>').addClass('col-md-4 ttLabel nowrap').text('Instructor:')
+                    ).append(
+                        $('<div>').addClass('col-md-8').text(section.instructor.name)
+                    )
             )
         );
         

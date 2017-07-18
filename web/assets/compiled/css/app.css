@@ -208,9 +208,15 @@ div.calendar-container .capacity-lightsalmon-default {
 }
 /* Styles for the title text of the QTip overlay. */
 .ttTitle {
-  text-decoration: bold;
   font-size: 0.8em;
   font-weight: bold;
+}
+.ttLabel {
+  font-size: 0.9em;
+  font-weight: bold;
+}
+.ttDetail {
+  font-size: 0.9em;
 }
 /* The bootstrap chosen add-on's close button is misaligned - correct it. */
 .chosen-container#term_chosen abbr.search-choice-close {
