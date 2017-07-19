@@ -1,6 +1,7 @@
 .idea/
 web/assets/compiled/
 web/images/
+web/assets/vendor/*/node_modules/
 
 /app/config/parameters.yml
 /build/

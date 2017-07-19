@@ -399,19 +399,31 @@
     {
         let modal = $('#filtersModal');
         modal.find('#apply-filters').on('click', function () {
+            // Clear anything that was set in the tooltip box.
+            $('.mobile-tooltip').html('');
+            
             if (scheduler.fetch()) {
                 modal.modal('hide');
             }
         });
         
         modal.find('#clear-filters').on('click', function () {
+            // Clear anything that was set in the tooltip box.
+            $('.mobile-tooltip').html('');
+            
             scheduler.clearFilters();
             
+            // Clear the course numbers.
             $('#number').find('option').remove();
+            
+            // Reset the instructor menu to its page load state.
             fillSelectWithGroup('instructor', GlobalUtils.getInstructors());
         });
         
         $('#clear-calendar').click(function () {
+            // Clear anything that was set in the tooltip box.
+            $('.mobile-tooltip').html('');
+            
             scheduler.clear();
         });
         
