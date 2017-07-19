@@ -121,6 +121,16 @@ let GlobalUtils;
     {
         return subjects;
     };
+
+    /**
+     * Determine if the current browsing experience is in a mobile device.
+     * 
+     * @return boolean
+     */
+    GlobalUtils.isMobile = function ()
+    {
+        return $('.mobile-tooltip').is(':not(:hidden)');
+    };
     
     /**
      * Returns the subject from the URL.

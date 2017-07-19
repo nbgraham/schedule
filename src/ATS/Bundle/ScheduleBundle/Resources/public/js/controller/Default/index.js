@@ -182,14 +182,17 @@
     function bindSemesterChange()
     {
         $('#term').on('change', function (event, params) {
-            // params is undefined when you deselect a semester.
+            let label, semesters, semester, select, idx;
+            label     = $('label[for="term-block"]');
+            semesters = GlobalUtils.getSemesters();
+            
             if (!params) {
+                // params is undefined when you deselect a semester.
                 $('#term-block').chosen('destroy');
+                label.addClass('hidden');
                 return;
             }
             
-            let semesters, semester, select, idx;
-            semesters = GlobalUtils.getSemesters();
             for (idx in semesters) {
                 if (!semesters.hasOwnProperty(idx)) {
                     continue;
@@ -205,13 +208,15 @@
                 select.find('option[value]').remove();
                 select.show();
                 
+                // Show the label.
+                label.removeClass('hidden');
+                
                 // Fill the term-block selector.
                 fillSelect('#term-block', semester.blocks);
                 
                 // Notify Chosen that the content of the select box changed.
                 select.trigger("chosen:updated");
             }
-            
         });
     }
     
@@ -224,26 +229,30 @@
         $('#subject').on('change', function (event, params) {
             _checkInstructorImpact(this, event, params);
             
-            let select, subjects, subject, idx;
-            select   = $('#number');
+            let number, subjects, label, subject, idx;
+            number   = $('#number');
             subjects = GlobalUtils.getSubjects();
+            label    = $('label[for="number"]');
             
             if (!params) {
                 // params is undefined when you deselect a subject.
-                select.chosen('destroy');
+                number.chosen('destroy');
+                label.addClass('hidden');
+                
                 return;
             }
             
             if (params.hasOwnProperty('deselected')) {
-                select
+                number
                     .find('option[data-subject="' + params.deselected + '"]')
                     .remove()
                 ;
                 
                 if (!$(this).val().length) {
-                    select.chosen('destroy');
+                    number.chosen('destroy');
+                    label.addClass('hidden');
                 } else {
-                    select.trigger('chosen:updated');
+                    number.trigger('chosen:updated');
                 }
                 
                 return;
@@ -262,7 +271,7 @@
                 
                 fillSelect('#number', subject.courses);
                 
-                select.find('option:not([data-subject])')
+                number.find('option:not([data-subject])')
                     .attr('data-subject', subject.id)
                 ;
                 
@@ -270,7 +279,8 @@
             }
             
             if (changed) {
-                select.trigger('chosen:updated');
+                label.removeClass('hidden');
+                number.trigger('chosen:updated');
             }
             
             addColorPicker('subject');
@@ -295,6 +305,8 @@
         if (!params) {
             instructor.val('');
             fillSelectWithGroup(instructor, instructors);
+            
+            return;
         }
         
         if (params.hasOwnProperty('deselected')) {
@@ -394,6 +406,9 @@
         
         modal.find('#clear-filters').on('click', function () {
             scheduler.clearFilters();
+            
+            $('#number').find('option').remove();
+            fillSelectWithGroup('instructor', GlobalUtils.getInstructors());
         });
         
         $('#clear-calendar').click(function () {

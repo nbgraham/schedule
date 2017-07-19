@@ -121,6 +121,16 @@ let GlobalUtils;
     {
         return subjects;
     };
+
+    /**
+     * Determine if the current browsing experience is in a mobile device.
+     * 
+     * @return boolean
+     */
+    GlobalUtils.isMobile = function ()
+    {
+        return $('.mobile-tooltip').is(':not(:hidden)');
+    };
     
     /**
      * Returns the subject from the URL.
@@ -217,11 +227,26 @@ const Scheduler = (function ($) {
                     
                     $(element).qtip({
                         style: {
-                            classes: "qtip-rounded qtip-shadow qtip-bootstrap"
+                            classes: 'qtip-rounded qtip-shadow qtip-bootstrap'
                         },
                         position: position,
                         content: {
                             text: getToolTipText(event)
+                        },
+                        events: {
+                            show: function (event, api) {
+                                if (!GlobalUtils.isMobile()) {
+                                    return;
+                                }
+                                
+                                event.preventDefault();
+                                
+                                $('.mobile-tooltip').html(
+                                    $(event.currentTarget)
+                                        .find('.qtip-content')
+                                        .html()
+                                );
+                            }
                         }
                     });
                 }
@@ -339,6 +364,7 @@ const Scheduler = (function ($) {
             options.prop('selected', false);
             
             // Hide related fields (term-blocks, course numbers).
+            selectors.val('');
             selectors.trigger('change');
             selectors.trigger('chosen:updated');
             
@@ -508,38 +534,40 @@ const Scheduler = (function ($) {
         
         section = event.section;
         course  = event.course;
+        output  = $('<p>');
         
-        output  = $('<p>')
-            .append(
-                $('<div>')
-                    .addClass('row ttTitle')
-                    .append(
-                        $('<div>').addClass('col-lg-9 col-md-9')
-                            .text(section.subject.name + ' ' + course.number)
-                    ).append(
-                        $('<div>').addClass('col-lg-3 col-md-3 nowrap')
-                            .text(section.num_enrolled + " / " + section.maximum_enrollment)
-                    ).append(
-                        $('<div>').addClass('col-lg-12')
-                            .text(course.name)
-                    )
-            );
+        // Title.
+        output.append(
+            $('<div>')
+                .addClass('row ttTitle')
+                .append(
+                    $('<div>').addClass('col-xs-9')
+                        .text(section.subject.name + ' ' + course.number)
+                ).append(
+                    $('<div>').addClass('col-xs-3 nowrap')
+                        .text(section.num_enrolled + " / " + section.maximum_enrollment)
+                ).append(
+                    $('<div>').addClass('col-xs-12')
+                        .text(course.name)
+                )
+        );
         
+        // Body.
         output.append(
             $('<p>').append('<hr />').append(
                 $('<div>').addClass('row')
                     .append(
-                        $('<div>').addClass('ttLabel nowrap col-md-4 hidden-xs').text('Location:')
+                        $('<div>').addClass('ttLabel nowrap col-xs-4').text('Location:')
                     ).append(
-                        $('<div>').addClass('col-md-8 col-xs-12').text(section.campus.display_name)
+                        $('<div>').addClass('col-xs-8').text(section.campus.display_name)
                     ).append(
-                        $('<div>').addClass('ttDetail col-md-offset-4 col-md-8 col-xs-12').text(
+                        $('<div>').addClass('ttDetail col-xs-offset-4 col-xs-8').text(
                             section.building.name + ' - ' + section.room.number
                         )
                     ).append(
-                        $('<div>').addClass('ttLabel nowrap col-md-4 hidden-xs').text('Instructor:')
+                        $('<div>').addClass('ttLabel nowrap col-xs-4').text('Instructor:')
                     ).append(
-                        $('<div>').addClass('col-md-8 col-xs-12').text(section.instructor.name)
+                        $('<div>').addClass('col-xs-8').text(section.instructor.name)
                     )
             )
         );
@@ -667,12 +695,12 @@ const Scheduler = (function ($) {
         
         toggleOrangeBorder(false);
         
-        if (!term.val()) {
+        if (!term.val() || !term.val().length) {
             term.trigger('chosen:activate');
             return false;
         }
         
-        if (!block.val().length) {
+        if (!block.val() || !block.val().length) {
             block.trigger('chosen:open');
             return false;
         }
@@ -683,7 +711,7 @@ const Scheduler = (function ($) {
             }
             
             let selector = multiples[idx];
-            if ($(selector).val().length) {
+            if ($(selector + ' option:selected').length) {
                 return true;
             }
         }
@@ -714,6 +742,12 @@ const Scheduler = (function ($) {
                 .find('ul')
                 .css('border-color', color)
             ;
+        }
+        
+        if (on) {
+            $('#required-fields-help').removeClass('hidden');
+        } else {
+            $('#required-fields-help').addClass('hidden');
         }
     }
 

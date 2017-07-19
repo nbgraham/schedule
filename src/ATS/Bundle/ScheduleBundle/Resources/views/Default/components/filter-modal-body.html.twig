@@ -1,59 +1,87 @@
-<div class="container-fluid">
-    <script type="application/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            GlobalUtils.setSemesters({{ render(controller('ATSScheduleBundle:Term:cget', {
-                '_format': 'json'
-            })) }});
-            
-            GlobalUtils.setSubjects({{ render(controller('ATSScheduleBundle:Subject:cget', {
-                '_format': 'json'
-            })) }});
-            
-            GlobalUtils.setInstructors({{ render(controller('ATSScheduleBundle:Instructor:cgetBySubject', {
-                '_format': 'json'
-            })) }});
-        });
-    </script>
-    
+<div class="container-fluid modal-wrapper">
     <div class="row">
-        <label for="term" class="cold-sm-4 control-label">Semester</label>
-        
-        <div class="cold-sm-4">
-            <select id="term" class="chosen-select form-control" data-placeholder="Semester..." required>
-                <option></option>
-            </select>
+        <div>
+            <label for="term" class="col-md-3 control-label">
+                <span class="fa fa-info-circle" data-toggle="tooltip" data-original-title="Required.{# The semester you wish to view.#}"></span>
+                Semester
+            </label>
+            
+            <div class="col-md-9">
+                <select id="term" class="chosen-select form-control" data-placeholder="Semester..." required>
+                    <option></option>
+                </select>
+            </div>
         </div>
         
-        <div class="cold-sm-4">
-            <select id="term-block" class="chosen-select form-control hidden" data-placeholder="Module..." multiple="" required>
-                <option></option>
-            </select>
+        <div>
+            <label for="term-block" class="col-md-3 hidden">
+                <span class="fa fa-info-circle" data-toggle="tooltip" data-original-title="Required. The &quot;subset&quot; of semesters to include in the search."></span>
+                Part of Term
+            </label>
+            
+            <div class="col-md-9">
+                <select id="term-block" class="chosen-select form-control hidden" data-placeholder="Part of Term..." multiple="" required>
+                    <option></option>
+                </select>
+            </div>
         </div>
     </div>
     
     <div class="row">
-        <label for="subject" class="cold-sm-4 control-label">Subject</label>
-        
-        <div class="cold-sm-4">
-            <select id="subject" class="chosen-select form-control" data-placeholder="Subject..." multiple="" required>
-                <option></option>
-            </select>
+        <div>
+            <label for="subject" class="col-sm-3 control-label">
+                <span class="fa fa-info-circle" data-toggle="tooltip" data-original-title="Optional. Filter by specified subjects/departments."></span>
+                Subject
+            </label>
+            
+            <div class="col-sm-9">
+                <select id="subject" class="chosen-select form-control" data-placeholder="Subject..." multiple="">
+                    <option></option>
+                </select>
+            </div>
         </div>
         
-        <div class="cold-sm-4">
-            <select id="number" class="chosen-select form-control hidden" data-placeholder="Course..." multiple="">
-                <option></option>
-            </select>
+        <div>
+            <label for="number" class="col-md-3 hidden">
+                <span class="fa fa-info-circle" data-toggle="tooltip" data-original-title="Optional. Filter by specified courses."></span>
+                Course
+            </label>
+            
+            <div class="col-sm-9">
+                <select id="number" class="chosen-select form-control hidden" data-placeholder="Course..." multiple="">
+                    <option></option>
+                </select>
+            </div>
         </div>
     </div>
     
     <div class="row">
-        <label for="instructor" class="cold-sm-4 control-label">Instructor</label>
+        <label for="instructor" class="col-md-3 control-label">
+            <span class="fa fa-info-circle" data-toggle="tooltip" data-original-title="Optional. Filter by specified instructors."></span>
+            Instructor
+        </label>
         
-        <div class="cold-sm-8">
+        <div class="col-sm-9">
             <select id="instructor" class="chosen-select form-control" data-placeholder="Instructor..." multiple="">
-                <option></option>
+                {#<option></option>#}
             </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12 help-block">
+            <p id="required-fields-help" class="hidden">
+                Along with <i>Semester</i> and <i>Part of Term</i>,
+                you must provide either a <b>Subject</b> or <b>Instructor</b>
+                to make a search.
+            </p>
+            
+            <p class="hidden-xs">
+                You can add a color to <i>Subjects</i> and <i>Instructors</i>
+                after you've completed a search by opening this dialogue box again
+                and adding the subject/instructor, setting a color in the color picker,
+                and hitting &quot;Close.&quot;
+            </p>
         </div>
     </div>
 </div>

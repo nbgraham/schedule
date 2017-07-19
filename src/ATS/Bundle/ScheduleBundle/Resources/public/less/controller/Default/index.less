@@ -52,19 +52,29 @@ div.calendar-container {
     border-width: 0.33em;
 
     &-over-capacity {
-      border-color: red;
+      border-color: #ff0000;
     }
 
     &-alert {
-      border-color: lightsalmon;
+      border-color: #ff9800;
     }
 
     &-warning {
-      border-color: lightpink;
+      border-color: #ffff00;
     }
 
     &-lightsalmon-default {
-      border-color: lightgreen;
+      border-color: #4CAF50;
+    }
+  }
+}
+
+.modal-wrapper {
+  label {
+    margin-top: 0.5em;
+    
+    span.fa {
+      font-size: 0.8em;
     }
   }
 }
@@ -72,6 +82,10 @@ div.calendar-container {
 #filtersModal {
   #term_block_chosen, #number_chosen {
     margin: 0.25em 0;
+  }
+  
+  .buttons-left {
+    float: left;
   }
 }
 
@@ -98,14 +112,20 @@ div.calendar-container {
   }
 }
 
+.mobile-tooltip {
+  hr {
+    margin: auto;
+  }
+}
+
 /* Make room in the chosen choice container for the color picker. */
 div.chosen-container {
   li.search-choice {
-    
+
     input[type="color"] {
       width: 3em;
     }
-    
+
     span {
       padding-left: 0.5em;
     }

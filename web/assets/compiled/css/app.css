@@ -191,20 +191,29 @@ div.calendar-container .capacity {
   border-width: 0.33em;
 }
 div.calendar-container .capacity-over-capacity {
-  border-color: red;
+  border-color: #ff0000;
 }
 div.calendar-container .capacity-alert {
-  border-color: lightsalmon;
+  border-color: #ff9800;
 }
 div.calendar-container .capacity-warning {
-  border-color: lightpink;
+  border-color: #ffff00;
 }
 div.calendar-container .capacity-lightsalmon-default {
-  border-color: lightgreen;
+  border-color: #4CAF50;
+}
+.modal-wrapper label {
+  margin-top: 0.5em;
+}
+.modal-wrapper label span.fa {
+  font-size: 0.8em;
 }
 #filtersModal #term_block_chosen,
 #filtersModal #number_chosen {
   margin: 0.25em 0;
+}
+#filtersModal .buttons-left {
+  float: left;
 }
 /* Styles for the title text of the QTip overlay. */
 .ttTitle {
@@ -221,6 +230,9 @@ div.calendar-container .capacity-lightsalmon-default {
 /* The bootstrap chosen add-on's close button is misaligned - correct it. */
 .chosen-container#term_chosen abbr.search-choice-close {
   margin-top: 5em;
+}
+.mobile-tooltip hr {
+  margin: auto;
 }
 /* Make room in the chosen choice container for the color picker. */
 div.chosen-container li.search-choice input[type="color"] {

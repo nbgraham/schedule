@@ -1,0 +1,19 @@
+<script type="application/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        GlobalUtils.setSemesters({{ render(controller('ATSScheduleBundle:Term:cget', {
+            '_format': 'json'
+        })) }});
+        
+        GlobalUtils.setSubjects({{ render(controller('ATSScheduleBundle:Subject:cget', {
+            '_format': 'json'
+        })) }});
+        
+        GlobalUtils.setInstructors({{ render(controller('ATSScheduleBundle:Instructor:cgetBySubject', {
+            '_format': 'json'
+        })) }});
+        
+        $('[data-toggle="tooltip"]').tooltip({
+            placement : 'top'
+        });
+    });
+</script>
