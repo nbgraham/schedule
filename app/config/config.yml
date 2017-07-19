@@ -30,6 +30,12 @@ assetic:
     bundles:        [ ATSScheduleBundle ]
     filters:
         cssrewrite: ~
+        jsqueeze:
+            keep_important_comments: true
+        lessphp:
+            apply_to:  "\\.(less|css)$"
+            formatter: "compressed"
+            preserve_comments: true
 
 framework:
     #esi:             ~

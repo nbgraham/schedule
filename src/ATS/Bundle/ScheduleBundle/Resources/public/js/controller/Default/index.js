@@ -1,7 +1,6 @@
-/**
+/*!
  * Home page javascript file. Loads the calendar and requests data to
  * populate it with.
- *
  * @author Austin Shinpaugh
  */
 

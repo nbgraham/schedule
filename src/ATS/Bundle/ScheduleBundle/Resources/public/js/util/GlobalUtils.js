@@ -1,6 +1,5 @@
-/**
+/*!
  * Global utility used in other scripts.
- * 
  * @author Austin Shinpaugh
  */
 

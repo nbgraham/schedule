@@ -19,7 +19,7 @@
                 'assets/vendor/qtip2/jquery.qtip.min.css'
                 'assets/vendor/spectrum/spectrum.css'
                 output='assets/compiled/css/libraries.css'
-                filter='cssrewrite'
+                filter='cssrewrite,lessphp'
             %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
@@ -28,7 +28,7 @@
                 '@ATSScheduleBundle/Resources/public/css/chosen-bootstrap-theme.css'
                 '@ATSScheduleBundle/Resources/public/less/controller/Default/index.less'
                 output='assets/compiled/css/app.css'
-                filter='cssrewrite,less'
+                filter='cssrewrite,lessphp'
             %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
@@ -37,7 +37,7 @@
                 'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
                 '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
                 output='assets/compiled/css/app_print.css'
-                filter='cssrewrite,less'
+                filter='cssrewrite,lessphp'
             %}
                 <link rel="stylesheet" href="{{ asset_url }}" media="print" />
             {% endstylesheets %}
@@ -45,6 +45,7 @@
         
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
+    
     <body>
         {% block body %}{% endblock %}
         
@@ -58,18 +59,21 @@
                 'assets/vendor/chosen/chosen.jquery.js'
                 'assets/vendor/qtip2/jquery.qtip.min.js'
                 'assets/vendor/spectrum/spectrum.js'
+                filter='?jsqueeze'
                 output='assets/compiled/js/libraries.js'
             %}
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}
             
             {% javascripts '@ATSScheduleBundle/Resources/public/js/util/*'
+                filter='?jsqueeze'
                 output='assets/compiled/js/utils.js'
             %}
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}
             
             {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*'
+                filter='?jsqueeze'
                 output='assets/compiled/js/controllers.js'
             %}
                 <script src="{{ asset_url }}"></script>

@@ -1,6 +1,5 @@
-/**
+/*!
  * The utility wrapper that works with FullCalendar.
- *
  * @author Austin Shinpaugh
  */
 
