@@ -191,24 +191,35 @@ const Scheduler = (function ($) {
                     center: 'title',
                     right: 'agendaWeek,agendaDay'
                 },
-                viewRender: function (view) {
+                viewRender: function () {
                     updateHeader();
                     hideDateColumnHeader();
                 },
-                eventRender: function (event, element) {
+                eventRender: function (event, element, view) {
                     if (event.hasOwnProperty('description')) {
                         element.find('.fc-title')
                             .append("<br/>" + event.description)
                         ;
+                    }
+                },
+                eventAfterRender: function (event, element, view) {
+                    let position = {
+                        at:     'bottom left',
+                        target: element
+                    };
+                    
+                    if (isFriday(element)) {
+                        position = {
+                            my: 'top right',
+                            at: 'bottom left',
+                        };
                     }
                     
                     $(element).qtip({
                         style: {
                             classes: "qtip-rounded qtip-shadow qtip-bootstrap"
                         },
-                        position: {
-                            at: 'bottom left'
-                        },
+                        position: position,
                         content: {
                             text: getToolTipText(event)
                         }
@@ -385,6 +396,20 @@ const Scheduler = (function ($) {
     };
 
     /**
+     * Determine if the element rendered is in the Friday column.
+     * 
+     * @param element
+     * 
+     * @return boolean
+     */
+    function isFriday(element)
+    {
+        let parent = $(element).parents('td').first();
+        
+        return parent.parent().children().last().is(parent);
+    }
+
+    /**
      * Update the background colors for an event after it's been rendered.
      * 
      * @param instance
@@ -504,17 +529,17 @@ const Scheduler = (function ($) {
             $('<p>').append('<hr />').append(
                 $('<div>').addClass('row')
                     .append(
-                        $('<div>').addClass('col-md-4 ttLabel nowrap').text('Location:')
+                        $('<div>').addClass('ttLabel nowrap col-md-4 hidden-xs').text('Location:')
                     ).append(
-                        $('<div>').addClass('col-md-8').text(section.campus.display_name)
+                        $('<div>').addClass('col-md-8 col-xs-12').text(section.campus.display_name)
                     ).append(
-                        $('<div>').addClass('col-md-offset-4 col-md-8 ttDetail').text(
+                        $('<div>').addClass('ttDetail col-md-offset-4 col-md-8 col-xs-12').text(
                             section.building.name + ' - ' + section.room.number
                         )
                     ).append(
-                        $('<div>').addClass('col-md-4 ttLabel nowrap').text('Instructor:')
+                        $('<div>').addClass('ttLabel nowrap col-md-4 hidden-xs').text('Instructor:')
                     ).append(
-                        $('<div>').addClass('col-md-8').text(section.instructor.name)
+                        $('<div>').addClass('col-md-8 col-xs-12').text(section.instructor.name)
                     )
             )
         );
