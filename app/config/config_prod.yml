@@ -19,8 +19,3 @@ monolog:
             level: debug
         console:
             type:  console
-
-assetic:
-    filters:
-        less:
-            bin: /usr/bin/less

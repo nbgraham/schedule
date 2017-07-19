@@ -17,3 +17,17 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    oudev_db_host: 10.26.192.193
+    oudev_db_port: 3306
+    oudev_db_name: classplan
+    oudev_db_user: 
+    oudev_db_password: ''
+    
+    ods_db_host: 10.26.192.193
+    ods_db_port: 3306
+    ods_db_name: classnav
+    ods_db_user: 
+    ods_db_password: ''
+    
+     

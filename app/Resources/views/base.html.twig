@@ -10,30 +10,6 @@
         
         {% block stylesheets %}
             {% stylesheets
-                'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
-                'assets/vendor/bootstrap/dist/css/bootstrap-theme.min.css'
-                'assets/vendor/fullcalendar/dist/fullcalendar.min.css'
-                'assets/vendor/jquery-ui/themes/base/jquery-ui.min.css'
-                'assets/vendor/font-awesome/css/font-awesome.min.css'
-                'assets/vendor/chosen/chosen.css'
-                'assets/vendor/qtip2/jquery.qtip.min.css'
-                'assets/vendor/spectrum/spectrum.css'
-                output='assets/compiled/css/libraries.css'
-                filter='cssrewrite,lessphp'
-            %}
-                <link rel="stylesheet" href="{{ asset_url }}" />
-            {% endstylesheets %}
-            
-            {% stylesheets
-                '@ATSScheduleBundle/Resources/public/css/chosen-bootstrap-theme.css'
-                '@ATSScheduleBundle/Resources/public/less/controller/Default/index.less'
-                output='assets/compiled/css/app.css'
-                filter='cssrewrite,lessphp'
-            %}
-                <link rel="stylesheet" href="{{ asset_url }}" />
-            {% endstylesheets %}
-            
-            {% stylesheets
                 'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
                 '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
                 output='assets/compiled/css/app_print.css'
@@ -48,6 +24,30 @@
     
     <body>
         {% block body %}{% endblock %}
+        
+        {% stylesheets
+            'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
+            'assets/vendor/bootstrap/dist/css/bootstrap-theme.min.css'
+            'assets/vendor/fullcalendar/dist/fullcalendar.min.css'
+            'assets/vendor/jquery-ui/themes/base/jquery-ui.min.css'
+            'assets/vendor/font-awesome/css/font-awesome.min.css'
+            'assets/vendor/chosen/chosen.css'
+            'assets/vendor/qtip2/jquery.qtip.min.css'
+            'assets/vendor/spectrum/spectrum.css'
+            output='assets/compiled/css/libraries.css'
+            filter='cssrewrite,lessphp'
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+        
+        {% stylesheets
+            '@ATSScheduleBundle/Resources/public/css/chosen-bootstrap-theme.css'
+            '@ATSScheduleBundle/Resources/public/less/controller/Default/index.less'
+            output='assets/compiled/css/app.css'
+            filter='cssrewrite,lessphp'
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
         
         {% block javascripts %}
             {% javascripts
