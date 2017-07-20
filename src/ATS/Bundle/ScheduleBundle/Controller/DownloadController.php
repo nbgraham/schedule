@@ -44,7 +44,7 @@ class DownloadController extends AbstractController
                 fputcsv($handle, [
                     $section->getSubject()->getName(),
                     $section->getCourse()->getNumber(),
-                    $section->getSection(),
+                    $section->getNumber(),
                     $section->getCrn(),
                     $section->getCourse()->getName(),
                     $section->getInstructor()->getName(),

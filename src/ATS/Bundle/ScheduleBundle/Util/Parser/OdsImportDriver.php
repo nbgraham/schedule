@@ -60,10 +60,12 @@ class OdsImportDriver extends AbstractImportDriver
         $connection = $this->getDoctrine()->getConnection('ods');
         $statement  = $connection->prepare("
             SELECT
+              cs.academic_period, cs.sub_academic_period,
+              
               cs.subject_code, cs.course_number, cs.section_number,
               cs.section_title, cs.course_reference_number, cs.section_id,
               cs.start_date, cs.end_date, mt.start_time, mt.end_time,
-              mt.meeting_days, cs.status_code,
+              mt.meeting_days, cs.status_code, mt.meeting_type_code,
               
               cs.maximum_enrollment, cs.actual_enrollment, cs.seats_available,
               cs.waitlist_count, cs.waitlist_seats_available,
@@ -71,10 +73,7 @@ class OdsImportDriver extends AbstractImportDriver
               cs.campus_code, mt.building_desc, mt.room,
               
               cs.instructor1_id, cs.instructor1_email,
-              CONCAT(cs.instructor1_first_name, ' ', cs.instructor1_last_name) AS instructor_name,
-              
-              cs.academic_period, cs.sub_academic_period, cs.sub_academic_period_desc
-              
+              CONCAT(cs.instructor1_first_name, ' ', cs.instructor1_last_name) AS instructor_name
             FROM `course_section` AS cs
             JOIN `meeting_time` AS  mt
               ON cs.academic_period = mt.academic_period
@@ -146,10 +145,6 @@ class OdsImportDriver extends AbstractImportDriver
     {
         $building = $building ?: $this->createBuilding();
         $number   = $this->getLocation('room') ?: '0000';
-        if (!$number) {
-            print_r($this->getEntry());
-            die;
-        }
         $room     = new Room(
             $building,
             $number
@@ -244,9 +239,10 @@ class OdsImportDriver extends AbstractImportDriver
             ->setStartTime($entry['start_time'])
             ->setEndTime($entry['end_time'])
             ->setStatus($entry['status_code'])
-            ->setSection($entry['section_number'])
+            ->setNumber($entry['section_number'])
             ->setNumEnrolled($entry['actual_enrollment'])
             ->setMaximumEnrollment($entry['maximum_enrollment'])
+            ->setMeetingType($entry['meeting_type_code'])
         ;
         
         return $section;
@@ -281,14 +277,19 @@ class OdsImportDriver extends AbstractImportDriver
      */
     protected function parseTerm(array $data)
     {
-        $term     = $data['academic_period'];
-        $year     = substr($term, 0, 4);
-        $code     = substr($term, 4);
+        $term  = $data['academic_period'];
+        $year  = substr($term, 0, 4);
+        $code  = substr($term, 4);
+        $block = $data['sub_academic_period'];
+        
+        if ('EXAM' === $data['meeting_type_code']) {
+            $block = $data['meeting_type_code'];
+        }
         
         return [
             'year'     => $code < 20 ? $year : $year + 1,
             'semester' => $this->parseSemester($code),
-            'block'    => $data['sub_academic_period'],
+            'block'    => $block,
         ];
     }
     
@@ -307,8 +308,6 @@ class OdsImportDriver extends AbstractImportDriver
             case 31:
                 return 'Unknown';
             default:
-                //throw new \ErrorException('Semester code not found: ' . $code);
-                echo  "Semester code not found: $code\n";
                 return 'Unknown';
         }
     }

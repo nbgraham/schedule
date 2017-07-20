@@ -18,14 +18,6 @@ class TermBlock extends AbstractEntity
     protected $term;
     
     /**
-     * @Serializer\Exclude()
-     * 
-     * @ORM\OneToMany(targetEntity="Section", mappedBy="block", fetch="EXTRA_LAZY", cascade={"detach"})
-     * @var Section[]
-     */
-    protected $classes;
-    
-    /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(name="id", type="bigint")
@@ -79,6 +71,9 @@ class TermBlock extends AbstractEntity
                 return 'Module 1 (1st Half)';
             case 3:
                 return 'Module 2 (2nd Half)';
+            case 4:
+                // 4 doesn't exist in the ODS DB.
+                return 'Exam';
             case 'DEC':
                 return 'December';
             case 'NCE':
@@ -139,6 +134,10 @@ class TermBlock extends AbstractEntity
      */
     public function setName($name)
     {
+        if ('exam' === strtolower($name)) {
+            $name = 4;
+        }
+        
         $this->name = $name;
         
         return $this;

@@ -185,13 +185,7 @@ const Scheduler = (function ($) {
          * @param data
          */
         loadCourseClass : function (data) {
-            let events;
-            
-            if (data.hasOwnProperty('classes')) {
-                events = loadEventAsClass(this, data.classes);
-            } else {
-                events = getClasses(data.courses);
-            }
+            let events = createEventsFromSections(this, data.classes);
             
             this.calendar.fullCalendar('addEventSource', {
                 'events': filterEvents(this.calendar, events)
@@ -392,7 +386,7 @@ const Scheduler = (function ($) {
                 .addClass('row ttTitle')
                 .append(
                     $('<div>').addClass('col-xs-9')
-                        .text(section.subject.name + ' ' + course.number)
+                        .text(section.subject.name + ' ' + course.number + ': ' + section.number)
                 ).append(
                     $('<div>').addClass('col-xs-3 nowrap')
                         .text(section.num_enrolled + " / " + section.maximum_enrollment)
@@ -418,6 +412,10 @@ const Scheduler = (function ($) {
                         $('<div>').addClass('ttLabel nowrap col-xs-4').text('Instructor:')
                     ).append(
                         $('<div>').addClass('col-xs-8').text(section.instructor.name)
+                    ).append(
+                        $('<div>').addClass('ttLabel nowrap col-xs-4').text('Days:')
+                    ).append(
+                        $('<div>').addClass('col-xs-8').text(section.days)
                     )
             )
         );
@@ -446,7 +444,7 @@ const Scheduler = (function ($) {
      */
     function updateHeader(is_loading)
     {
-        let header, title
+        let header, title;
         
         header = $('#calendar').find('.fc-header-toolbar h2');
         title  = $('#term option:selected').text();
@@ -494,7 +492,7 @@ const Scheduler = (function ($) {
      * @param classes
      * @returns {Array}
      */
-    function loadEventAsClass(scheduler, classes)
+    function createEventsFromSections(scheduler, classes)
     {
         let events, color, i;
         events = [];
@@ -517,7 +515,7 @@ const Scheduler = (function ($) {
                 
                 id:    cls.id,
                 crn:   cls.crn,
-                title: subject.name + ' ' + course.number,
+                title: subject.name + ' ' + course.number + ': ' + cls.number,
                 start: getTime(cls.start_time),
                 end:   getTime(cls.end_time),
                 dow:   getDays(cls.days),
@@ -599,47 +597,6 @@ const Scheduler = (function ($) {
         } else {
             $('#required-fields-help').addClass('hidden');
         }
-    }
-
-    /**
-     * Used when the API data returned uses the course controller.
-     * {@deprecated}
-     * 
-     * @param courses
-     * @returns {Array}
-     */
-    function getClasses (courses)
-    {
-        let events, i;
-        
-        events = [];
-        
-        for (i in courses) {
-            let course, classes, x;
-            course  = courses[i];
-            classes = course.classes;
-            
-            for (x in classes) {
-                let cls, days;
-                cls  = classes[x];
-                days = getDays(cls.days);
-                
-                if (!days.length) {
-                    continue;
-                }
-                
-                events.push({
-                    id:    cls.id,
-                    title: course.subject + ' ' + course.number,
-                    start: getTime(cls.start_time),
-                    end:   getTime(cls.end_time),
-                    dow:   getDays(cls.days),
-                    crn:   cls.crn
-                });
-            }
-        }
-        
-        return events;
     }
 
     /**

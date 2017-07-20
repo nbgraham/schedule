@@ -392,7 +392,7 @@ class BookParser
             ->setStartTime($data[21])
             ->setEndTime($data[22])
             ->setStatus($data[8])
-            ->setSection($data[3])
+            ->setNumber($data[3])
             ->setCampus($campus)
             ->setCourse($course)
             ->setBlock($block)

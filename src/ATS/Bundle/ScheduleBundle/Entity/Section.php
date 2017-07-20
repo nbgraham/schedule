@@ -14,6 +14,13 @@ use JMS\Serializer\Annotation\Exclude;
  */
 class Section extends AbstractEntity
 {
+    const MT_EXAM    = 0;
+    const MT_CLASS   = 1;
+    const MT_WEB     = 2;
+    const MT_LAB     = 3;
+    const MT_CONF    = 4;
+    const MT_UNKNOWN = 5;
+    
     const CANCELLED = -1;
     const INACTIVE  = 0;
     const ACTIVE    = 1;
@@ -67,7 +74,7 @@ class Section extends AbstractEntity
     /**
      * @Serializer\Exclude()
      * 
-     * @ORM\ManyToOne(targetEntity="TermBlock", inversedBy="classes")
+     * @ORM\ManyToOne(targetEntity="TermBlock")
      * @var TermBlock
      */
     protected $block;
@@ -97,10 +104,10 @@ class Section extends AbstractEntity
     protected $status;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=3)
      * @var Integer
      */
-    protected $section;
+    protected $number;
     
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -145,6 +152,15 @@ class Section extends AbstractEntity
      * @var Integer
      */
     protected $maximum_enrollment;
+    
+    /**
+     * The classroom type. Default to meeting_type_code 'CLAS'
+     * because exams aren't included in TheBook imports.
+     * 
+     * @ORM\Column(type="smallint", options={"default": 1})
+     * @var String
+     */
+    protected $meeting_type;
     
     /**
      * @Serializer\VirtualProperty()
@@ -363,19 +379,19 @@ class Section extends AbstractEntity
     /**
      * @return int
      */
-    public function getSection()
+    public function getNumber()
     {
-        return $this->section;
+        return $this->number;
     }
     
     /**
-     * @param int $section
+     * @param int $number
      *
      * @return Section
      */
-    public function setSection($section)
+    public function setNumber($number)
     {
-        $this->section = $section;
+        $this->number = $number;
         
         return $this;
     }
@@ -560,5 +576,78 @@ class Section extends AbstractEntity
         $this->maximum_enrollment = $maximum_enrollment;
         
         return $this;
+    }
+    
+    /**
+     * @return String
+     */
+    public function getMeetingType()
+    {
+        return $this->meeting_type;
+    }
+    
+    /**
+     * @return String
+     */
+    public function getMeetingTypeStr()
+    {
+        switch ($this->meeting_type) {
+            case static::MT_CLASS:
+                return 'class';
+            case static::MT_WEB:
+                return 'web';
+            case static::MT_EXAM:
+                return 'exam';
+            case static::MT_LAB:
+                return 'lab';
+            case static::MT_CONF:
+                return 'conference';
+            default:
+                return 'unknown';
+        }
+    }
+    
+    /**
+     * @param mixed $meeting_type
+     *
+     * @return Section
+     */
+    public function setMeetingType($meeting_type)
+    {
+        if (in_array($meeting_type, [static::MT_EXAM, static::MT_WEB, static::MT_CLASS, static::MT_CONF, static::MT_LAB], true)) {
+            $this->meeting_type = $meeting_type;
+            
+            return $this;
+        }
+        
+        switch ($meeting_type) {
+            case 'CLAS':
+            case 'class':
+                $this->meeting_type = static::MT_CLASS;
+                
+                return $this;
+            case 'WEB':
+            case 'web':
+                $this->meeting_type = static::MT_WEB;
+                
+                return $this;
+            case 'EXAM':
+            case 'exam':
+                $this->meeting_type = static::MT_EXAM;
+                
+                return $this;
+            case 'LAB':
+            case 'lab':
+                $this->meeting_type = static::MT_LAB;
+                
+                return $this;
+            case 'CONF':
+            case 'conference':
+                $this->meeting_type = static::MT_CONF;
+                
+                return $this;
+            default:
+                $this->meeting_type = static::MT_UNKNOWN;
+        }
     }
 }

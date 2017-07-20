@@ -145,7 +145,7 @@ class BookImportDriver extends AbstractImportDriver
             ->setStartTime($entry[21])
             ->setEndTime($entry[22])
             ->setStatus($entry[8])
-            ->setSection($entry[3])
+            ->setNumber($entry[3])
             ->setNumEnrolled($entry[12])
             ->setMaximumEnrollment($entry[11])
         ;

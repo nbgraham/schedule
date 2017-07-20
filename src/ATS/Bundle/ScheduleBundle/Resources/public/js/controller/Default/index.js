@@ -213,6 +213,9 @@
                 // Fill the term-block selector.
                 fillSelect('#term-block', semester.blocks);
                 
+                // Automatically select the Full Semester.
+                select.find('option:contains("Full Semester")').prop('selected', 'selected');
+                
                 // Notify Chosen that the content of the select box changed.
                 select.trigger("chosen:updated");
             }
