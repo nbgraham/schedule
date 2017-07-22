@@ -72,8 +72,6 @@ class Section extends AbstractEntity
     protected $instructor;
     
     /**
-     * @Serializer\Exclude()
-     * 
      * @ORM\ManyToOne(targetEntity="TermBlock")
      * @var TermBlock
      */

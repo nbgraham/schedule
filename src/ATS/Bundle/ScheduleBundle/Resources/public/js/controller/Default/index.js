@@ -23,9 +23,9 @@
         scheduler = new Scheduler('#calendar');
         scheduler.init();
         
+        bindDelegated();
         populateFilters();
         buttonActions();
-        bindDelegated();
     });
 
     /**
@@ -39,16 +39,17 @@
         
         bindSemesterChange();
         bindSubjectChange();
-        bindInstructorChange();
+        bindChange();
     }
-    
+
     /**
      * Fill a select field and set it up with Chosen.
-     * 
+     *
      * @param {string} id
      * @param {object} data
+     * @param {string} text
      */
-    function fillSelect(id, data)
+    function fillSelect(id, data, text)
     {
         let select, idx;
         select = $(id);
@@ -58,12 +59,19 @@
                 return;
             }
             
-            let item = data[idx];
-            $('<option>')
+            let item, label, option;
+            item   = data[idx];
+            label  = determineChosenLabel(item);
+            option = $('<option>')
                 .attr('value', item.id)
                 .text(determineChosenLabel(item))
-                .appendTo(select)
             ;
+            
+            if (text && text === label) {
+                option.prop('selected', 'selected')
+            }
+            
+            option.appendTo(select);
         }
         
         _buildChosen(select);
@@ -181,7 +189,7 @@
     function bindSemesterChange()
     {
         $('#term').on('change', function (event, params) {
-            let label, semesters, semester, select, idx;
+            let label, semesters, semester, block, idx;
             label     = $('label[for="term-block"]');
             semesters = GlobalUtils.getSemesters();
             
@@ -202,23 +210,19 @@
                     continue;
                 }
                 
-                select = $('#term-block');
+                block = $('#term-block');
                 // If there are other options in the term-block selector, remove them.
-                select.find('option[value]').remove();
-                select.show();
+                block.find('option[value]').remove();
+                block.show();
                 
                 // Show the label.
                 label.removeClass('hidden');
                 
                 // Fill the term-block selector.
-                fillSelect('#term-block', semester.blocks);
-                
-                // Automatically select the Full Semester.
-                select.find('option:contains("Full Semester")').prop('selected', 'selected');
-                
-                // Notify Chosen that the content of the select box changed.
-                select.trigger("chosen:updated");
+                fillSelect('#term-block', semester.blocks, 'Full Semester');
             }
+            
+            addColorPicker('term-block');
         });
     }
     
@@ -348,12 +352,12 @@
     }
     
     /**
-     * Add a color-picker to the instructor field.
+     * Add a color-pickers to various fields after an item selection changes.
      */
-    function bindInstructorChange()
+    function bindChange()
     {
-        $('#instructor').on('change', function (e) {
-            addColorPicker('instructor');
+        $('#instructor, #term-block').on('change', function (e) {
+            addColorPicker(e.currentTarget.id);
         });
     }
 
@@ -364,7 +368,7 @@
      */
     function addColorPicker(type)
     {
-        $('#' + type + '_chosen li.search-choice').each(function () {
+        $('#' + type.replace('-', '_') + '_chosen li.search-choice').each(function () {
             // Ignore if the element already has a color picker.
             if ($(this).children('input')[0]) {
                 return;
@@ -455,10 +459,10 @@
             ;
             
             e.stopImmediatePropagation();
-        });
-        
-        $('.modal-body .chosen-container .chosen-choices').on('click mousedown mouseup', '.search-choice', function (e) {
+        }).on('click touchstart mouseup mousedown', '.search-choice, .sp-replacer', function (e) {
             // Prevent the options drop-down menu when the color-picker is clicked.
+            let select = $(this).parents('.chosen-container');
+            select.removeClass('chosen-with-drop chosen-container-active');
             e.stopPropagation();
         });
     }

@@ -23,7 +23,7 @@ class TermController extends AbstractController implements ClassResourceInterfac
     public function cgetAction()
     {
         $terms = $this->getRepo('ATSScheduleBundle:Term')
-            ->findAll()
+            ->findBy([], ['year' => 'DESC', 'semester' => 'ASC'])
         ;
         
         return ['terms' => $terms];

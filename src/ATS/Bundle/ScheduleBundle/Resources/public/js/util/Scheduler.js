@@ -13,7 +13,7 @@ const Scheduler = (function ($) {
         }
         
         this.calendar = $(calendar);
-        this.shades   = {'subject': {}, 'instructor': {}};
+        this.shades   = {'subject': {}, 'instructor': {}, 'term-block': {}};
     };
     
     Scheduler.prototype = {
@@ -303,6 +303,10 @@ const Scheduler = (function ($) {
             
             event = events[idx];
             
+            if ('term-block' === type && id === event.section.block.display_name) {
+                event.backgroundColor = color;
+            }
+            
             if ('subject' === type && id === event.section.subject.name) {
                 event.backgroundColor = color;
             }
@@ -319,22 +323,27 @@ const Scheduler = (function ($) {
      * Get the color value for an event.
      * 
      * @param scheduler
-     * @param event
+     * @param section
      * @param defaultColor
      * @returns {*}
      */
-    function getColor(scheduler, event, defaultColor)
+    function getColor(scheduler, section, defaultColor)
     {
-        let collection = scheduler.shades['instructor'];
+        let collection;
         
-        if (collection.hasOwnProperty(event.instructor.name)) {
-            return collection[event.instructor.name];
+        collection = scheduler.shades['instructor'];
+        if (collection.hasOwnProperty(section.instructor.name)) {
+            return collection[section.instructor.name];
         }
         
         collection = scheduler.shades['subject'];
+        if (collection.hasOwnProperty(section.subject.name)) {
+            return collection[section.subject.name];
+        }
         
-        if (collection.hasOwnProperty(event.subject.name)) {
-            return collection[event.subject.name];
+        collection = scheduler.shades['term-block'];
+        if (collection.hasOwnProperty(section.block.display_name)) {
+            return collection[section.block.display_name];
         }
         
         return defaultColor;

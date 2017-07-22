@@ -18,6 +18,8 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
 
+    num_years: 2
+    
     oudev_db_host: 10.26.192.193
     oudev_db_port: 3306
     oudev_db_name: classplan
@@ -30,4 +32,4 @@ parameters:
     ods_db_user: 
     ods_db_password: ''
     
-     
+    

@@ -213,7 +213,7 @@ class OdsImportDriver extends AbstractImportDriver
         $course
             ->setName($entry['section_title'])
             // TODO: fix when added to course_section.
-            ->setLevel(/*$entry['level'] ?:*/ '')
+            ->setLevel(array_key_exists('level', $entry) ? $entry['level'] : '')
         ;
         
         return $course;

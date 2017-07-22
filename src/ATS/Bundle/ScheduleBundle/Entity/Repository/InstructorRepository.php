@@ -20,7 +20,6 @@ class InstructorRepository extends EntityRepository
               ON s.subject_id = sub.id
             JOIN instructor AS i
               ON s.instructor_id = i.id
-            WHERE i.name != "N/A"
             GROUP BY sub.id, i.id
             ORDER BY i.name
         ');

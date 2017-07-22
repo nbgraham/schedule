@@ -109,6 +109,25 @@ let GlobalUtils;
         } else {
             subjects = data;
         }
+        
+        let idx;
+        for (idx in subjects) {
+            if (!subjects.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            subjects[idx].courses.sort(function (a, b) {
+                if (a.number === b.number) {
+                    return 0;
+                }
+                
+                if (a.number > b.number) {
+                    return 1;
+                }
+                
+                return -1;
+            });
+        }
     };
 
     /**
@@ -129,20 +148,5 @@ let GlobalUtils;
     GlobalUtils.isMobile = function ()
     {
         return $('.mobile-tooltip').is(':not(:hidden)');
-    };
-    
-    /**
-     * Returns the subject from the URL.
-     * @returns {string}
-     */
-    GlobalUtils.getUriSubject = function ()
-    {
-        let path, parts, subject;
-        path  = window.location.pathname;
-        parts = path.split('/');
-        
-        subject = parts[parts.length - 1];
-        
-        return -1 === subject.indexOf('.') ? subject : subject.substr(0, subject.indexOf('.'));
     };
 }

@@ -12,6 +12,8 @@ use JMS\Serializer\Annotation as Serializer;
 class TermBlock extends AbstractEntity
 {
     /**
+     * @Serializer\Exclude()
+     * 
      * @ORM\ManyToOne(targetEntity="Term", inversedBy="blocks", fetch="EXTRA_LAZY", cascade={"persist"})
      * @var Term
      */
