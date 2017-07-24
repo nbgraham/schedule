@@ -8,23 +8,6 @@
             {% block title %}Welcome!{% endblock %}
         </title>
         
-        {% block stylesheets %}
-            {% stylesheets
-                'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
-                '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
-                output='assets/compiled/css/app_print.css'
-                filter='cssrewrite,lessphp'
-            %}
-                <link rel="stylesheet" href="{{ asset_url }}" media="print" />
-            {% endstylesheets %}
-        {% endblock %}
-        
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    
-    <body>
-        {% block body %}{% endblock %}
-        
         {% stylesheets
             'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
             'assets/vendor/bootstrap/dist/css/bootstrap-theme.min.css'
@@ -48,6 +31,23 @@
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
+        
+        {% block stylesheets %}
+            {% stylesheets
+                'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
+                '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
+                output='assets/compiled/css/app_print.css'
+                filter='cssrewrite,lessphp'
+            %}
+                <link rel="stylesheet" href="{{ asset_url }}" media="print" />
+            {% endstylesheets %}
+        {% endblock %}
+        
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    
+    <body>
+        {% block body %}{% endblock %}
         
         {% block javascripts %}
             {% javascripts

@@ -224,6 +224,15 @@
             
             addColorPicker('term-block');
         });
+        
+        $('#term-block').on('chosen:ready', function () {
+            let block = $(this);
+            
+            setTimeout(function () {
+                $('#term').trigger('chosen:close');
+                block.trigger('chosen:activate');
+            }, 150);
+        });
     }
     
     /**
