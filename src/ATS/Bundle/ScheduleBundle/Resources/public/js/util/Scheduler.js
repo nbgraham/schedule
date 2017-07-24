@@ -4,7 +4,7 @@
  */
 
 const Scheduler = (function ($) {
-    "use strict";
+    'use strict';
     
     let Scheduler = function (calendar)
     {
@@ -44,8 +44,8 @@ const Scheduler = (function ($) {
                 defaultView: 'agendaWeek',
                 weekends:    false,
                 defaultDate: moment(),
-                minTime:     "08:00:00",
-                maxTime:     "22:00:00",
+                minTime:     '08:00:00',
+                maxTime:     '22:00:00',
                 header: {
                     left: 'prev,next',
                     center: 'title',
@@ -58,7 +58,7 @@ const Scheduler = (function ($) {
                 eventRender: function (event, element, view) {
                     if (event.hasOwnProperty('description')) {
                         element.find('.fc-title')
-                            .append("<br/>" + event.description)
+                            .append('<br/>' + event.description)
                         ;
                     }
                 },
@@ -139,7 +139,7 @@ const Scheduler = (function ($) {
                     GlobalUtils.toggleExportBtn(context);
                 },
                 error: function (xhr) {
-                    alert("An error occurred while fetching your request. Please try again.");
+                    alert('An error occurred while fetching your request. Please try again.');
                     console.log(xhr);
                     
                     GlobalUtils.toggleExportBtn(context);
@@ -402,7 +402,7 @@ const Scheduler = (function ($) {
                         .text(section.subject.name + ' ' + course.number + ': ' + section.number)
                 ).append(
                     $('<div>').addClass('col-xs-3 nowrap')
-                        .text(section.num_enrolled + " / " + section.maximum_enrollment)
+                        .text(section.num_enrolled + ' / ' + section.maximum_enrollment)
                 ).append(
                     $('<div>').addClass('col-xs-12')
                         .text(course.name)

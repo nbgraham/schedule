@@ -71,6 +71,11 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         $this->service_id = $helper->getServiceId();
     }
     
+    /**
+     * Get the ConsoleOutput object from the console command.
+     * 
+     * @return ConsoleOutput|OutputInterface
+     */
     public static function getOutput()
     {
         if (static::$_output) {
@@ -82,6 +87,13 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         ));
     }
     
+    /**
+     * Create a ProgressBar object.
+     * 
+     * @param int $max
+     *
+     * @return ProgressBar
+     */
     public function getProgressBar($max = 0)
     {
         $progress = new ProgressBar(static::getOutput(), $max);
@@ -367,22 +379,6 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         ;
         
         return $entity;
-    }
-    
-    protected function doWrite()
-    {
-        $doctrine   = $this->getDoctrine();
-        $connection = $doctrine->getConnection();
-        
-        if (!$connection->isTransactionActive()) {
-            return false;
-        }
-        
-        $doctrine->getManager()->flush();
-        
-        $connection->commit();
-        
-        return $this;
     }
     
     /**
