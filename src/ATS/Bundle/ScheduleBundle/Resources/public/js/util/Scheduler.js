@@ -131,6 +131,12 @@ const Scheduler = (function ($) {
                 complete : function (data) {
                     context.loadCourseClass(data.responseJSON);
                     updateHeader(false);
+                    
+                    if (!context.getSectionIds().length) {
+                        $('#emptyModal').modal('show');
+                    }
+                    
+                    GlobalUtils.toggleExportBtn(context);
                 },
                 error: function (xhr) {
                     alert("An error occurred while fetching your request. Please try again.");
@@ -190,8 +196,6 @@ const Scheduler = (function ($) {
             this.calendar.fullCalendar('addEventSource', {
                 'events': filterEvents(this.calendar, events)
             });
-            
-            GlobalUtils.toggleExportBtn(this);
             
             return this;
         },
