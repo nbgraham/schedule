@@ -11,12 +11,6 @@ scheduler_courses:
     parent:   scheduler_subjects
     resource: "@ATSScheduleBundle/Controller/CourseController.php"
 
-#scheduler_classes:
-#    type:     rest
-#    parent:   scheduler_courses
-#    resource: ATS\Bundle\ScheduleBundle\Controller\ClassController
-
-
 ats_scheduler:
     type:     rest
     resource: "@ATSScheduleBundle/Controller/"

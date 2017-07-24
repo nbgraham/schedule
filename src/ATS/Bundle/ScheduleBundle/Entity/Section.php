@@ -27,7 +27,6 @@ class Section extends AbstractEntity
     
     /**
      * @Serializer\MaxDepth(1)
-     * #Serializer\Groups({"details"})
      * 
      * @ORM\ManyToOne(targetEntity="Subject", inversedBy="sections")
      * @var Subject
@@ -36,7 +35,6 @@ class Section extends AbstractEntity
     
     /**
      * @Serializer\MaxDepth(1)
-     * #Serializer\Groups({"details"})
      * 
      * @ORM\ManyToOne(targetEntity="Course", inversedBy="sections")
      * @var Course
@@ -47,7 +45,7 @@ class Section extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * @Serializer\Groups({"location"})
      * 
-     * @ORM\ManyToOne(targetEntity="Campus", inversedBy="sections")
+     * @ORM\ManyToOne(targetEntity="Campus", inversedBy="sections", fetch="EAGER")
      * @var Campus
      */
     protected $campus;
@@ -56,7 +54,7 @@ class Section extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * @Serializer\Groups({"location"})
      * 
-     * @ORM\ManyToOne(targetEntity="Room", inversedBy="sections")
+     * @ORM\ManyToOne(targetEntity="Room", inversedBy="sections", fetch="EAGER")
      * @var Room
      */
     protected $room;
@@ -65,7 +63,7 @@ class Section extends AbstractEntity
      * @Serializer\MaxDepth(1)
      * @Serializer\Groups({"instructor"})
      * 
-     * @ORM\ManyToOne(targetEntity="Instructor", inversedBy="sections")
+     * @ORM\ManyToOne(targetEntity="Instructor", inversedBy="sections", fetch="EAGER")
      * 
      * @var Instructor
      */

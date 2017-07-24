@@ -16,7 +16,7 @@ use JMS\Serializer\Annotation as Serializer;
 class Room extends AbstractEntity
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Building", inversedBy="rooms", fetch="EXTRA_LAZY")
+     * @ORM\ManyToOne(targetEntity="Building", inversedBy="rooms", fetch="EAGER")
      * 
      * @var Building
      */
