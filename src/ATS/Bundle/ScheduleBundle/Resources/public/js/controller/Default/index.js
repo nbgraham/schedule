@@ -231,7 +231,7 @@
             setTimeout(function () {
                 $('#term').trigger('chosen:close');
                 block.trigger('chosen:activate');
-            }, 150);
+            }, 25);
         });
     }
     
