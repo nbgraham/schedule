@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\FixturesBundle\Command\LoadDataFixturesDoctrineCommand;
 
-class LoadDataFixturesCommand extends LoadDataFixturesDoctrineCommand
+class ImportCommand extends LoadDataFixturesDoctrineCommand
 {
     /**
      * {@inheritDoc}
@@ -16,19 +16,23 @@ class LoadDataFixturesCommand extends LoadDataFixturesDoctrineCommand
     {
         parent::configure();
 
-        $this->addOption(
-            'source',
-            's',
-            InputOption::VALUE_OPTIONAL,
-            "The data source used to update the data. Either 'ods' or 'book'.",
-            'ods'
-        )->addOption(
-            'period',
-            'p',
-            InputOption::VALUE_OPTIONAL,
-            'The academic periods that need parsing',
-            'all'
-        );
+        $this
+            ->setName('schedule:import')
+            ->setDescription('Populate the database.')
+            ->addOption(
+                'source',
+                's',
+                InputOption::VALUE_OPTIONAL,
+                "The data source used to update the data. Either 'ods' or 'book'.",
+                'ods'
+            )->addOption(
+                'year',
+                'y',
+                InputOption::VALUE_OPTIONAL,
+                'The starting year to import. IE: 2015',
+                'all'
+            )->setHelp('Import data from varying sources into the database.')
+        ;
     }
 
     /**
@@ -37,7 +41,7 @@ class LoadDataFixturesCommand extends LoadDataFixturesDoctrineCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getOption('source');
-        $period = $input->getOption('period');
+        $period = $input->getOption('year');
         $helper = $this->getContainer()->get('schedule.import_helper');
         
         $helper

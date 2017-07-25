@@ -237,7 +237,6 @@ const Scheduler = (function ($) {
          */
         wipe : function () {
             this.calendar.fullCalendar('removeEventSources');
-            GlobalUtils.toggleExportBtn(this);
             
             return this;
         },

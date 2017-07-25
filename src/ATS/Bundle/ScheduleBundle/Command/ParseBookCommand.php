@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Parses The Book csv dump and imports that data into the database.
  * 
  * @author Austin Shinpaugh <ashinpaugh@ou.edu>
+ * @deprecated Use the import command.
  */
 class ParseBookCommand extends AbstractCommand
 {
@@ -23,7 +24,7 @@ class ParseBookCommand extends AbstractCommand
         parent::configure();
         
         $this
-            ->setName('scheduler:parse-book')
+            ->setName('schedule:parse-book')
             ->setDescription('Parses the CSV book file and loads its contents into the databse.')
             ->addArgument('path', InputArgument::OPTIONAL, 'Path to the CSV file.', BookParser::CSV_PATH)
             ->addOption('include_online', 'io', InputOption::VALUE_OPTIONAL, 'Flag to include online courses.', false)

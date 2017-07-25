@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
         
         <title>
             {% block title %}Welcome!{% endblock %}
@@ -10,9 +11,7 @@
         
         {% stylesheets
             'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
-            'assets/vendor/bootstrap/dist/css/bootstrap-theme.min.css'
             'assets/vendor/fullcalendar/dist/fullcalendar.min.css'
-            'assets/vendor/jquery-ui/themes/base/jquery-ui.min.css'
             'assets/vendor/font-awesome/css/font-awesome.min.css'
             'assets/vendor/chosen/chosen.css'
             'assets/vendor/qtip2/jquery.qtip.min.css'
@@ -42,8 +41,6 @@
                 <link rel="stylesheet" href="{{ asset_url }}" media="print" />
             {% endstylesheets %}
         {% endblock %}
-        
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     
     <body>

@@ -43,7 +43,7 @@ class LoadClassData extends AbstractDataFixture
         $progress->finish();
         
         // Clear the line.
-        static::getOutput()->writeln("\nComplete.");
+        static::getOutput()->writeln("\nImport complete.");
     }
     
     /**
@@ -51,6 +51,6 @@ class LoadClassData extends AbstractDataFixture
      */
     public function getOrder()
     {
-        return 5;
+        return 2;
     }
 }
