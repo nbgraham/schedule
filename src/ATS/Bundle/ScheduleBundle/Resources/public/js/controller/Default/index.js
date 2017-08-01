@@ -26,6 +26,19 @@
         bindDelegated();
         populateFilters();
         buttonActions();
+        
+        /*$('#filtersModal').on('focusin blur', '.chosen-container', function () {
+            if (!GlobalUtils.isMobile()) {
+                return;
+            }
+            
+            let select, label;
+            select = $(this).siblings('select');
+            label  = $('label[for="' + select.attr('id') + '"]');
+            
+            label.removeClass('hidden');
+            $('#filtersModal').find('label').not(label).addClass('hidden');
+        });*/
     });
 
     /**

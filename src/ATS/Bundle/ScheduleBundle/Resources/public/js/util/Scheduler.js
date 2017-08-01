@@ -56,9 +56,15 @@ const Scheduler = (function ($) {
                     hideDateColumnHeader();
                 },
                 eventRender: function (event, element, view) {
-                    if (event.hasOwnProperty('description')) {
+                    if (event.hasOwnProperty('instructor') && 'N/A' !== event.instructor) {
                         element.find('.fc-title')
-                            .append('<br/>' + event.description)
+                            .append('<br/>' + event.instructor)
+                        ;
+                    }
+                    
+                    if (event.hasOwnProperty('location')) {
+                        element.find('.fc-title')
+                            .append('<br />' + event.location)
                         ;
                     }
                 },
@@ -531,7 +537,8 @@ const Scheduler = (function ($) {
                 start: getTime(cls.start_time),
                 end:   getTime(cls.end_time),
                 dow:   getDays(cls.days),
-                description:     cls.instructor.name,
+                instructor:      cls.instructor.name,
+                location:        cls.building.name + ' - ' + cls.room.number,
                 className:       getCapacityClass(cls),
                 backgroundColor: getColor(scheduler, cls, color)
             });

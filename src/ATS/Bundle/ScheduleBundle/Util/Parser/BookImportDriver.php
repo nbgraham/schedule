@@ -148,6 +148,7 @@ class BookImportDriver extends AbstractImportDriver
             ->setNumber($entry[3])
             ->setNumEnrolled($entry[12])
             ->setMaximumEnrollment($entry[11])
+            ->setMeetingType('class')
         ;
         
         return $section;

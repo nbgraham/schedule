@@ -1,5 +1,5 @@
 {
-    "name": "ashinpaugh/scheduler",
+    "name": "ashinpaugh/schedule",
     "license": "proprietary",
     "type": "project",
     "description": "Utility for visualizing when classes are scheduled to take place.",
