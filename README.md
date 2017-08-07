@@ -8,8 +8,7 @@ A utility for viewing sections and when they are scheduled.
 1. Open Terminal
 2. `git clone git@github.com:ashinpaugh/schedule.git schedule`
 3. `composer install -a`
-4. Edit `app/config/parameters.yml` and fill in database related information.
-5. See Command `schedule:setup`.
+4. See Command `schedule:setup`.
 
 ### commands:
     php bin/console schedule:setup --import
