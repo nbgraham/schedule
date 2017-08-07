@@ -4,6 +4,7 @@ namespace ATS\Bundle\ScheduleBundle\Command;
 
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\NullOutput;
@@ -30,7 +31,9 @@ class SetupCommand extends AbstractCommand
         $this
             ->setName('schedule:setup')
             ->setDescription('Initialize the app settings.')
+            ->addArgument('path', InputArgument::OPTIONAL, 'The path to the app root. Useful for docker deployments.', '')
             ->addOption('import', 'i', InputOption::VALUE_NONE, 'Runs the <info>schedule:import</info> command with the default settings.')
+            ->addOption('reset', '', InputOption::VALUE_NONE, 'Drops the tables currently in the database.')
         ;
     }
 
@@ -41,36 +44,59 @@ class SetupCommand extends AbstractCommand
     {
         $this
             ->setupDatabase($output)
+            ->wipeSchema($input, $output)
             ->createSessionsTable($output)
             ->createTableSchema($output)
-            ->prepareAssets($output)
-            ->generateOptimizedAutoloader($output)
+            ->prepareAssets($input, $output)
+            ->generateOptimizedAutoloader($input, $output)
+            ->warmCache($input)
         ;
         
         $output->writeln("\nSetup complete.");
         
         if (!$input->getOption('import')) {
-            $output->writeln("Next run <info>php bin/console doctrine:fixtures:load</info> command to populate the database.");
+            $output->writeln("Next run <info>php bin/console schedule:import -n --purge-with-truncate --no-debug</info> command to populate the database.");
             return;
         }
         
-        $this->doImport($output);
+        $this->doImport($input, $output);
+    }
+    
+    /**
+     * Create cache files.
+     * 
+     * @param InputInterface $input
+     *
+     * @return $this
+     */
+    private function warmCache(InputInterface $input)
+    {
+        $path    = $input->getArgument('path');
+        $path    = $path ? $path . '/' : '';
+        $process = new Process("/usr/local/bin/php {$path}bin/console cache:warmup --env=prod");
+        
+        $process->run();
+        
+        return $this;
     }
     
     /**
      * Passing the env option to the sub-command is ignored. The output says prod, but
      * builds the assets in the same environment that the :setup command was
      * run in. For this reason we use the process component.
-     * 
+     *
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return $this
      */
-    private function prepareAssets(OutputInterface $output)
+    private function prepareAssets(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Preparing assets...');
         
-        $process = new Process('php bin/console assetic:dump --env=prod --no-debug --force');
+        $path    = $input->getArgument('path');
+        $path    = $path ? $path . '/' : '';
+        $process = new Process("/usr/local/bin/php {$path}bin/console assetic:dump --env=prod --no-debug --force");
         $process->run();
         
         if (!$process->isSuccessful()) {
@@ -124,6 +150,37 @@ class SetupCommand extends AbstractCommand
     }
     
     /**
+     * Wipe the tables in the DB.
+     * 
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return $this
+     */
+    private function wipeSchema(InputInterface $input, OutputInterface $output)
+    {
+        if (!$input->getOption('reset')) {
+            return $this;
+        }
+        
+        $output->writeln("\nWiping table schema...");
+        $command = $this->getApplication()->find('doctrine:schema:drop');
+        $args    = new ArrayInput([
+            'command'         => 'doctrine:schema:drop',
+            '--quiet'         => true,
+            '--no-debug'      => true,
+            '--force'         => true,
+            '--full-database' => true,
+        ]);
+        
+        $command->run($args, new NullOutput());
+        
+        $output->writeln("Wipe complete.\n");
+        
+        return $this;
+    }
+    
+    /**
      * Create the sessions table.
      *
      * @param OutputInterface $output
@@ -141,7 +198,7 @@ class SetupCommand extends AbstractCommand
                 `sess_data` MEDIUMBLOB NOT NULL,
                 `sess_time` INTEGER UNSIGNED NOT NULL,
                 `sess_lifetime` MEDIUMINT NOT NULL
-            ) COLLATE utf8_bin, ENGINE = InnoDB;
+            ) COLLATE utf8_bin, ENGINE = MyISAM;
         ');
         
         $statement->execute();
@@ -169,23 +226,26 @@ class SetupCommand extends AbstractCommand
         
         $command->run($args, new NullOutput());
         
-        $output->writeln("Entity table schema created.\n");
+        $output->writeln("Entity schema created.\n");
         
         return $this;
     }
     
     /**
      * Optimize the composer auto loader.
-     * 
+     *
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return $this
      */
-    private function generateOptimizedAutoloader(OutputInterface $output)
+    private function generateOptimizedAutoloader(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Generating optimized autoloader...');
         
-        $process = new Process('composer dump-autoload --optimize --classmap-authoritative');
+        $path    = $input->getArgument('path');
+        $path    = $path ?: $this->getContainer()->getParameter('kernel.root_dir') . '/../';
+        $process = new Process("/usr/local/bin/composer dump-autoload --optimize --classmap-authoritative -d {$path}");
         $process->run();
         
         if (!$process->isSuccessful()) {
@@ -201,18 +261,21 @@ class SetupCommand extends AbstractCommand
     /**
      * Runs the schedule:import command.
      * The command will timeout after three hours.
-     * 
+     *
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * 
+     *
      * @return $this
      */
-    private function doImport(OutputInterface $output)
+    private function doImport(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("\nRunning import...");
         
+        $path = $input->getArgument('path');
+        $path = $path ? $path . '/' : '';
         $options = ['--no-debug', '--purge-with-truncate', '--no-interaction'];
         $process = new Process(
-            'php bin/console schedule:import ' . implode(' ', $options),
+            "/usr/local/bin/php {$path}bin/console schedule:import " . implode(' ', $options),
             null,
             null,
             null,

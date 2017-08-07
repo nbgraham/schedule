@@ -2,17 +2,22 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    
+    # A secret key that's used to generate certain security-related tokens
+    secret:            ThisTokenIsNotSoSecretChangeIt
+    
+    # Local DB.
     database_host:     10.26.192.193
     database_port:     3306
     database_name:     classplan
     database_user:     ashinpaugh
     database_password: ~
-
-    # A secret key that's used to generate certain security-related tokens
-    secret:            ThisTokenIsNotSoSecretChangeIt
-
-    num_years: 2
     
+    # Import DB.
     ods_db_host: 10.26.192.193
     ods_db_port: 3306
     ods_db_name: classnav

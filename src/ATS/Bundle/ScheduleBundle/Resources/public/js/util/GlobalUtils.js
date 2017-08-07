@@ -23,7 +23,12 @@ let GlobalUtils;
      */
     GlobalUtils.getAPIUrl = function (path)
     {
-        return (GlobalUtils.isDev() ? '/app_dev.php' : '') + path;
+        let base = window.location.toString();
+        if ('/' !== base.slice(-1)) {
+            base = base + '/';
+        }
+        
+        return base + path;
     };
 
     /**

@@ -162,7 +162,7 @@ const Scheduler = (function ($) {
          * @returns {string}
          */
         buildUri : function () {
-            return '/class.json';
+            return 'class.json';
         },
 
         /**
