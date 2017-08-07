@@ -24,6 +24,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Abstract class for the data fixtures to extend.
+ * 
+ * @author Austin Shinpaugh
+ */
 abstract class AbstractDataFixture extends AbstractFixture implements FixtureInterface, OrderedFixtureInterface, ContainerAwareInterface
 {
     /**
@@ -54,9 +59,7 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
     abstract public function load(ObjectManager $manager);
     
     /**
-     * The lower the number, the sooner that this fixture is loaded.
-     * 
-     * @return int
+     * {@inheritdoc}
      */
     abstract public function getOrder();
     
@@ -135,14 +138,14 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
             return $obj;
         }
         
-        //echo "[Campus - Missed]: {$campus->getName()}\n";
-        
         return $this->store($campus, $key);
     }
     
     /**
      * Returns an instance of the building object.
-     * 
+     *
+     * @param Campus|null $campus
+     *
      * @return AbstractEntity|Building
      */
     protected function getBuilding(Campus $campus = null)
@@ -152,11 +155,8 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         $key      = $this->getKey($building);
         
         if ($obj = $this->getReference($key)) {
-            //echo "[Building - Found]: {$obj->getName()}\n";
             return $obj;
         }
-        
-        //echo "[Building - Missed]: {$building->getName()}\n";
         
         $campus->addBuilding($building);
         
@@ -177,13 +177,10 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         $room_key = $this->getKey($room);
         
         if ($obj = $this->getReference($room_key)) {
-            //echo "Found cache key: $room_key\n";
             return $obj;
         }
         
         $building->addRoom($room);
-        
-        //echo "[Room - Missed]: {$building->getName()} - {$room->getNumber()}\n";
         
         return $this->store($room, $room_key);
     }
@@ -225,8 +222,6 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         if (!$term = $this->getReference($term_key)) {
             // First time the term was created. Store it.
             $this->store(($term = $block->getTerm()), $term_key);
-            
-            //echo "[Term - Missed]: {$term_key}\n";
         }
         
         $term->addBlock($block);
@@ -245,16 +240,15 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         $key     = $this->getKey($subject);
         
         if ($obj = $this->getReference($key)) {
-            //echo "[Subject - Found]: {$key}\n";
             return $obj;
         }
-        
-        //echo "[Subject - Missing]: {$key}\n";
         
         return $this->store($subject, $key);
     }
     
     /**
+     * @param Subject|null $subject
+     *
      * @return AbstractEntity|Course
      */
     protected function getCourse(Subject $subject = null)
@@ -264,16 +258,10 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         $key     = $this->getKey($course);
         
         if ($obj = $this->getReference($key)) {
-            /*echo "[Course - Found] {$obj->getSubject()->getName()} - {$obj->getNumber()}: "
-                . count($obj->getSections()) . "\n"
-            ;*/
-            
             return $obj;
         }
         
         $subject->addCourse($course);
-        
-        //echo "[Course - Missed] {$course->getSubject()->getName()} - {$course->getNumber()}\n";
         
         return $this->store($course, $key);
     }

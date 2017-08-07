@@ -4,6 +4,11 @@ namespace ATS\Bundle\ScheduleBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Import the Section entities.
+ * 
+ * @author Austin Shinpaugh
+ */
 class LoadClassData extends AbstractDataFixture
 {
     /**

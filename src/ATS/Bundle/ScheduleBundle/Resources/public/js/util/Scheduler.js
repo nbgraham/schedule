@@ -56,7 +56,7 @@ const Scheduler = (function ($) {
                     hideDateColumnHeader();
                 },
                 eventRender: function (event, element, view) {
-                    if (event.hasOwnProperty('instructor') && 'N/A' !== event.instructor) {
+                    if (event.hasOwnProperty('instructor')) {
                         element.find('.fc-title')
                             .append('<br/>' + event.instructor)
                         ;

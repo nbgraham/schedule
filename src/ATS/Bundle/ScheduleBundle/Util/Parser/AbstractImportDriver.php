@@ -13,12 +13,22 @@ use ATS\Bundle\ScheduleBundle\Entity\TermBlock;
 use ATS\Bundle\ScheduleBundle\Util\Helper\ImportDriverHelper;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
+/**
+ * Abstract driver pattern class.
+ * 
+ * @author Austin Shinpaugh
+ */
 abstract class AbstractImportDriver
 {
     /**
      * @var Registry
      */
     private $doctrine;
+    
+    /**
+     * @var ImportDriverHelper
+     */
+    protected $helper;
     
     /**
      * @var Boolean
@@ -53,23 +63,18 @@ abstract class AbstractImportDriver
     protected $limit;
     
     /**
-     * @var ImportDriverHelper
-     */
-    protected $helper;
-    
-    /**
      * AbstractImportDriver constructor.
      *
-     * @param Registry $doctrine
+     * @param Registry           $doctrine
+     * @param ImportDriverHelper $helper
      */
     public function __construct(Registry $doctrine, ImportDriverHelper $helper)
     {
         $this->doctrine = $doctrine;
         $this->helper   = $helper;
         
-        $this->entries = [];
-        $this->data    = [];
-        $this->online  = false;
+        $this->entries  = [];
+        $this->online   = false;
         $this->location = null;
         
         $this->disableDoctrineLogging();
@@ -80,10 +85,9 @@ abstract class AbstractImportDriver
     /**
      * Set the entries.
      *
-     * @param null $mixed
+     * @param mixed|null $mixed
      *
      * @return $this
-     *
      */
     protected abstract function loadRawData($mixed = null);
     
@@ -116,7 +120,9 @@ abstract class AbstractImportDriver
     
     /**
      * Create a room object.
-     * 
+     *
+     * @param Building|null $building
+     *
      * @return Room
      */
     public abstract function createRoom(Building $building = null);
@@ -163,8 +169,6 @@ abstract class AbstractImportDriver
     /**
      * Parse special cases of the building codes.
      * 
-     * @param array $data
-     *
      * @return array
      */
     protected abstract function parseBuilding();
@@ -234,20 +238,6 @@ abstract class AbstractImportDriver
     public function setEntries(array $entries)
     {
         $this->entries = $entries;
-        
-        return $this;
-    }
-    
-    /**
-     * Sets the root directory.
-     * 
-     * @param string $dir
-     *
-     * @return $this
-     */
-    public function setRootDir($dir)
-    {
-        $this->root_dir = $dir;
         
         return $this;
     }

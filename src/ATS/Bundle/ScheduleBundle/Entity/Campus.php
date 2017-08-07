@@ -177,7 +177,7 @@ class Campus extends AbstractEntity
     }
     
     /**
-     * @param Section $event
+     * @param Section $section
      *
      * @return Campus
      */

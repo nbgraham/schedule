@@ -7,6 +7,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\FixturesBundle\Command\LoadDataFixturesDoctrineCommand;
 
+/**
+ * Extends doctrine's fixtures command for integration into the
+ * import driver system.
+ * 
+ * @author Austin Shinpaugh
+ */
 class ImportCommand extends LoadDataFixturesDoctrineCommand
 {
     /**

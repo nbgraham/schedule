@@ -2,7 +2,6 @@
 
 namespace ATS\Bundle\ScheduleBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -46,8 +45,6 @@ class TermBlock extends AbstractEntity
             ->setTerm($term)
             ->setName($name)
         ;
-        
-        $this->classes = new ArrayCollection();
     }
     
     /**

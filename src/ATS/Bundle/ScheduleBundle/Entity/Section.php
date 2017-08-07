@@ -4,7 +4,6 @@ namespace ATS\Bundle\ScheduleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\Exclude;
 
 /**
  * The Event table represents instances of course classes.
@@ -645,5 +644,7 @@ class Section extends AbstractEntity
             default:
                 $this->meeting_type = static::MT_UNKNOWN;
         }
+        
+        return $this;
     }
 }

@@ -13,6 +13,11 @@ use ATS\Bundle\ScheduleBundle\Entity\Term;
 use ATS\Bundle\ScheduleBundle\Entity\TermBlock;
 use Doctrine\DBAL\Connection;
 
+/**
+ * The driver pattern for ODS imports.
+ * 
+ * @author Austin Shinpaugh
+ */
 class OdsImportDriver extends AbstractImportDriver
 {
     /**
@@ -41,11 +46,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * {inheritdoc}
-     *
-     * @param null $mixed
-     *
-     * @return $this
+     * {@inheritdoc}
      */
     protected function loadRawData($mixed = null)
     {
@@ -95,13 +96,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Initialize the import settings.
-     *
-     * Should probably be called in the service declaration.
-     *
-     * @param mixed $mixed
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function init($mixed = null)
     {
@@ -109,9 +104,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create a campus object.
-     *
-     * @return Campus
+     * {@inheritdoc}
      */
     public function createCampus()
     {
@@ -119,11 +112,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create a building object.
-     *
-     * @param Campus $campus The campus object the building belongs too.
-     *
-     * @return Building
+     * {@inheritdoc}
      */
     public function createBuilding(Campus $campus = null)
     {
@@ -137,9 +126,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create a room object.
-     *
-     * @return Room
+     * {@inheritdoc}
      */
     public function createRoom(Building $building = null)
     {
@@ -154,9 +141,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create an instructor object.
-     *
-     * @return Instructor
+     * {@inheritdoc}
      */
     public function createInstructor()
     {
@@ -170,9 +155,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create a term and term block objects.
-     *
-     * @return TermBlock
+     * {@inheritdoc}
      */
     public function createTerm()
     {
@@ -188,9 +171,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create a subject object.
-     *
-     * @return Subject
+     * {@inheritdoc}
      */
     public function createSubject()
     {
@@ -198,11 +179,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create a course object.
-     *
-     * @param Subject $subject
-     *
-     * @return Course
+     * {@inheritdoc}
      */
     public function createCourse(Subject $subject = null)
     {
@@ -220,11 +197,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Create a section object.
-     *
-     * @param Subject $subject
-     *
-     * @return Section
+     * {@inheritdoc}
      */
     public function createSection(Subject $subject = null)
     {
@@ -249,11 +222,7 @@ class OdsImportDriver extends AbstractImportDriver
     }
     
     /**
-     * Parse special cases of the building codes.
-     *
-     * @param array $data
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function parseBuilding()
     {
@@ -293,6 +262,13 @@ class OdsImportDriver extends AbstractImportDriver
         ];
     }
     
+    /**
+     * Get the text based version of a semester.
+     * 
+     * @param integer $code
+     *
+     * @return string
+     */
     private function parseSemester($code)
     {
         switch ($code) {

@@ -7,8 +7,8 @@ A utility for viewing sections and when they are scheduled.
 
 1. Open Terminal
 2. `git clone git@github.com:ashinpaugh/schedule.git schedule`
-3. Edit `app/config/parameters.yml` and fill in database related information.
-4. `composer install`
+3. `composer install -a`
+4. Edit `app/config/parameters.yml` and fill in database related information.
 5. See Command `schedule:setup`.
 
 ### commands:
@@ -22,7 +22,7 @@ Combines several commands into one for easy deployment.
 - Optional `--import`. Executes `schedule:import` if present.
 
 
-    php bin/console schedule:import --purge-with-truncate --no-debug --source=(ods/book) --year=2015
+    php bin/console schedule:import -n --purge-with-truncate --no-debug --source=(ods/book) --year=2015
 
 Triggers the import driver to bring in data from the provided `--source`.
 

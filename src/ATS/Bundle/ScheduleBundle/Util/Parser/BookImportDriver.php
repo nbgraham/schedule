@@ -268,8 +268,6 @@ class BookImportDriver extends AbstractImportDriver
     /**
      * Parse special cases of the building codes.
      * 
-     * @param array $data
-     *
      * @return array
      */
     protected function parseBuilding()

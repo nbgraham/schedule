@@ -5,8 +5,21 @@ namespace ATS\Bundle\ScheduleBundle\Entity\Repository;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * Instructor repository.
+ * 
+ * @author Austin Shinpaugh
+ */
 class InstructorRepository extends EntityRepository
 {
+    /**
+     * Group the instructors by the subjects they teach.
+     * 
+     * Teachers who teach courses that belong to different subjects are duplicated
+     * under each new subject.
+     * 
+     * @return array
+     */
     public function getInstructorsBySubject()
     {
         /* @var Connection $conn */

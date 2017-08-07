@@ -4,6 +4,11 @@ namespace ATS\Bundle\ScheduleBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Import the Term / Location / Instructor entities.
+ * 
+ * @author Austin Shinpaugh
+ */
 class LoadInitialData extends AbstractDataFixture
 {
     /**
