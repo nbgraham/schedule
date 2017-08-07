@@ -21,8 +21,9 @@ Combines several commands into one for easy deployment.
 - Optimizes the app's autoloader.
 - Optional `--import`. Executes `schedule:import` if present.
 
-
-    php bin/console schedule:import -n --purge-with-truncate --no-debug --source=(ods/book) --year=2015
+````
+php bin/console schedule:import -n --purge-with-truncate --no-debug --source=(ods/book) --year=2015
+````
 
 Triggers the import driver to bring in data from the provided `--source`.
 
