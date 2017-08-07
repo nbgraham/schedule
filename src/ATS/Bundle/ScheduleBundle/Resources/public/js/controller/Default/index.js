@@ -494,7 +494,7 @@
      */
     function fetchCsvExport()
     {
-        location.href = GlobalUtils.getAPIUrl('/download/export.json');
+        location.href = GlobalUtils.getAPIUrl('download/export.json');
     }
     
 }) (jQuery);
