@@ -31,7 +31,6 @@ class SetupCommand extends AbstractCommand
         $this
             ->setName('schedule:setup')
             ->setDescription('Initialize the app settings.')
-            ->addArgument('path', InputArgument::OPTIONAL, 'The path to the app root. Useful for docker deployments.', '')
             ->addOption('import', 'i', InputOption::VALUE_NONE, 'Runs the <info>schedule:import</info> command with the default settings.')
             ->addOption('reset', '', InputOption::VALUE_NONE, 'Drops the tables currently in the database.')
         ;
@@ -47,9 +46,9 @@ class SetupCommand extends AbstractCommand
             ->wipeSchema($input, $output)
             ->createSessionsTable($output)
             ->createTableSchema($output)
-            ->prepareAssets($input, $output)
-            ->generateOptimizedAutoloader($input, $output)
-            ->warmCache($input)
+            ->prepareAssets($output)
+            ->generateOptimizedAutoloader($output)
+            ->warmCache()
         ;
         
         $output->writeln("\nSetup complete.");
@@ -59,25 +58,7 @@ class SetupCommand extends AbstractCommand
             return;
         }
         
-        $this->doImport($input, $output);
-    }
-    
-    /**
-     * Create cache files.
-     * 
-     * @param InputInterface $input
-     *
-     * @return $this
-     */
-    private function warmCache(InputInterface $input)
-    {
-        $path    = $input->getArgument('path');
-        $path    = $path ? $path . '/' : '';
-        $process = new Process("/usr/local/bin/php {$path}bin/console cache:warmup --env=prod");
-        
-        $process->run();
-        
-        return $this;
+        $this->doImport($output);
     }
     
     /**
@@ -85,18 +66,15 @@ class SetupCommand extends AbstractCommand
      * builds the assets in the same environment that the :setup command was
      * run in. For this reason we use the process component.
      *
-     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return $this
      */
-    private function prepareAssets(InputInterface $input, OutputInterface $output)
+    private function prepareAssets(OutputInterface $output)
     {
         $output->writeln('Preparing assets...');
         
-        $path    = $input->getArgument('path');
-        $path    = $path ? $path . '/' : '';
-        $process = new Process("/usr/local/bin/php {$path}bin/console assetic:dump --env=prod --no-debug --force");
+        $process = new Process($this->getConsolePath() . ' assetic:dump --env=prod --no-debug --force');
         $process->run();
         
         if (!$process->isSuccessful()) {
@@ -234,17 +212,15 @@ class SetupCommand extends AbstractCommand
     /**
      * Optimize the composer auto loader.
      *
-     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return $this
      */
-    private function generateOptimizedAutoloader(InputInterface $input, OutputInterface $output)
+    private function generateOptimizedAutoloader(OutputInterface $output)
     {
         $output->writeln('Generating optimized autoloader...');
         
-        $path    = $input->getArgument('path');
-        $path    = $path ?: $this->getContainer()->getParameter('kernel.root_dir') . '/../';
+        $path    = $this->getAppRoot();
         $process = new Process("/usr/local/bin/composer dump-autoload --optimize --classmap-authoritative -d {$path}");
         $process->run();
         
@@ -259,23 +235,34 @@ class SetupCommand extends AbstractCommand
     }
     
     /**
+     * Create cache files.
+     * 
+     * @return $this
+     */
+    private function warmCache()
+    {
+        $process = new Process($this->getConsolePath() . ' cache:warmup --env=prod');
+        
+        $process->run();
+        
+        return $this;
+    }
+    
+    /**
      * Runs the schedule:import command.
      * The command will timeout after three hours.
      *
-     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return $this
      */
-    private function doImport(InputInterface $input, OutputInterface $output)
+    private function doImport(OutputInterface $output)
     {
         $output->writeln("\nRunning import...");
         
-        $path = $input->getArgument('path');
-        $path = $path ? $path . '/' : '';
         $options = ['--no-debug', '--purge-with-truncate', '--no-interaction'];
         $process = new Process(
-            "/usr/local/bin/php {$path}bin/console schedule:import " . implode(' ', $options),
+            $this->getConsolePath() . ' schedule:import ' . implode(' ', $options),
             null,
             null,
             null,
@@ -335,5 +322,28 @@ class SetupCommand extends AbstractCommand
         $last_lines = $line_count;
         
         echo $message."\n";
+    }
+    
+    /**
+     * Return the full path to the bin/console component.
+     * 
+     * @return string
+     */
+    private function getConsolePath()
+    {
+        return '/usr/local/bin/php '
+            . $this->getAppRoot()
+            . 'bin/console'
+        ;
+    }
+    
+    /**
+     * Return the app root.
+     * 
+     * @return string
+     */
+    private function getAppRoot()
+    {
+        return $this->getContainer()->getParameter('kernel.root_dir') . '/../';
     }
 }
