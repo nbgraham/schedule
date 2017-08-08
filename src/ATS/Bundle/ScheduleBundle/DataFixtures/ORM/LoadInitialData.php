@@ -51,6 +51,6 @@ class LoadInitialData extends AbstractDataFixture
      */
     public function getOrder()
     {
-        return 1;
+        return 2;
     }
 }
