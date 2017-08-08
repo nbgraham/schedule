@@ -61,6 +61,11 @@ class UpdateLog extends AbstractEntity
      */
     protected $peak_memory;
     
+    /**
+     * UpdateLog constructor.
+     *
+     * @param string $source Either book or ods.
+     */
     public function __construct($source)
     {
         $this->start  = new \DateTime();
@@ -74,7 +79,6 @@ class UpdateLog extends AbstractEntity
     public function prePersist()
     {
         $this->id = null;
-        print_r($this);
     }
     
     /**
