@@ -122,23 +122,21 @@ div.calendar-container {
   font-size: 0.9em;
 }
 
-/* The bootstrap chosen add-on's close button is misaligned - correct it. */
-.chosen-container {
-  &#term_chosen {
-    abbr.search-choice-close {
-      margin-top: 5em;
-    }
-  }
-}
-
 .mobile-tooltip {
   hr {
     margin: auto;
   }
 }
 
-/* Make room in the chosen choice container for the color picker. */
 div.chosen-container {
+  /* The bootstrap chosen add-on's close button is misaligned - correct it. */
+  &#term_chosen {
+    abbr.search-choice-close {
+      margin-top: 5em;
+    }
+  }
+  
+  /* Make room in the chosen choice container for the color picker. */
   li.search-choice {
 
     input[type="color"] {
@@ -148,5 +146,12 @@ div.chosen-container {
     span {
       padding-left: 0.5em;
     }
+  }
+}
+
+/* Hide the tooltip box if there is enough room to render the tt. */
+@media screen and (orientation: landscape) {
+  .mobile-tooltip {
+    display: none;
   }
 }

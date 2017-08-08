@@ -12,8 +12,9 @@ const Scheduler = (function ($) {
             throw new Error('Missing calendar parameter.');
         }
         
-        this.calendar = $(calendar);
-        this.shades   = {'subject': {}, 'instructor': {}, 'term-block': {}};
+        this.calendar  = $(calendar);
+        this.shades    = {'subject': {}, 'instructor': {}, 'term-block': {}};
+        this.is_mobile = GlobalUtils.isMobile();
     };
     
     Scheduler.prototype = {
@@ -69,15 +70,20 @@ const Scheduler = (function ($) {
                     }
                 },
                 eventAfterRender: function (event, element, view) {
-                    let position = {
-                        at:     'bottom left',
+                    let context, dow, position;
+                    
+                    context  = this;
+                    dow      = getDayOfWeek(element);
+                    position = {
+                        my:     'bottom left',
+                        at:     'top left',
                         target: element
                     };
                     
-                    if (isFriday(element)) {
+                    if (dow >= 4) {
                         position = {
-                            my: 'top right',
-                            at: 'bottom left',
+                            my: 'right center',
+                            at: 'left center'
                         };
                     }
                     
@@ -91,7 +97,7 @@ const Scheduler = (function ($) {
                         },
                         events: {
                             show: function (event, api) {
-                                if (!GlobalUtils.isMobile()) {
+                                if (!context.is_mobile) {
                                     return;
                                 }
                                 
@@ -290,11 +296,11 @@ const Scheduler = (function ($) {
      * 
      * @return boolean
      */
-    function isFriday(element)
+    function getDayOfWeek(element)
     {
         let parent = $(element).parents('td').first();
         
-        return parent.parent().children().last().is(parent);
+        return parent.parent().children().index(parent);
     }
 
     /**
