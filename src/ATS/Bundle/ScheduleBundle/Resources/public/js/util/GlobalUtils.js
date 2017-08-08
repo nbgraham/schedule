@@ -8,12 +8,29 @@ let GlobalUtils;
     let semesters   = [];
     let instructors = [];
     let subjects    = [];
+    let last_update = null;
     
     GlobalUtils = function GlobalUtils()
     {
         
     };
 
+    /**
+     * Show the message modal.
+     * 
+     * @param message
+     * @param title
+     */
+    GlobalUtils.showMessage = function (message, title) 
+    {
+        let modal = $('#messageModal');
+        
+        modal.find('.modal-body').html(message);
+        modal.find('.modal-title').text(title ? title : 'Attention');
+        
+        modal.modal('show')
+    };
+    
     /**
      * Get a URI that can be used in either dev or prod.
      * 
@@ -48,6 +65,26 @@ let GlobalUtils;
         }
     };
 
+    /**
+     * Set the last updated variable.
+     * 
+     * @param update
+     */
+    GlobalUtils.setLastUpdate = function (update)
+    {
+        last_update = update;
+    };
+
+    /**
+     * Get the last updated variable.
+     * 
+     * @return {object}
+     */
+    GlobalUtils.getLastUpdate = function ()
+    {
+        return last_update;
+    };
+    
     /**
      * Determine if we're in the dev environment.
      * 

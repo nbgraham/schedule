@@ -134,21 +134,30 @@ const Scheduler = (function ($) {
                 data:  context.getData(),
                 cache: true,
                 
-                complete : function (data) {
-                    context.loadCourseClass(data.responseJSON);
+                success: function (data) {
+                    context.loadCourseClass(data);
                     updateHeader(false);
                     
                     if (!context.getSectionIds().length) {
-                        $('#emptyModal').modal('show');
+                        GlobalUtils.showMessage('No results matched your filter criteria.');
                     }
                     
                     GlobalUtils.toggleExportBtn(context);
                 },
                 error: function (xhr) {
-                    alert('An error occurred while fetching your request. Please try again.');
-                    console.log(xhr);
+                    if (409 !== xhr.status) {
+                        console.log(xhr);
+                        GlobalUtils.toggleExportBtn(context);
+                        GlobalUtils.showMessage('An error occurred while fetching your request. Please try again.', 'Error');
+                        return;
+                    }
                     
-                    GlobalUtils.toggleExportBtn(context);
+                    // An update has occurred and the page data needs to be refreshed.
+                    GlobalUtils.showMessage('The system recently updated, and you must reload the page in order to receive accurate results.<p>Automatically reloading the page in 10 seconds..</p>');
+                    
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 10000);
                 }
             });
             
@@ -162,7 +171,7 @@ const Scheduler = (function ($) {
          * @returns {string}
          */
         buildUri : function () {
-            return 'class.json';
+            return 'section.json';
         },
 
         /**
@@ -669,11 +678,12 @@ const Scheduler = (function ($) {
     function getData()
     {
         return {
-            'term'      : $('#term').val(),
-            'block'     : filterMultiSelects($('#term-block')),
-            'subject'   : filterMultiSelects($('#subject')),
-            'number'    : filterMultiSelects($('#number')),
-            'instructor': filterMultiSelects($('#instructor'))
+            'term'        : $('#term').val(),
+            'block'       : filterMultiSelects($('#term-block')),
+            'subject'     : filterMultiSelects($('#subject')),
+            'number'      : filterMultiSelects($('#number')),
+            'instructor'  : filterMultiSelects($('#instructor')),
+            'last_update' : GlobalUtils.getLastUpdate().start
         };
     }
 

@@ -4,7 +4,6 @@ namespace ATS\Bundle\ScheduleBundle\Controller;
 
 use ATS\Bundle\ScheduleBundle\Entity\Section;
 use ATS\Bundle\ScheduleBundle\Entity\UpdateLog;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Prefix;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -22,13 +21,12 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
  *     description="The main controller used by the front-end API."
  * )
  * 
- * @RouteResource("class", pluralize=false)
- * 
- * @Prefix("/class")
+ * @RouteResource("section", pluralize=false)
+ * @Prefix("/section")
  * 
  * @author Austin Shinpaugh <ashinpaugh@ou.edu>
  */
-class ClassController extends AbstractController implements ClassResourceInterface
+class SectionController extends AbstractController implements ClassResourceInterface
 {
     /**
      * Fetch a subset of classes based on the provided filter criteria.
@@ -81,7 +79,6 @@ class ClassController extends AbstractController implements ClassResourceInterfa
             ;
         }
         
-        $ids     = [];
         $classes = $this->getRepo('ATSScheduleBundle:Section')
             ->findBy(array_filter([
                 'block'      => $block,
@@ -91,14 +88,7 @@ class ClassController extends AbstractController implements ClassResourceInterfa
             ])
         );
         
-        foreach ($classes as $section) {
-            /* @var Section $section */
-            $ids[] = $section->getId();
-        }
-        
-        $this->get('session')->set('last_results', $ids);
-        
-        return ['classes' => $classes];
+        return ['classes' => $this->storeResultIds($classes)];
     }
     
     /**
@@ -122,5 +112,26 @@ class ClassController extends AbstractController implements ClassResourceInterfa
         $timestamp = strtotime($timestamp);
         
         return $update->getStart()->getTimestamp() === $timestamp;
+    }
+    
+    /**
+     * Store the fetched results so that they can be downloaded by the
+     * export feature.
+     * 
+     * @param Section[] $sections
+     *
+     * @return array
+     */
+    private function storeResultIds(array $sections)
+    {
+        $ids = [];
+        foreach ($sections as $section) {
+            /* @var Section $section */
+            $ids[] = $section->getId();
+        }
+        
+        $this->get('session')->set('last_results', $ids);
+        
+        return $sections;
     }
 }

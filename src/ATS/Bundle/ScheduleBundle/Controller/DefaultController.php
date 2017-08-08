@@ -2,6 +2,7 @@
 
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
+use ATS\Bundle\ScheduleBundle\Entity\UpdateLog;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -20,6 +21,12 @@ class DefaultController extends AbstractController
      */
     public function indexAction()
     {
-        return $this->render('ATSScheduleBundle:Default:index.html.twig');
+        $manager = $this->getDoctrine()->getManager();
+        $repo    = $manager->getRepository(UpdateLog::class);
+        $update  = $repo->findBy([], ['start' => 'DESC'], 1);
+        
+        return $this->render('ATSScheduleBundle:Default:index.html.twig', [
+            'update' => current($update),
+        ]);
     }
 }

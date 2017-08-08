@@ -20,6 +20,22 @@
      * Using window load to ensure that the data in GlobalUtils was parsed.
      */
     $(window).on('load', function () {
+        let update, days;
+        update = GlobalUtils.getLastUpdate();
+        days   = moment().diff(moment(update.start), 'days');
+        
+        if (0 === update.status) {
+            GlobalUtils.showMessage(
+                'Our system is currently undergoing maintenance and may show limited results.',
+                'Notice'
+            );
+        } else if (0 < days) {
+            GlobalUtils.showMessage(
+                'The following data is %n day(s) old.'.replace('%n', days),
+                'Notice'
+            );
+        }
+        
         scheduler = new Scheduler('#calendar');
         scheduler.init();
         
