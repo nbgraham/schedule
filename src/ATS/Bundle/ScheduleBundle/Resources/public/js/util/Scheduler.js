@@ -301,7 +301,7 @@ const Scheduler = (function ($) {
         left  = $(element).offset().left;
         width = 280; // QTip CSS library sets a tooltip max-width to 280px.
         
-        return 0.9 > (left + width) / parseInt($('body').css('width'));
+        return 1 > (left + width) / parseInt($('body').css('width'));
     }
     
     /**
