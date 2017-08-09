@@ -35,8 +35,6 @@ const Scheduler = (function ($) {
          * Initialize the calendar.
          * 
          * @var object options The options to override the default settings.
-         * 
-         * @return Scheduler
          */
         init : function (options)
         {
@@ -495,7 +493,7 @@ const Scheduler = (function ($) {
         let header, title;
         
         header = $('#calendar').find('.fc-header-toolbar h2');
-        title  = $('#term option:selected').text();
+        title  = $('#term').find('option:selected').text();
         
         if (is_loading) {
             title = $('<div>').addClass('loadersmall');

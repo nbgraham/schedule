@@ -271,7 +271,7 @@
     function bindSubjectChange()
     {
         $('#subject').on('change', function (event, params) {
-            _checkInstructorImpact(this, event, params);
+            _checkInstructorImpact(this, params);
             
             let number, subjects, label, subject, idx;
             number   = $('#number');
@@ -335,11 +335,10 @@
      * Only show instructors that have taught for the selected subjects.
      * 
      * @param target
-     * @param event
      * @param params
      * @private
      */
-    function _checkInstructorImpact(target, event, params)
+    function _checkInstructorImpact(target, params)
     {
         let instructor, instructors, subject_ids, idx;
         instructor  = $('#instructor');
@@ -412,9 +411,7 @@
                 return;
             }
             
-            let data, ele;
-            data = 'data-' + type;
-            ele  = $('<input>').attr({
+            let ele = $('<input>').attr({
                 'type':        'text',
                 'value':       '#001505',
                 'data-type':   type,
