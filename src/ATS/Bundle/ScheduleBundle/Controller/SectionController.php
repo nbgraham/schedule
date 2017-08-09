@@ -29,7 +29,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 class SectionController extends AbstractController implements ClassResourceInterface
 {
     /**
-     * Fetch a subset of classes based on the provided filter criteria.
+     * Fetch a subset of sections based on the provided filter criteria.
      * 
      * @ApiDoc(
      *     resource=true
@@ -79,7 +79,7 @@ class SectionController extends AbstractController implements ClassResourceInter
             ;
         }
         
-        $classes = $this->getRepo('ATSScheduleBundle:Section')
+        $sections = $this->getRepo('ATSScheduleBundle:Section')
             ->findBy(array_filter([
                 'block'      => $block,
                 'subject'    => $subject,
@@ -88,7 +88,7 @@ class SectionController extends AbstractController implements ClassResourceInter
             ])
         );
         
-        return ['classes' => $this->storeResultIds($classes)];
+        return ['sections' => $this->storeResultIds($sections)];
     }
     
     /**

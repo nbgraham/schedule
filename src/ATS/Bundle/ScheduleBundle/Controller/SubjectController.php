@@ -48,7 +48,7 @@ class SubjectController extends AbstractController implements ClassResourceInter
      *     }
      * )
      * 
-     * @View(serializerGroups={"Default", "courses", "classes"}, serializerEnableMaxDepthChecks=true)
+     * @View(serializerGroups={"Default", "courses", "sections"}, serializerEnableMaxDepthChecks=true)
      * 
      * @param integer $subject_id
      *

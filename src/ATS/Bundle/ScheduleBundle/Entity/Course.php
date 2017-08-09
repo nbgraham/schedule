@@ -24,7 +24,7 @@ class Course extends AbstractEntity
     
     /**
      * @Serializer\Exclude()
-     * @Serializer\Groups({"classes"})
+     * @Serializer\Groups({"sections"})
      * 
      * @ORM\OneToMany(targetEntity="Section", mappedBy="course")
      * @var Section[]

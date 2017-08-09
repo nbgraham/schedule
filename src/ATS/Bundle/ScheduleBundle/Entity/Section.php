@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * The Event table represents instances of course classes.
+ * The Section table represents instances of course sections.
  * 
  * @ORM\Entity()
  * @ORM\Table(name="section")

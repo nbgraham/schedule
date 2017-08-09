@@ -46,6 +46,8 @@ class LoadSectionData extends AbstractDataFixture
         
         $manager->flush();
         $progress->finish();
+        
+        static::getOutput()->writeln("\n");
     }
     
     /**

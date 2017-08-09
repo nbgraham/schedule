@@ -35,7 +35,7 @@ class InstructorController extends AbstractController implements ClassResourceIn
     }
     
     /**
-     * Get all the classes taught by an instructor.
+     * Get all the sections taught by an instructor.
      *
      * @View(templateVar="instructor", serializerEnableMaxDepthChecks=true)
      * 

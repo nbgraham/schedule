@@ -70,17 +70,16 @@ const Scheduler = (function ($) {
                     }
                 },
                 eventAfterRender: function (event, element, view) {
-                    let context, dow, position;
+                    let context, position;
                     
                     context  = this;
-                    dow      = getDayOfWeek(element);
                     position = {
                         my:     'bottom left',
                         at:     'top left',
                         target: element
                     };
                     
-                    if (dow >= 4) {
+                    if (!tooltipHasSpace(element)) {
                         position = {
                             my: 'right center',
                             at: 'left center'
@@ -120,7 +119,7 @@ const Scheduler = (function ($) {
         },
         
         /**
-         * Request the classes based on the applied filters.
+         * Request the sections based on the applied filters.
          */
         fetch : function (uri) {
             if (!requiredFields()) {
@@ -212,7 +211,7 @@ const Scheduler = (function ($) {
          * @param data
          */
         loadCourseClass : function (data) {
-            let events = createEventsFromSections(this, data.classes);
+            let events = createEventsFromSections(this, data.sections);
             
             this.calendar.fullCalendar('addEventSource', {
                 'events': filterEvents(this.calendar, events)
@@ -289,6 +288,22 @@ const Scheduler = (function ($) {
         }
     };
 
+    /**
+     * Determine if there is space available to render the the Qtip without
+     * having to squish text.
+     * 
+     * @param element
+     * @return {boolean}
+     */
+    function tooltipHasSpace(element)
+    {
+        let left, width;
+        left  = $(element).offset().left;
+        width = 280; // QTip CSS library sets a tooltip max-width to 280px.
+        
+        return 0.9 > (left + width) / parseInt($('body').css('width'));
+    }
+    
     /**
      * Determine if the element rendered is in the Friday column.
      * 
@@ -379,7 +394,7 @@ const Scheduler = (function ($) {
      * @param event
      * @returns {*}
      */
-    function getCapacityClass(event)
+    function getCapacityCSS(event)
     {
         let num_seats, seats_percent;
         
@@ -522,18 +537,22 @@ const Scheduler = (function ($) {
      * Parse the JSON API data and turn them into event objects.
      * 
      * @param scheduler
-     * @param classes
+     * @param sections
      * @returns {Array}
      */
-    function createEventsFromSections(scheduler, classes)
+    function createEventsFromSections(scheduler, sections)
     {
         let events, color, i;
         events = [];
         color  = '#001505';
         
-        for (i in classes) {
+        for (i in sections) {
+            if (!sections.hasOwnProperty(i)) {
+                continue;
+            }
+            
             let cls, course, days, subject;
-            cls     = classes[i];
+            cls     = sections[i];
             course  = cls.course;
             days    = cls.days;
             subject = cls.subject;
@@ -554,7 +573,7 @@ const Scheduler = (function ($) {
                 dow:   getDays(cls.days),
                 instructor:      cls.instructor.name,
                 location:        cls.building.name + ' - ' + cls.room.number,
-                className:       getCapacityClass(cls),
+                className:       getCapacityCSS(cls),
                 backgroundColor: getColor(scheduler, cls, color)
             });
         }
@@ -656,6 +675,10 @@ const Scheduler = (function ($) {
         }
         
         for (idx in parts) {
+            if (!parts.hasOwnProperty(idx)) {
+                continue;
+            }
+            
             let initial = parts[idx];
             days.push(dow.indexOf(initial));
         }

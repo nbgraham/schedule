@@ -23,6 +23,14 @@ class OdsImportDriver extends AbstractImportDriver
     /**
      * {@inheritdoc}
      */
+    public function init($mixed = null)
+    {
+        $this->loadRawData($this->helper->getAcademicPeriod());
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function getCount()
     {
         if ($this->num_rows) {
@@ -93,14 +101,6 @@ class OdsImportDriver extends AbstractImportDriver
         $statement->execute();
         
         return $this->setEntries($statement->fetchAll());
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function init($mixed = null)
-    {
-        $this->loadRawData($this->helper->getAcademicPeriod());
     }
     
     /**

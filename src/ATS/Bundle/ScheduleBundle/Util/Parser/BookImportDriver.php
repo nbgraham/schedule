@@ -259,8 +259,6 @@ class BookImportDriver extends AbstractImportDriver
      */
     private function isOnline(array $data)
     {
-        // $this->getDate($data[16]) <= new \DateTime()
-        
         // 18 = Building. 19 = Room. 20 = Days.
         return !$data[18] || null === $data[19] || null === $data[20];
     }

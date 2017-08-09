@@ -22,6 +22,7 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 /**
  * Parses the Book CSV file.
  * 
+ * @deprecated The driver import system replaced this.
  * @author Austin Shinpaugh <ashinpaugh@ou.edu>
  */
 class BookParser
@@ -401,6 +402,7 @@ class BookParser
             ->setSubject($subject)
             ->setNumEnrolled($data[12])
             ->setMaximumEnrollment($data[11])
+            ->setMeetingType('class')
         ;
         
         return $this->persist($instances, $key, $event);
@@ -690,7 +692,7 @@ class BookParser
     }
     
     /**
-     * Sets the flag for including online classes.
+     * Sets the flag for including online sections.
      * 
      * @param boolean $on
      *
