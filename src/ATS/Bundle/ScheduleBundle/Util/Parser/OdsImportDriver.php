@@ -278,11 +278,6 @@ class OdsImportDriver extends AbstractImportDriver
                 return 'Spring';
             case 30:
                 return 'Summer';
-            // TODO: what are these?
-            case 11:
-            case 21:
-            case 31:
-                return 'Unknown';
             default:
                 return 'Unknown';
         }

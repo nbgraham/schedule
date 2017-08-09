@@ -76,6 +76,10 @@ class Campus extends AbstractEntity
     public function getDisplayName()
     {
         switch ($this->getName()) {
+            case 'A':
+                return 'Advanced Programs';
+            case 'H':
+                return 'Health Science Center';
             case 'N':
                 return 'Norman - Main Campus';
             case 'T':
@@ -90,6 +94,8 @@ class Campus extends AbstractEntity
                 return 'Redlands at Norman CCE';
             case 'S':
                 return 'Intersession';
+            case 'J':
+                return 'Janux Campus';
             default:
                 return $this->getName();
         }
