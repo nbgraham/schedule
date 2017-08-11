@@ -10,7 +10,7 @@ parameters:
     num_years: 2
 
 nelmio_api_doc:
-  name: "Schedule Utility's API Documentation"
+  name: "Class Plan's API Documentation"
 
 fos_rest:
     routing_loader:
@@ -38,6 +38,15 @@ assetic:
             preserve_comments: true
 
 framework:
+    cache:
+        app:                       cache.adapter.doctrine
+        system:                    cache.adapter.doctrine
+        default_doctrine_provider: schedule.cache.provider
+    esi:
+        enabled: true
+    fragments:
+        path: /_fragment
+    
     secret: "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -55,7 +64,6 @@ framework:
         # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
         handler_id:      schedule.session_handler
         cookie_lifetime: 28800 # Sessions expire after 8 hours.
-    fragments:       ~
     http_method_override: true
     assets: ~
     php_errors:
@@ -87,6 +95,11 @@ doctrine:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+        
+        query_cache_driver:
+            id: schedule.cache.provider
+        metadata_cache_driver:
+            id: schedule.cache.provider
 
 # Swiftmailer Configuration
 swiftmailer:

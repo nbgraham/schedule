@@ -9,75 +9,14 @@
             {% block title %}Welcome!{% endblock %}
         </title>
         
-        {% stylesheets
-            'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
-            'assets/vendor/fullcalendar/dist/fullcalendar.min.css'
-            'assets/vendor/font-awesome/css/font-awesome.min.css'
-            'assets/vendor/chosen/chosen.css'
-            'assets/vendor/qtip2/jquery.qtip.min.css'
-            'assets/vendor/spectrum/spectrum.css'
-            output='assets/compiled/css/libraries.css'
-            filter='cssrewrite,lessphp'
-        %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
-        
-        {% stylesheets
-            '@ATSScheduleBundle/Resources/public/css/chosen-bootstrap-theme.css'
-            '@ATSScheduleBundle/Resources/public/less/controller/Default/index.less'
-            output='assets/compiled/css/app.css'
-            filter='cssrewrite,lessphp'
-        %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
-        
-        {% block stylesheets %}
-            {% stylesheets
-                'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
-                '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
-                output='assets/compiled/css/app_print.css'
-                filter='cssrewrite,lessphp'
-            %}
-                <link rel="stylesheet" href="{{ asset_url }}" media="print" />
-            {% endstylesheets %}
-        {% endblock %}
+        {% include 'stylesheets.html.twig' %}
     </head>
     
     <body>
         {% block body %}{% endblock %}
         
-        {% block javascripts %}
-            {% javascripts
-                'assets/vendor/jquery/dist/jquery.min.js'
-                'assets/vendor/jquery-ui/jquery-ui.min.js'
-                'assets/vendor/bootstrap/dist/js/bootstrap.js'
-                'assets/vendor/moment/min/moment.min.js'
-                'assets/vendor/fullcalendar/dist/fullcalendar.min.js'
-                'assets/vendor/chosen/chosen.jquery.js'
-                'assets/vendor/qtip2/jquery.qtip.min.js'
-                'assets/vendor/spectrum/spectrum.js'
-                filter='?jsqueeze'
-                output='assets/compiled/js/libraries.js'
-            %}
-                <script src="{{ asset_url }}"></script>
-            {% endjavascripts %}
-            
-            {% javascripts '@ATSScheduleBundle/Resources/public/js/util/*'
-                filter='?jsqueeze'
-                output='assets/compiled/js/utils.js'
-            %}
-                <script src="{{ asset_url }}"></script>
-            {% endjavascripts %}
-            
-            {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*'
-                filter='?jsqueeze'
-                output='assets/compiled/js/controllers.js'
-            %}
-                <script src="{{ asset_url }}"></script>
-            {% endjavascripts %}
-        {% endblock %}
+        {% include 'scripts.html.twig' %}
     
-        {% embed 'base-footer.html.twig' %}
-        {% endembed %}
+        {{ render_esi(controller('ATSScheduleBundle:Default:esi')) }}
     </body>
 </html>

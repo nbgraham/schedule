@@ -5,6 +5,7 @@ namespace ATS\Bundle\ScheduleBundle\DataFixtures\ORM;
 use ATS\Bundle\ScheduleBundle\Entity\UpdateLog;
 use Doctrine\Common\Persistence\ObjectManager;
 
+
 /**
  * Clean up any loose ends during the import process.
  * 
@@ -28,8 +29,10 @@ class OnCompleteFixture extends AbstractDataFixture
         
         $manager->flush();
         
-        // Clear the line.
         static::getOutput()->writeln("\nImport complete.");
+        
+        // Clear the cache again.
+        $this->clearEdgeSideInclude();
     }
     
     /**

@@ -23,6 +23,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Abstract class for the data fixtures to extend.
@@ -375,5 +376,29 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
     protected function getDoctrine()
     {
         return $this->container->get('doctrine');
+    }
+    
+    /**
+     * Clear the edge side includes so that they no longer server bad data.
+     * 
+     * @return $this
+     */
+    protected function clearEdgeSideInclude()
+    {
+        $root       = $this->container->getParameter('kernel.root_dir');
+        $filesystem = $this->container->get('filesystem');
+        
+        $cache_dirs = Finder::create()
+            ->directories()
+            ->depth(0)
+            ->in([
+                $root . '/../var/cache/dev/http_cache',
+                $root . '/../var/cache/prod/http_cache'
+            ])
+        ;
+        
+        $filesystem->remove($cache_dirs);
+        
+        return $this;
     }
 }

@@ -27,3 +27,21 @@ services:
             - "@schedule.import_helper"
         calls:
             - [init]
+    
+    schedule.cache.database:
+        class: SQLite3
+        arguments:
+            - "%kernel.root_dir%/../var/cache/%kernel.environment%/cache.sqlite"
+    
+    schedule.cache.provider:
+        class: Doctrine\Common\Cache\SQLite3Cache
+        arguments:
+            - "@schedule.cache.database"
+            - "cache"
+    
+    schedule.cache.adapter:
+        class: Symfony\Component\Cache\Adapter\DoctrineAdapter
+        arguments:
+            - "@schedule.cache.provider"
+            - "classplan"
+            - "86400"
