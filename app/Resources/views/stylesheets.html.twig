@@ -29,18 +29,28 @@
     </style>
 {% endstylesheets %}
 
+{% if 'dev' != app.environment %}
+    <style type="text/css">{{ inline_resource('assets/compiled/css/app.css')|raw }}</style>
+{% endif %}
+
 {##
  # Printable.
  #}
-{% block stylesheets %}
-    {% stylesheets
-        'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
-        '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
-        output='assets/compiled/css/app_print.css'
-        filter='cssrewrite,lessphp'
-    %}
+{% stylesheets
+    'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
+    '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
+    output='assets/compiled/css/app_print.css'
+    filter='cssrewrite,lessphp'
+%}
+    {% if 'dev' == app.environment %}
         <style type="text/css" media="print">
             {{ inline_resource(asset_url) }}
         </style>
-    {% endstylesheets %}
-{% endblock %}
+    {% endif %}
+{% endstylesheets %}
+
+{% if 'dev' != app.environment %}
+    <style type="text/css" media="print">
+        {{ inline_resource('assets/compiled/css/app_print.css')|raw }}
+    </style>
+{% endif %}

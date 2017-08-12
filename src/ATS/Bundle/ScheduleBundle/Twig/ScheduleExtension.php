@@ -3,9 +3,6 @@
 namespace ATS\Bundle\ScheduleBundle\Twig;
 
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
-
 class ScheduleExtension extends \Twig_Extension
 {
     protected $root_dir;
