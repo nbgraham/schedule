@@ -1,19 +1,33 @@
 {##
  # Libraries.
+ #
+ # Loading inline can break CSSRewrites
  #}
 {% stylesheets
     'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
     'assets/vendor/fullcalendar/dist/fullcalendar.min.css'
-    'assets/vendor/font-awesome/css/font-awesome.min.css'
-    'assets/vendor/chosen/chosen.css'
     'assets/vendor/qtip2/jquery.qtip.min.css'
     'assets/vendor/spectrum/spectrum.css'
+    output='assets/compiled/css/inline-libraries.css'
+    filter='cssrewrite,lessphp'
+%}
+    <style type="text/css">
+        {{ inline_resource('assets/compiled/css/inline-libraries.css')|raw }}
+    </style>
+{% endstylesheets %}
+
+{##
+ # Libraries that can't be inlined.
+ #}
+{% stylesheets
+    'assets/vendor/font-awesome/css/font-awesome.min.css'
+    'assets/vendor/chosen/chosen.css'
     output='assets/compiled/css/libraries.css'
     filter='cssrewrite,lessphp'
 %}
-    {# Loading inline can break CSSRewrites #}
     <link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
+
 
 {##
  # App.
@@ -26,7 +40,7 @@
 %}
     {% if 'dev' == app.environment %}
         <style type="text/css">
-            {{ inline_resource(asset_url) }}
+            {{ inline_resource(asset_url)|raw }}
         </style>
     {% endif %}
 {% endstylesheets %}
@@ -46,7 +60,7 @@
 %}
     {% if 'dev' == app.environment %}
         <style type="text/css" media="print">
-            {{ inline_resource(asset_url) }}
+            {{ inline_resource(asset_url)|raw }}
         </style>
     {% endif %}
 {% endstylesheets %}

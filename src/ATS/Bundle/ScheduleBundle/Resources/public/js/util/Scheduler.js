@@ -39,6 +39,8 @@ const Scheduler = (function ($) {
         init : function (options)
         {
             let defaults = {
+                startParam:   null,
+                endParam:     null,
                 lazyFetching: true,
                 allDaySlot:  false,
                 defaultView: 'agendaWeek',

@@ -12,6 +12,7 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 /**
@@ -43,6 +44,7 @@ class SectionController extends AbstractController implements ClassResourceInter
      * @QueryParam(name="last_update", nullable=false, description="The date that the other IDs were created on.")
      * 
      * @View(serializerEnableMaxDepthChecks=true)
+     * @Cache(public=true, expires="+5 minutes", maxage=600, smaxage=600)
      */
     public function getAction(ParamFetcher $fetcher)
     {
