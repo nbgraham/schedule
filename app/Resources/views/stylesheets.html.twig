@@ -24,9 +24,11 @@
     output='assets/compiled/css/app.css'
     filter='cssrewrite,lessphp'
 %}
-    <style type="text/css">
-        {{ inline_resource(asset_url) }}
-    </style>
+    {% if 'dev' == app.environment %}
+        <style type="text/css">
+            {{ inline_resource(asset_url) }}
+        </style>
+    {% endif %}
 {% endstylesheets %}
 
 {% if 'dev' != app.environment %}
