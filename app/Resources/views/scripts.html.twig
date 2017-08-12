@@ -13,7 +13,9 @@
     filter='?jsqueeze'
     output='assets/compiled/js/libraries.js'
 %}
-    <script src="{{ asset_url }}"></script>
+    <script>
+        {{ inline_resource(asset_url)|raw }}
+    </script>
 {% endjavascripts %}
 
 {##
@@ -23,7 +25,9 @@
     filter='?jsqueeze'
     output='assets/compiled/js/utils.js'
 %}
-    <script src="{{ asset_url }}"></script>
+    <script>
+        {{ inline_resource(asset_url)|raw }}
+    </script>
 {% endjavascripts %}
 
 {##
@@ -34,6 +38,8 @@
         filter='?jsqueeze'
         output='assets/compiled/js/controllers.js'
     %}
-        <script src="{{ asset_url }}"></script>
+        <script>
+            {{ inline_resource(asset_url)|raw }}
+        </script>
     {% endjavascripts %}
 {% endblock %}

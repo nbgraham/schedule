@@ -26,8 +26,12 @@ if (PHP_VERSION_ID < 70000) {
     $kernel->loadClassCache();
 }
 
-$kernel   = new AppCache($kernel);
+if (!($nc_flag = array_key_exists('no_cache', $_REQUEST)) || ($nc_flag && !$_REQUEST['no_cache'])) {
+    $kernel = new AppCache($kernel);
+}
+
 $request  = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
+
 $kernel->terminate($request, $response);

@@ -39,6 +39,7 @@ const Scheduler = (function ($) {
         init : function (options)
         {
             let defaults = {
+                lazyFetching: true,
                 allDaySlot:  false,
                 defaultView: 'agendaWeek',
                 weekends:    false,
@@ -51,8 +52,11 @@ const Scheduler = (function ($) {
                     right: 'agendaWeek,agendaDay'
                 },
                 viewRender: function () {
-                    updateHeader();
+                    updateHeader(false);
                     hideDateColumnHeader();
+                },
+                loading: function (isLoading) {
+                    updateHeader(isLoading);
                 },
                 eventRender: function (event, element, view) {
                     if (event.hasOwnProperty('instructor')) {
@@ -139,7 +143,6 @@ const Scheduler = (function ($) {
                 
                 success: function (data) {
                     context.loadCourseClass(data);
-                    updateHeader(false);
                     
                     if (!context.getSectionIds().length) {
                         GlobalUtils.showMessage('No results matched your filter criteria.');
@@ -156,15 +159,13 @@ const Scheduler = (function ($) {
                     }
                     
                     // An update has occurred and the page data needs to be refreshed.
-                    GlobalUtils.showMessage('The system recently updated, and you must reload the page in order to receive accurate results.<p>Automatically reloading the page in 10 seconds..</p>');
+                    GlobalUtils.showMessage('The system recently updated, and you must reload the page in order to receive accurate results.<br /><p>Automatically reloading the page in 10 seconds..</p>');
                     
                     setTimeout(function () {
                         window.location.reload();
                     }, 10000);
                 }
             });
-            
-            updateHeader(true);
             
             return true;
         },
@@ -235,7 +236,7 @@ const Scheduler = (function ($) {
             selectors.trigger('chosen:updated');
             
             if (!this.calendar.fullCalendar('clientEvents').length) {
-                updateHeader();
+                updateHeader(false);
             }
             
             return this;
@@ -486,7 +487,7 @@ const Scheduler = (function ($) {
     /**
      * Update the header based on the semester.
      *
-     * @param is_loading
+     * @param {boolean} is_loading
      */
     function updateHeader(is_loading)
     {
@@ -497,10 +498,6 @@ const Scheduler = (function ($) {
         
         if (is_loading) {
             title = $('<div>').addClass('loadersmall');
-        } else {
-            header.find('.loadersmall').remove();
-            
-            title = title ? title : '';
         }
         
         header.html(title);
@@ -516,6 +513,10 @@ const Scheduler = (function ($) {
     function filterEvents(calendar, events)
     {
         let output, idx;
+        
+        if (calendar.fullCalendar('clientEvents').length) {
+            return [];
+        }
         
         output = [];
         for (idx in events) {

@@ -21,7 +21,7 @@ class TermBlock extends AbstractEntity
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(type="integer")
      * 
      * @var Integer
      */

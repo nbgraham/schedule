@@ -40,7 +40,10 @@ let GlobalUtils;
      */
     GlobalUtils.getAPIUrl = function (path)
     {
-        let base = window.location.toString();
+        let base;
+        base = window.location.origin.toString();
+        base = base + window.location.pathname.toString();
+        
         if ('/' !== base.slice(-1)) {
             base = base + '/';
         }
@@ -58,7 +61,7 @@ let GlobalUtils;
     {
         let button = $('#btn-export');
         
-        if (scheduler.getSectionIds().length) {
+        if (scheduler && scheduler.getSectionIds().length) {
             button.removeAttr('disabled');
         } else {
             button.attr('disabled', 'disabled');

@@ -45,3 +45,10 @@ services:
             - "@schedule.cache.provider"
             - "classplan"
             - "86400"
+    
+    schedule.twig_extension:
+        class: ATS\Bundle\ScheduleBundle\Twig\ScheduleExtension
+        arguments:
+            - "%kernel.root_dir%"
+        tags:
+            - { name: twig.extension }

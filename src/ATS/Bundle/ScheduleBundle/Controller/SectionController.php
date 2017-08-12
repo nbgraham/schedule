@@ -79,7 +79,7 @@ class SectionController extends AbstractController implements ClassResourceInter
             ;
         }
         
-        $sections = $this->getRepo('ATSScheduleBundle:Section')
+        $sections = $this->getRepo(Section::class)
             ->findBy(array_filter([
                 'block'      => $block,
                 'subject'    => $subject,

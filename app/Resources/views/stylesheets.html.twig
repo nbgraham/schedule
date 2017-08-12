@@ -11,6 +11,7 @@
     output='assets/compiled/css/libraries.css'
     filter='cssrewrite,lessphp'
 %}
+    {# Loading inline can break CSSRewrites #}
     <link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
 
@@ -23,7 +24,9 @@
     output='assets/compiled/css/app.css'
     filter='cssrewrite,lessphp'
 %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+    <style type="text/css">
+        {{ inline_resource(asset_url) }}
+    </style>
 {% endstylesheets %}
 
 {##
@@ -36,6 +39,8 @@
         output='assets/compiled/css/app_print.css'
         filter='cssrewrite,lessphp'
     %}
-        <link rel="stylesheet" href="{{ asset_url }}" media="print" />
+        <style type="text/css" media="print">
+            {{ inline_resource(asset_url) }}
+        </style>
     {% endstylesheets %}
 {% endblock %}
