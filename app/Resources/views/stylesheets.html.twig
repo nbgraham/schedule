@@ -1,7 +1,12 @@
 {##
- # Libraries.
+ # The app's stylesheets.
+ # Sheets are in-lined here since the University doens't use CDNs currently.
  #
- # Loading inline can break CSSRewrites
+ # @author Austin Shinpaugh
+ ##}
+
+{##
+ # Libraries.
  #}
 {% stylesheets
     'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
@@ -14,18 +19,6 @@
     <style type="text/css">
         {{ inline_resource('assets/compiled/css/inline-libraries.css')|raw }}
     </style>
-{% endstylesheets %}
-
-{##
- # Libraries that can't be inlined.
- #}
-{% stylesheets
-    'assets/vendor/font-awesome/css/font-awesome.min.css'
-    'assets/vendor/chosen/chosen.css'
-    output='assets/compiled/css/libraries.css'
-    filter='cssrewrite,lessphp'
-%}
-    <link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
 
 
@@ -48,6 +41,7 @@
 {% if 'dev' != app.environment %}
     <style type="text/css">{{ inline_resource('assets/compiled/css/app.css')|raw }}</style>
 {% endif %}
+
 
 {##
  # Printable.

@@ -1,0 +1,11 @@
+{##
+ # Libraries that can't be inlined.
+ #}
+{% stylesheets
+    'assets/vendor/font-awesome/css/font-awesome.min.css'
+    'assets/vendor/chosen/chosen.css'
+    output='assets/compiled/css/libraries.css'
+    filter='cssrewrite,lessphp'
+%}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}

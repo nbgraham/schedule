@@ -12,9 +12,8 @@ const Scheduler = (function ($) {
             throw new Error('Missing calendar parameter.');
         }
         
-        this.calendar  = $(calendar);
-        this.shades    = {'subject': {}, 'instructor': {}, 'term-block': {}};
-        this.is_mobile = GlobalUtils.isMobile();
+        this.calendar = $(calendar);
+        this.shades   = {'subject': {}, 'instructor': {}, 'term-block': {}};
     };
     
     Scheduler.prototype = {
@@ -74,21 +73,7 @@ const Scheduler = (function ($) {
                     }
                 },
                 eventAfterRender: function (event, element, view) {
-                    let context, position;
-                    
-                    context  = this;
-                    position = {
-                        my:     'bottom left',
-                        at:     'top left',
-                        target: element
-                    };
-                    
-                    if (!tooltipHasSpace(element)) {
-                        position = {
-                            my: 'right center',
-                            at: 'left center'
-                        };
-                    }
+                    let position = getTooltipPosition(element);
                     
                     $(element).qtip({
                         style: {
@@ -100,7 +85,7 @@ const Scheduler = (function ($) {
                         },
                         events: {
                             show: function (event, api) {
-                                if (!context.is_mobile) {
+                                if (!GlobalUtils.isMobile()) {
                                     return;
                                 }
                                 
@@ -298,11 +283,38 @@ const Scheduler = (function ($) {
      */
     function tooltipHasSpace(element)
     {
-        let left, width;
-        left  = $(element).offset().left;
-        width = 280; // QTip CSS library sets a tooltip max-width to 280px.
+        let left, width, body_width;
+        left       = $(element).offset().left;
+        width      = 280; // QTip CSS library sets a tooltip max-width to 280px.
+        body_width = parseInt($('body').css('width'));
         
-        return 1 > (left + width) / parseInt($('body').css('width'));
+        return (1 > (left + width) / body_width)
+            || (0 > (left - width) / body_width)
+        ;
+    }
+
+    /**
+     * Get the tooltip position.
+     * 
+     * @param element
+     * @return {{my: string, at: string, target: *}}
+     */
+    function getTooltipPosition(element)
+    {
+        let position = {
+            my:     'bottom left',
+            at:     'top left',
+            target: element
+        };
+        
+        if (!tooltipHasSpace(element)) {
+            position = {
+                my: 'right center',
+                at: 'left center'
+            };
+        }
+        
+        return position;
     }
     
     /**
