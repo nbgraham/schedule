@@ -281,16 +281,19 @@ const Scheduler = (function ($) {
      * @param element
      * @return {boolean}
      */
-    function tooltipHasSpace(element)
+    function ttSpaceIndex(element)
     {
         let left, width, body_width;
         left       = $(element).offset().left;
         width      = 280; // QTip CSS library sets a tooltip max-width to 280px.
         body_width = parseInt($('body').css('width'));
         
-        return (1 > (left + width) / body_width)
-            || (0 > (left - width) / body_width)
-        ;
+        if (1 > ((left + width) / body_width)) {
+            // Tooltip has room in the default position.
+            return 0;
+        }
+        
+        return 1;
     }
 
     /**
@@ -307,7 +310,7 @@ const Scheduler = (function ($) {
             target: element
         };
         
-        if (!tooltipHasSpace(element)) {
+        if (1 === ttSpaceIndex(element)) {
             position = {
                 my: 'right center',
                 at: 'left center'
