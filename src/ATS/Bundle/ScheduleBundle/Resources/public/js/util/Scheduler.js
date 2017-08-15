@@ -126,7 +126,7 @@ const Scheduler = (function ($) {
                 url:   GlobalUtils.getAPIUrl(uri),
                 type:  'GET',
                 data:  context.getData(),
-                cache: true,
+                cache: canCache(),
                 
                 success: function (data) {
                     context.loadCourseClass(data);
@@ -758,6 +758,47 @@ const Scheduler = (function ($) {
         }
         
         return output;
+    }
+
+    /**
+     * Determine if the client should cache the Section API responses.
+     * 
+     * @return {boolean}
+     */
+    function canCache()
+    {
+        // Don't cache any results if the server is under maintenance.
+        if (0 === GlobalUtils.getLastUpdate().status) {
+            return false;
+        }
+        
+        // If it's production cache the results.
+        if (!GlobalUtils.isDev()) {
+            return true;
+        }
+        
+        let param = getQuery('no_cache');
+        
+        // If no_cache is present don't cache section API calls.
+        return null === param || 1 !== param;
+    }
+    
+    /**
+     * Get a query param.
+     * 
+     * @param q
+     * 
+     * @return {*}
+     * @url https://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript
+     */
+    function getQuery(q)
+    {
+        let param = (window.location.search.match(new RegExp('[?&]' + q + '=([^&]+)')) || [, null])[1];
+        if (param && '/' === param.substr(-1)) {
+            param = param.substr(0, param.length - 1);
+        }
+        
+        return param;
     }
     
     return Scheduler;

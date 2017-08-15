@@ -44,7 +44,7 @@ class SectionController extends AbstractController implements ClassResourceInter
      * @QueryParam(name="last_update", nullable=false, description="The date that the other IDs were created on.")
      * 
      * @View(serializerEnableMaxDepthChecks=true)
-     * @Cache(public=true, expires="+5 minutes", maxage=600, smaxage=600)
+     * @Cache(public=true, expires="+10 minutes", maxage=600, smaxage=600)
      */
     public function getAction(ParamFetcher $fetcher)
     {
