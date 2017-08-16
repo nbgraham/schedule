@@ -37,6 +37,12 @@ Optional - four digit year. The starting year to import. If omitted the app will
 take the current year and subtract `num_years` to get the starting year to import.
 
 
+### javascript and ECMA5 support
+
+This app was built using ECMA6 standards. In order for IE9-11 support, Babel was used
+as a [File Watcher][1] in PHPStorm to transcribe the ECMA6 standards to ECMA5 automatically.
+
+
 ### deployments in http://casapps-dev.ou.edu/classplan/
 
 ````
@@ -53,9 +59,9 @@ docker exec -it web chmod o=rwx /var/www/html/classplan/var/cache/prod/jms_seria
 ### cache
 The application leverages Symfony's reverse proxy in dev and prod.
 
-In dev if the GET param ?no_cache=1 is passed in the URL, the reverse proxy is ignored.  
+In dev if the GET param ?no_cache=1 is passed in the URL the reverse proxy isn’t used.  
 
-Section API calls are cached for ten minutes, and can be tweaked  in the @Cache() annotation.
+Section API calls are cached for ten minutes, and can be tweaked using the @Cache annotation.
 
     /**
      * Fetch a subset of sections based on the provided filter criteria.
@@ -71,3 +77,5 @@ Since the University doesn't use CDNs / Varnish this was the fastest way to deli
 
 
 A Symfony project created on March 7, 2017, 11:37 am.
+
+[1]: https://blog.jetbrains.com/webstorm/2015/05/ecmascript-6-in-webstorm-transpiling/

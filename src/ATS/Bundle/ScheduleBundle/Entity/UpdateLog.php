@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
+ * Tracks the status of imports.
+ * 
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */

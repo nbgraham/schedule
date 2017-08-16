@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Home page javascript file.
  * Bootstrap for all things javascript.
@@ -7,41 +9,36 @@
 
 (function ($) {
     'use strict';
-    
-    let scheduler;
-    
+
+    var scheduler = void 0;
+
     if (!$.fullCalendar) {
         console.log('FullCalendar is not loaded.');
         return;
     }
-    
+
     /*
      * Setup the modal filters.
      * 
      * Using window load to ensure that the data in GlobalUtils was parsed.
      */
     $(window).on('load', function () {
-        let update, days;
+        var update = void 0,
+            days = void 0;
         update = GlobalUtils.getLastUpdate();
-        days   = moment().diff(moment(update.start), 'days');
-        
+        days = moment().diff(moment(update.start), 'days');
+
         if (0 === update.status) {
             GlobalUtils.toggleExportBtn();
-            
-            GlobalUtils.showMessage(
-                'Our system is currently undergoing maintenance and may show limited results.',
-                'Notice'
-            );
+
+            GlobalUtils.showMessage('Our system is currently undergoing maintenance and may show limited results.', 'Notice');
         } else if (0 < days) {
-            GlobalUtils.showMessage(
-                'The following data is %n day(s) old.'.replace('%n', days),
-                'Notice'
-            );
+            GlobalUtils.showMessage('The following data is %n day(s) old.'.replace('%n', days), 'Notice');
         }
-        
+
         scheduler = new Scheduler('#calendar');
         scheduler.init();
-        
+
         bindDelegated();
         populateFilters();
         buttonActions();
@@ -50,12 +47,11 @@
     /**
      * Fill the filter boxes with their respective data.
      */
-    function populateFilters()
-    {
+    function populateFilters() {
         fillSelect('#subject', GlobalUtils.getSubjects());
         fillSelect('#term', GlobalUtils.getSemesters());
         fillSelectWithGroup('#instructor', GlobalUtils.getInstructors());
-        
+
         bindSemesterChange();
         bindSubjectChange();
         bindChange();
@@ -68,31 +64,30 @@
      * @param {object} data
      * @param {string} text
      */
-    function fillSelect(id, data, text)
-    {
-        let select, idx;
+    function fillSelect(id, data, text) {
+        var select = void 0,
+            idx = void 0;
         select = $(id);
-        
+
         for (idx in data) {
             if (!data.hasOwnProperty(idx)) {
                 return;
             }
-            
-            let item, label, option;
-            item   = data[idx];
-            label  = determineChosenLabel(item);
-            option = $('<option>')
-                .attr('value', item.id)
-                .text(determineChosenLabel(item))
-            ;
-            
+
+            var item = void 0,
+                label = void 0,
+                option = void 0;
+            item = data[idx];
+            label = determineChosenLabel(item);
+            option = $('<option>').attr('value', item.id).text(determineChosenLabel(item));
+
             if (text && text === label) {
-                option.prop('selected', 'selected')
+                option.prop('selected', 'selected');
             }
-            
+
             option.appendTo(select);
         }
-        
+
         _buildChosen(select);
     }
 
@@ -102,22 +97,23 @@
      * @param id
      * @param data
      */
-    function fillSelectWithGroup(id, data)
-    {
-        let select, idx, group;
+    function fillSelectWithGroup(id, data) {
+        var select = void 0,
+            idx = void 0,
+            group = void 0;
         select = $(id);
-        
+
         for (idx in data) {
             if (!data.hasOwnProperty(idx)) {
                 return;
             }
-            
+
             if (group = _fillOptGroup(idx, data[idx])) {
                 group.appendTo(select);
             }
         }
-        
-        _buildChosen(select)
+
+        _buildChosen(select);
     }
 
     /**
@@ -126,17 +122,16 @@
      * @param select
      * @private
      */
-    function _buildChosen(select)
-    {
+    function _buildChosen(select) {
         // Chosen will initialize at 0px because it's in a modal.
-        select.chosen({ 
+        select.chosen({
             width: '100%',
-            allow_single_deselect:  1/*,
-            inherit_select_classes: true
-            ,
-            From a DevOps perspective, soft-limiting this just makes sense. From
-            someone who wants to graduate and impress - what are you gonna do?
-            max_selected_options:  3,*/
+            allow_single_deselect: 1 /*,
+                                     inherit_select_classes: true
+                                     ,
+                                     From a DevOps perspective, soft-limiting this just makes sense. From
+                                     someone who wants to graduate and impress - what are you gonna do?
+                                     max_selected_options:  3,*/
         });
     }
 
@@ -148,35 +143,31 @@
      * @returns {*}
      * @private
      */
-    function _fillOptGroup(parent_id, data)
-    {
+    function _fillOptGroup(parent_id, data) {
         if (!data) {
             return false;
         }
-        
-        let group, instructors, idx;
-        
-        group       = $('<optgroup>').attr('label', data.name);
+
+        var group = void 0,
+            instructors = void 0,
+            idx = void 0;
+
+        group = $('<optgroup>').attr('label', data.name);
         instructors = data['instructors'];
-        
+
         for (idx in instructors) {
             if (!instructors.hasOwnProperty(idx)) {
                 continue;
             }
-            
-            let item = instructors[idx];
+
+            var item = instructors[idx];
             if (!item.hasOwnProperty('name') || !item.name.length) {
                 continue;
             }
-            
-            $('<option>')
-                .attr('value', item.id)
-                .attr('data-subject', parent_id)
-                .text(determineChosenLabel(item))
-                .appendTo(group)
-            ;
+
+            $('<option>').attr('value', item.id).attr('data-subject', parent_id).text(determineChosenLabel(item)).appendTo(group);
         }
-        
+
         return group;
     }
 
@@ -188,16 +179,15 @@
      * 
      * @returns string
      */
-    function determineChosenLabel(entity)
-    {
+    function determineChosenLabel(entity) {
         if (entity.hasOwnProperty('display_name')) {
             return entity.display_name;
         }
-        
+
         if (!entity.hasOwnProperty('level')) {
             return entity.name;
         }
-        
+
         return entity.number + ' | ' + entity.name;
     }
 
@@ -205,118 +195,119 @@
      * Whenever a change in semester selection happens, update the
      * term-block selector.
      */
-    function bindSemesterChange()
-    {
+    function bindSemesterChange() {
         $('#term').on('change', function (event, params) {
-            let label, semesters, semester, block, idx;
-            label     = $('label[for="term-block"]');
+            var label = void 0,
+                semesters = void 0,
+                semester = void 0,
+                block = void 0,
+                idx = void 0;
+            label = $('label[for="term-block"]');
             semesters = GlobalUtils.getSemesters();
-            
+
             if (!params) {
                 // params is undefined when you deselect a semester.
                 $('#term-block').chosen('destroy');
                 label.addClass('hidden');
                 return;
             }
-            
+
             for (idx in semesters) {
                 if (!semesters.hasOwnProperty(idx)) {
                     continue;
                 }
-                
+
                 semester = semesters[idx];
                 if (semester.id != params.selected) {
                     continue;
                 }
-                
+
                 block = $('#term-block');
                 // If there are other options in the term-block selector, remove them.
                 block.find('option[value]').remove();
                 block.show();
-                
+
                 // Show the label.
                 label.removeClass('hidden');
-                
+
                 // Fill the term-block selector.
                 fillSelect('#term-block', semester.blocks, 'Full Semester');
             }
-            
+
             addColorPicker('term-block');
         });
-        
+
         $('#term-block').on('chosen:ready', function () {
-            let block = $(this);
-            
+            var block = $(this);
+
             setTimeout(function () {
                 $('#term').trigger('chosen:close');
                 block.trigger('chosen:activate');
             }, 25);
         });
     }
-    
+
     /**
      * Whenever a change in subject selection happens, update the
      * course number selector.
      */
-    function bindSubjectChange()
-    {
+    function bindSubjectChange() {
         $('#subject').on('change', function (event, params) {
             _checkInstructorImpact(this, params);
-            
-            let number, subjects, label, subject, idx;
-            number   = $('#number');
+
+            var number = void 0,
+                subjects = void 0,
+                label = void 0,
+                subject = void 0,
+                idx = void 0;
+            number = $('#number');
             subjects = GlobalUtils.getSubjects();
-            label    = $('label[for="number"]');
-            
+            label = $('label[for="number"]');
+
             if (!params) {
                 // params is undefined when you deselect a subject.
                 number.chosen('destroy');
                 label.addClass('hidden');
-                
+
                 return;
             }
-            
+
             if (params.hasOwnProperty('deselected')) {
-                number
-                    .find('option[data-subject="' + params.deselected + '"]')
-                    .remove()
-                ;
-                
+                number.find('option[data-subject="' + params.deselected + '"]').remove();
+
                 if (!$(this).val().length) {
                     number.chosen('destroy');
                     label.addClass('hidden');
                 } else {
                     number.trigger('chosen:updated');
                 }
-                
+
                 return;
             }
-            
-            let changed = false;
+
+            var changed = false;
             for (idx in subjects) {
                 if (!subjects.hasOwnProperty(idx)) {
                     continue;
                 }
-                
+
                 subject = subjects[idx];
                 if (subject.id != params.selected) {
                     continue;
                 }
-                
+
                 fillSelect('#number', subject.courses);
-                
-                number.find('option:not([data-subject])')
-                    .attr('data-subject', subject.id)
-                ;
-                
+
+                number.find('option:not([data-subject])').attr('data-subject', subject.id);
+
                 changed = true;
             }
-            
+
             if (changed) {
                 label.removeClass('hidden');
                 number.trigger('chosen:updated');
             }
-            
+
             addColorPicker('subject');
         });
     }
@@ -328,61 +319,57 @@
      * @param params
      * @private
      */
-    function _checkInstructorImpact(target, params)
-    {
-        let instructor, instructors, subject_ids, idx;
-        instructor  = $('#instructor');
+    function _checkInstructorImpact(target, params) {
+        var instructor = void 0,
+            instructors = void 0,
+            subject_ids = void 0,
+            idx = void 0;
+        instructor = $('#instructor');
         instructors = GlobalUtils.getInstructors();
         subject_ids = $(target).val();
-        
+
         if (!params) {
             instructor.val('');
             fillSelectWithGroup(instructor, instructors);
-            
+
             return;
         }
-        
+
         if (params.hasOwnProperty('deselected')) {
-            instructor
-                .find('option[data-subject="' + params.deselected + '"]')
-                .remove()
-            ;
-            
+            instructor.find('option[data-subject="' + params.deselected + '"]').remove();
+
             if (!subject_ids.length) {
                 fillSelectWithGroup(instructor, instructors);
             }
-            
+
             instructor.trigger('chosen:updated');
-            
+
             return;
         }
-        
-        instructor
-            .find('optgroup')
-            .remove()
-        ;
-        
+
+        instructor.find('optgroup').remove();
+
         for (idx in subject_ids) {
             if (!subject_ids.hasOwnProperty(idx)) {
                 continue;
             }
-            
-            let id, data;
-            id   = subject_ids[idx];
+
+            var id = void 0,
+                data = void 0;
+            id = subject_ids[idx];
             data = {};
             data[id] = instructors[id];
-            
+
             fillSelectWithGroup(instructor, data);
         }
-        
+
         instructor.trigger('chosen:updated');
     }
-    
+
     /**
      * Add a color-pickers to various fields after an item selection changes.
      */
-    function bindChange()
-    {
+    function bindChange() {
         $('#instructor, #term-block').on('change', function (e) {
             addColorPicker(e.currentTarget.id);
         });
@@ -393,71 +380,71 @@
      * 
      * @param type
      */
-    function addColorPicker(type)
-    {
+    function addColorPicker(type) {
         $('#' + type.replace('-', '_') + '_chosen li.search-choice').each(function () {
             // Ignore if the element already has a color picker.
             if ($(this).children('input')[0]) {
                 return;
             }
-            
-            let ele = $('<input>').attr({
-                'type':        'text',
-                'value':       '#001505',
-                'data-type':   type,
+
+            var ele = $('<input>').attr({
+                'type': 'text',
+                'value': '#001505',
+                'data-type': type,
                 'data-unique': $(this).text()
             });
-            
+
             ele.prependTo(this);
             ele.spectrum({
-                change: function (color) {
+                change: function change(color) {
                     // Update the event background color.
-                    let picker, type, unique;
+                    var picker = void 0,
+                        type = void 0,
+                        unique = void 0;
                     picker = $(this);
-                    type   = picker.data('type');
+                    type = picker.data('type');
                     unique = picker.data('unique');
-                    
+
                     scheduler.setColor(type, unique, color.toHexString());
                 }
             });
         });
     }
-    
+
     /**
      * Binds the page buttons to the related actions.
      */
-    function buttonActions ()
-    {
-        let modal = $('#filtersModal');
+    function buttonActions() {
+        var modal = $('#filtersModal');
         modal.find('#apply-filters').on('click', function () {
             // Clear anything that was set in the tooltip box.
             $('.mobile-tooltip').html('');
-            
+
             if (scheduler.fetch()) {
                 modal.modal('hide');
             }
         });
-        
+
         modal.find('#clear-filters').on('click', function () {
             // Clear anything that was set in the tooltip box.
             $('.mobile-tooltip').html('');
-            
+
             scheduler.clearFilters();
-            
+
             // Clear the course numbers.
             $('#number').find('option').remove();
-            
+
             // Reset the instructor menu to its page load state.
             fillSelectWithGroup('instructor', GlobalUtils.getInstructors());
         });
-        
+
         $('#clear-calendar').click(function () {
             // Clear anything that was set in the tooltip box.
             $('.mobile-tooltip').html('');
-            
+
             scheduler.clear();
         });
-        
+
         $('#btn-export').on('click', function () {
             fetchCsvExport();
         });
@@ -466,27 +453,23 @@
     /**
      * Bind selectors that aren't on the page initially.
      */
-    function bindDelegated()
-    {
+    function bindDelegated() {
         $('.modal-body').on('keydown', function (e) {
             if (e.keyCode !== 27) {
                 return;
             }
-            
-            let element = $(e.target);
+
+            var element = $(e.target);
             if (!element.hasClass('chosen-search-input')) {
                 return;
             }
-            
-            element
-                .blur()
-                .focus()
-            ;
-            
+
+            element.blur().focus();
+
             e.stopImmediatePropagation();
         }).on('click touchstart mouseup mousedown', '.search-choice, .sp-replacer', function (e) {
             // Prevent the options drop-down menu when the color-picker is clicked.
-            let select = $(this).parents('.chosen-container');
+            var select = $(this).parents('.chosen-container');
             select.removeClass('chosen-with-drop chosen-container-active');
             e.stopPropagation();
         });
@@ -495,9 +478,7 @@
     /**
      * Builds a URI to fetch a CSV based on the displayed events.
      */
-    function fetchCsvExport()
-    {
+    function fetchCsvExport() {
         location.href = GlobalUtils.getAPIUrl('download/export.json');
     }
-    
-}) (jQuery);
+})(jQuery);
