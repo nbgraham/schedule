@@ -38,7 +38,11 @@ var Scheduler = function ($) {
          * @var object options The options to override the default settings.
          */
         init: function init(options) {
-            var defaults = {
+            var context = void 0,
+                defaults = void 0;
+
+            context = this;
+            defaults = {
                 startParam: null,
                 endParam: null,
                 lazyFetching: true,
@@ -56,6 +60,8 @@ var Scheduler = function ($) {
                 viewRender: function viewRender() {
                     updateHeader(false);
                     hideDateColumnHeader();
+
+                    $('.qtip', context.calendar).qtip('destroy');
                 },
                 loading: function loading(isLoading) {
                     updateHeader(isLoading);
@@ -92,6 +98,10 @@ var Scheduler = function ($) {
                             }
                         }
                     });
+                },
+                windowResize: function windowResize() {
+                    // Update the tooltips position.
+                    $('.qtip', context.calendar).qtip('reposition');
                 }
             };
 
@@ -307,7 +317,8 @@ var Scheduler = function ($) {
         var position = {
             my: 'bottom left',
             at: 'top left',
-            target: element
+            target: element,
+            adjust: { resize: false }
         };
 
         if (1 === ttSpaceIndex(element)) {

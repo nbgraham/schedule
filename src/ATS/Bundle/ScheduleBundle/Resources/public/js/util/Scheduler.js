@@ -38,7 +38,10 @@ const Scheduler = (function ($) {
          */
         init : function (options)
         {
-            let defaults = {
+            let context, defaults;
+            
+            context  = this;
+            defaults = {
                 startParam:   null,
                 endParam:     null,
                 lazyFetching: true,
@@ -56,6 +59,8 @@ const Scheduler = (function ($) {
                 viewRender: function () {
                     updateHeader(false);
                     hideDateColumnHeader();
+                    
+                    $('.qtip', context.calendar).qtip('destroy');
                 },
                 loading: function (isLoading) {
                     updateHeader(isLoading);
@@ -100,6 +105,10 @@ const Scheduler = (function ($) {
                             }
                         }
                     });
+                },
+                windowResize: function () {
+                    // Update the tooltips position.
+                    $('.qtip', context.calendar).qtip('reposition');
                 }
             };
             
@@ -309,7 +318,8 @@ const Scheduler = (function ($) {
         let position = {
             my:     'bottom left',
             at:     'top left',
-            target: element
+            target: element,
+            adjust: {resize: false}
         };
         
         if (1 === ttSpaceIndex(element)) {
