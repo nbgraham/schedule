@@ -476,7 +476,7 @@
             e.stopPropagation();
         });
 
-        $('#calendar').scroll(function () {
+        $(window).on('orientationchange', function () {
             $('.qtip').qtip('reposition');
         });
     }

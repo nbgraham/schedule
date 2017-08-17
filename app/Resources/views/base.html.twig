@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html>{% spaceless %}
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
         
-        <title>
-            {% block title %}Welcome!{% endblock %}
-        </title>
+        <title>{% block title %}Class Plan - Scheduling Utility{% endblock %}</title>
         
         {% include 'stylesheets.html.twig' %}
     </head>
@@ -21,4 +19,4 @@
         
         {% include 'blocking-stylesheets.html.twig' %}
     </body>
-</html>
+{% endspaceless %}</html>
