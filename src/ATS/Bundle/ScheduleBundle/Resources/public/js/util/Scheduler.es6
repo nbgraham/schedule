@@ -38,10 +38,7 @@ const Scheduler = (function ($) {
          */
         init : function (options)
         {
-            let context, defaults;
-            
-            context  = this;
-            defaults = {
+            let defaults = {
                 startParam:   null,
                 endParam:     null,
                 lazyFetching: true,

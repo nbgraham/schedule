@@ -38,11 +38,7 @@ var Scheduler = function ($) {
          * @var object options The options to override the default settings.
          */
         init: function init(options) {
-            var context = void 0,
-                defaults = void 0;
-
-            context = this;
-            defaults = {
+            var defaults = {
                 startParam: null,
                 endParam: null,
                 lazyFetching: true,

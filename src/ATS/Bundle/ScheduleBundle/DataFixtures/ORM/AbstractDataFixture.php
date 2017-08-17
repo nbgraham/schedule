@@ -391,10 +391,7 @@ abstract class AbstractDataFixture extends AbstractFixture implements FixtureInt
         $cache_dirs = Finder::create()
             ->directories()
             ->depth(0)
-            ->in([
-                $root . '/../var/cache/dev/http_cache',
-                $root . '/../var/cache/prod/http_cache'
-            ])
+            ->in($root . '/../var/cache/*/http_cache')
         ;
         
         $filesystem->remove($cache_dirs);
