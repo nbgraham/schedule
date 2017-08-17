@@ -22,76 +22,66 @@
     <script>{{ inline_resource('assets/compiled/js/libraries.js')|raw }}</script>
 {% endif %}
 
+{% set standard_urls  = [] %}
+{% set standard_count = 0  %}
+{% set ie_urls        = [] %}
+{% set ie_count       = 0  %}
 
 {##
  # App-wide utils.
  #}
-{% javascripts '@ATSScheduleBundle/Resources/public/js/util/*'
+{% javascripts '@ATSScheduleBundle/Resources/public/js/util/*.es6'
     filter='?jsqueeze'
     output='assets/compiled/js/utils.js'
 %}
-    {% if 'dev' == app.environment %}
-        <!--[if !IE]><!-->
-            <script>{{ inline_resource(asset_url)|raw }}</script>
-        <!--<![endif]-->
-    {% endif %}
+    {% set standard_urls  = standard_urls|merge({ (standard_count): asset_url}) %}
+    {% set standard_count = standard_count + 1 %}
 {% endjavascripts %}
 
-{% javascripts '@ATSScheduleBundle/Resources/public/js/util/ecma5/*'
+{% javascripts '@ATSScheduleBundle/Resources/public/js/util/*.js'
     filter='?jsqueeze'
     output='assets/compiled/js/legacy-utils.js'
 %}
-    {% if 'dev' == app.environment %}
-        <!--[if IE]>
-            <script type="text/javascript" src="{{ asset_url }}"></script>
-        <![endif]-->
-    {% endif %}
+    {% set ie_urls  = ie_urls|merge({ (ie_count): asset_url}) %}
+    {% set ie_count = ie_count + 1 %}
 {% endjavascripts %}
 
-{% if 'dev' != app.environment %}
-    <!--[if !IE]><!-->
-    <script>{{ inline_resource('assets/compiled/js/utils.js')|raw }}</script>
-    <!--<![endif]-->
-    
-    <!--[if IE]>
-    <script src="{{ asset('assets/compiled/js/legacy-utils.js') }}" type="text/javascript"></script>
-    <![endif]-->
-{% endif %}
+{% include 'components/script.html.twig' with {
+    'standard_urls':     standard_urls,
+    'ie_urls':           ie_urls,
+    'prod_standard_url': 'assets/compiled/js/utils.js',
+    'prod_ie_url':       'assets/compiled/js/legacy-utils.js'
+} %}
 
+{% set standard_urls  = [] %}
+{% set standard_count = 0  %}
+{% set ie_urls        = [] %}
+{% set ie_count       = 0  %}
 
 {##
  # Page resources.
  #}
 {% block javascripts %}
-    {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*'
+    {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*.es6'
         filter='?jsqueeze'
         output='assets/compiled/js/controllers.js'
     %}
-        {% if 'dev' == app.environment %}
-            <!--[if !IE]><!-->
-                <script>{{ inline_resource(asset_url)|raw }}</script>
-            <!--<![endif]-->
-        {% endif %}
+        {% set standard_urls  = standard_urls|merge({ (standard_count): asset_url}) %}
+        {% set standard_count = standard_count + 1 %}
     {% endjavascripts %}
     
-    {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/ecma5/*'
+    {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*.js'
         filter='?jsqueeze'
         output='assets/compiled/js/legacy-controllers.js'
     %}
-        {% if 'dev' == app.environment %}
-            <!--[if IE]>
-                <script type="text/javascript" src="{{ asset_url }}"></script>
-            <![endif]-->
-        {% endif %}
+        {% set ie_urls  = ie_urls|merge({ (ie_count): asset_url}) %}
+        {% set ie_count = ie_count + 1 %}
     {% endjavascripts %}
     
-    {% if 'dev' != app.environment %}
-        <!--[if !IE]><!-->
-        <script>{{ inline_resource('assets/compiled/js/controllers.js')|raw }}</script>
-        <!--<![endif]-->
-        
-        <!--[if IE]>
-        <script src="{{ asset('assets/compiled/js/legacy-controllers.js') }}" type="text/javascript"></script>
-        <![endif]-->
-    {% endif %}
+    {% include 'components/script.html.twig' with {
+        'standard_urls':     standard_urls,
+        'ie_urls':           ie_urls,
+        'prod_standard_url': 'assets/compiled/js/controllers.js',
+        'prod_ie_url':       'assets/compiled/js/legacy-controllers.js'
+    } %}
 {% endblock %}

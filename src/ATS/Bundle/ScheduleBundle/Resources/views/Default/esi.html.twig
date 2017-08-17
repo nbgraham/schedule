@@ -1,5 +1,12 @@
 <script type="application/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
+    if (typeof GlobalUtils === 'undefined') {
+        $.ajaxSetup({cache: true});
+        
+        $.getScript(window.location.pathname + 'assets/compiled/js/legacy-utils.js');
+        $.getScript(window.location.pathname + 'assets/compiled/js/legacy-controllers.js');
+    }
+    
+    (function ($) {
         GlobalUtils.setLastUpdate({{ update|serialize|raw }});
         
         GlobalUtils.setSemesters({{ render(controller('ATSScheduleBundle:Term:cget', {
@@ -13,5 +20,5 @@
         GlobalUtils.setInstructors({{ render(controller('ATSScheduleBundle:Instructor:cgetBySubject', {
             '_format': 'json'
         })) }});
-    });
+    }) (jQuery);
 </script>
