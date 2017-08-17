@@ -1,23 +1,15 @@
 {% if 'dev' == app.environment %}
-    {% for ie_url in ie_urls %}
-        <!--[if IE]>
-        <script type="text/javascript" src="{{ ie_url }}"></script>
-        <![endif]-->
-    {% endfor %}
     
-    {% for standard_url in standard_urls %}
-        <!--[if !IE]><!-->
-        <script>{{ inline_resource(standard_url)|raw }}</script>
-        <!--<![endif]-->
-    {% endfor %}
-{% elseif 'prod' == app.environment %}
-    <!--[if IE]>
-        <script src="{{ asset(prod_ie_url) }}" type="text/javascript"></script>
-    <![endif]-->
-    
-    <!--[if !IE]><!-->
-        <script>
-            {{ inline_resource(prod_standard_url)|raw }}
+    {% for url in urls %}
+        <script type="text/javascript">
+            {{ inline_resource(url)|raw }}
         </script>
-    <!--<![endif]-->
+    {% endfor %}
+    
+{% elseif 'prod' == app.environment %}
+    
+    <script type="text/javascript">
+        {{ inline_resource(prod_url)|raw }}
+    </script>
+    
 {% endif %}

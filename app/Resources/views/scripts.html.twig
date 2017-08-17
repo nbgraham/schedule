@@ -22,66 +22,44 @@
     <script>{{ inline_resource('assets/compiled/js/libraries.js')|raw }}</script>
 {% endif %}
 
-{% set standard_urls  = [] %}
-{% set standard_count = 0  %}
-{% set ie_urls        = [] %}
-{% set ie_count       = 0  %}
+
+{% set urls      = [] %}
+{% set url_count = 0  %}
 
 {##
  # App-wide utils.
  #}
-{% javascripts '@ATSScheduleBundle/Resources/public/js/util/*.es6'
+{% javascripts '@ATSScheduleBundle/Resources/public/js/util/*.js'
     filter='?jsqueeze'
     output='assets/compiled/js/utils.js'
 %}
-    {% set standard_urls  = standard_urls|merge({ (standard_count): asset_url}) %}
-    {% set standard_count = standard_count + 1 %}
-{% endjavascripts %}
-
-{% javascripts '@ATSScheduleBundle/Resources/public/js/util/*.js'
-    filter='?jsqueeze'
-    output='assets/compiled/js/legacy-utils.js'
-%}
-    {% set ie_urls  = ie_urls|merge({ (ie_count): asset_url}) %}
-    {% set ie_count = ie_count + 1 %}
+    {% set urls      = urls|merge({ (url_count): asset_url}) %}
+    {% set url_count = url_count + 1 %}
 {% endjavascripts %}
 
 {% include 'components/script.html.twig' with {
-    'standard_urls':     standard_urls,
-    'ie_urls':           ie_urls,
-    'prod_standard_url': 'assets/compiled/js/utils.js',
-    'prod_ie_url':       'assets/compiled/js/legacy-utils.js'
+    'urls':     urls,
+    'prod_url': 'assets/compiled/js/utils.js'
 } %}
 
-{% set standard_urls  = [] %}
-{% set standard_count = 0  %}
-{% set ie_urls        = [] %}
-{% set ie_count       = 0  %}
+
+{% set urls      = [] %}
+{% set url_count = 0  %}
 
 {##
  # Page resources.
  #}
 {% block javascripts %}
-    {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*.es6'
+    {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*.js'
         filter='?jsqueeze'
         output='assets/compiled/js/controllers.js'
     %}
-        {% set standard_urls  = standard_urls|merge({ (standard_count): asset_url}) %}
-        {% set standard_count = standard_count + 1 %}
-    {% endjavascripts %}
-    
-    {% javascripts '@ATSScheduleBundle/Resources/public/js/controller/Default/*.js'
-        filter='?jsqueeze'
-        output='assets/compiled/js/legacy-controllers.js'
-    %}
-        {% set ie_urls  = ie_urls|merge({ (ie_count): asset_url}) %}
-        {% set ie_count = ie_count + 1 %}
+        {% set urls      = urls|merge({ (url_count): asset_url}) %}
+        {% set url_count = url_count + 1 %}
     {% endjavascripts %}
     
     {% include 'components/script.html.twig' with {
-        'standard_urls':     standard_urls,
-        'ie_urls':           ie_urls,
-        'prod_standard_url': 'assets/compiled/js/controllers.js',
-        'prod_ie_url':       'assets/compiled/js/legacy-controllers.js'
+        'urls':     urls,
+        'prod_url': 'assets/compiled/js/controllers.js',
     } %}
 {% endblock %}
