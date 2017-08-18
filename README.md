@@ -48,6 +48,7 @@ as a [File Watcher][1] in PHPStorm to transcribe the ECMA6 standards to ECMA5 au
 ````
 cd /var/www/html/classplan
 git pull
+docker exec -it web /var/www/html/classplan/bin/console assets:install --symlink --relative
 docker exec -it web /var/www/html/classplan/bin/console assetic:dump --env=prod
 docker exec -it web /var/www/html/classplan/bin/console cache:clear --no-warmup --env=prod
 docker exec -it web /var/www/html/classplan/bin/console cache:warmup --env=prod
