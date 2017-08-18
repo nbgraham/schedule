@@ -1,11 +1,51 @@
+{% set urls      = [] %}
+{% set url_count = 0  %}
+
 {##
- # Libraries that can't be inlined.
+ # Libraries that can't be inlined, or are not immediately necessary for loading the page.
  #}
 {% stylesheets
     'assets/vendor/font-awesome/css/font-awesome.min.css'
     'assets/vendor/chosen/chosen.css'
+    '@ATSScheduleBundle/Resources/public/css/chosen-bootstrap-theme.css'
+    'assets/vendor/qtip2/jquery.qtip.min.css'
+    'assets/vendor/spectrum/spectrum.css'
     output='assets/compiled/css/libraries.css'
     filter='cssrewrite,lessphp'
 %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% set urls      = urls|merge({ (url_count): asset_url }) %}
+    {% set url_count = url_count + 1 %}
 {% endstylesheets %}
+
+{# @see https://developers.google.com/speed/docs/insights/OptimizeCSSDelivery #}
+<script type="text/javascript">
+    var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+        webkitRequestAnimationFrame || msRequestAnimationFrame
+    ;
+    
+    if (typeof raf === 'function') {
+        raf(function () {
+            window.setTimeout(loadDeferredStyles, 0);
+        });
+    } else {
+        window.onload = loadDeferredStyles;
+    }
+
+    function loadDeferredStyles ()
+    {
+        var deferred_urls, idx;
+        deferred_urls = {{ urls|json_encode|raw }};
+        
+        for (idx in deferred_urls) {
+            if (!deferred_urls.hasOwnProperty(idx)) {
+                continue;
+            }
+            
+            $('<link>').attr({
+                'rel':  'stylesheet',
+                'type': 'text/css',
+                'href': deferred_urls[idx]
+            }).appendTo('head');
+        }
+    }
+</script>

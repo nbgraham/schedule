@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html>{% spaceless %}
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        
-        <title>{% block title %}Class Plan - Scheduling Utility{% endblock %}</title>
-        
+        {% include 'components/meta.html.twig' %}
         {% include 'stylesheets.html.twig' %}
     </head>
     
@@ -18,5 +13,10 @@
         {{ render_esi(controller('ATSScheduleBundle:Default:esi')) }}
         
         {% include 'blocking-stylesheets.html.twig' %}
+        
+        {# Prefetch some content for a seemless experience. #}
+        <link rel="prefetch" href="{{ asset('assets/vendor/chosen/chosen-sprite.png') }}">
+        
+        {% include 'components/print-css.html.twig' %}
     </body>
 {% endspaceless %}</html>

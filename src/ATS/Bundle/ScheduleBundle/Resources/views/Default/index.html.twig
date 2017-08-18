@@ -24,8 +24,11 @@
             </div>
             
             <div class="text-right header-image col-xs-4 col-sm-4">
-                {% image '@ATSScheduleBundle/Resources/public/images/greyOULogo.png' %}
-                    <img src="{{ asset_url }}" alt="logo" />
+                {% image
+                    '@ATSScheduleBundle/Resources/public/images/optimized-logo.png'
+                    output='images/logo.png'
+                %}
+                    <img src="{{ asset_url }}" alt="Boomer Sooner!" />
                 {% endimage %}
             </div>
         </div>

@@ -11,22 +11,20 @@
 {% stylesheets
     'assets/vendor/bootstrap/dist/css/bootstrap.min.css'
     'assets/vendor/fullcalendar/dist/fullcalendar.min.css'
-    'assets/vendor/qtip2/jquery.qtip.min.css'
-    'assets/vendor/spectrum/spectrum.css'
     output='assets/compiled/css/inline-libraries.css'
-    filter='cssrewrite,lessphp'
+    filter='cssrewrite'
 %}
-    <style type="text/css">
-        {{ inline_resource('assets/compiled/css/inline-libraries.css')|raw }}
-    </style>
 {% endstylesheets %}
+
+<style type="text/css">
+    {{ inline_resource('assets/compiled/css/inline-libraries.css')|raw }}
+</style>
 
 
 {##
  # App.
  #}
 {% stylesheets
-    '@ATSScheduleBundle/Resources/public/css/chosen-bootstrap-theme.css'
     '@ATSScheduleBundle/Resources/public/less/controller/Default/index.less'
     output='assets/compiled/css/app.css'
     filter='cssrewrite,lessphp'
@@ -39,28 +37,10 @@
 {% endstylesheets %}
 
 {% if 'dev' != app.environment %}
-    <style type="text/css">{{ inline_resource('assets/compiled/css/app.css')|raw }}</style>
-{% endif %}
-
-
-{##
- # Printable.
- #}
-{% stylesheets
-    'assets/vendor/fullcalendar/dist/fullcalendar.print.min.css'
-    '@ATSScheduleBundle/Resources/public/less/controller/Default/index.print.less'
-    output='assets/compiled/css/app_print.css'
-    filter='cssrewrite,lessphp'
-%}
-    {% if 'dev' == app.environment %}
-        <style type="text/css" media="print">
-            {{ inline_resource(asset_url)|raw }}
-        </style>
-    {% endif %}
-{% endstylesheets %}
-
-{% if 'dev' != app.environment %}
-    <style type="text/css" media="print">
-        {{ inline_resource('assets/compiled/css/app_print.css')|raw }}
+    <style type="text/css">
+        {{ inline_resource('assets/compiled/css/app.css')|raw }}
     </style>
 {% endif %}
+
+
+

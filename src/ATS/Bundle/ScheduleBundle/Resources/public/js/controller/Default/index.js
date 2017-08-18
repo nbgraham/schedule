@@ -477,7 +477,7 @@
         });
 
         $(window).on('orientationchange', function () {
-            $('.qtip').qtip('reposition');
+            $('.qtip').qtip('destroy');
         });
     }
 
