@@ -54,6 +54,7 @@ docker exec -it web /var/www/html/classplan/bin/console cache:warmup --env=prod
 docker exec -it web mkdir /var/www/html/classplan/var/cache/prod/http_cache
 docker exec -it web chmod o=rwx /var/www/html/classplan/var/cache/prod/
 docker exec -it web chmod o=rwx /var/www/html/classplan/var/cache/prod/jms_serializer
+docker exec -it web /usr/local/bin/composer dump-autoload -a -d /var/www/html/classplan
 ````
 
 
