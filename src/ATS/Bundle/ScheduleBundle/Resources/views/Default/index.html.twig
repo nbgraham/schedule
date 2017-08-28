@@ -13,9 +13,9 @@
                         Search
                     </button>
                     
-                    <button title="Export" id="btn-export" type="button" class="btn btn-default btn-sm"{% if not app.session.get('last_results') %} disabled="disabled"{% endif %}>
+                    <a title="Export" id="btn-export" class="btn btn-default btn-sm" disabled="disabled" download>
                         <span class="fa fa-download"></span>
-                    </button>
+                    </a>
                 </div>
             </div>
             

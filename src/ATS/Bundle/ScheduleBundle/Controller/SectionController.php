@@ -81,16 +81,14 @@ class SectionController extends AbstractController implements ClassResourceInter
             ;
         }
         
-        $sections = $this->getRepo(Section::class)
+        return ['sections' => $this->getRepo(Section::class)
             ->findBy(array_filter([
                 'block'      => $block,
                 'subject'    => $subject,
                 'course'     => $course,
                 'instructor' => $instructor,
             ])
-        );
-        
-        return ['sections' => $this->storeResultIds($sections)];
+        )];
     }
     
     /**
@@ -114,26 +112,5 @@ class SectionController extends AbstractController implements ClassResourceInter
         $timestamp = strtotime($timestamp);
         
         return $update->getStart()->getTimestamp() === $timestamp;
-    }
-    
-    /**
-     * Store the fetched results so that they can be downloaded by the
-     * export feature.
-     * 
-     * @param Section[] $sections
-     *
-     * @return array
-     */
-    private function storeResultIds(array $sections)
-    {
-        $ids = [];
-        foreach ($sections as $section) {
-            /* @var Section $section */
-            $ids[] = $section->getId();
-        }
-        
-        $this->get('session')->set('last_results', $ids);
-        
-        return $sections;
     }
 }

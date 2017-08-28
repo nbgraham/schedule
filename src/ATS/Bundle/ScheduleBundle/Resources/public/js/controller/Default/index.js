@@ -475,6 +475,6 @@
      * Builds a URI to fetch a CSV based on the displayed events.
      */
     function fetchCsvExport() {
-        location.href = GlobalUtils.getAPIUrl('download/export.json');
+        location.href = GlobalUtils.getAPIUrl('download/export.json') + '?' + $.param(scheduler.getData());
     }
 })(jQuery);
