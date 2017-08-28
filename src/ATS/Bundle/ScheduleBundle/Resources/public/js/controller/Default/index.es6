@@ -72,7 +72,8 @@
      */
     function fillSelect(id, data, text)
     {
-        let select, idx;
+        let select, found, idx;
+        found  = false;
         select = $(id);
         
         for (idx in data) {
@@ -89,13 +90,20 @@
             ;
             
             if (text && text === label) {
-                option.prop('selected', 'selected')
+                found = true;
+                option.attr('selected', 'selected')
             }
             
             option.appendTo(select);
         }
         
-        _buildChosen(select);
+        if (text && !found) {
+            GlobalUtils.clearSelect(select);
+        } else if (!select.siblings('.chosen-container')[0]) {
+            GlobalUtils.buildChosen(select);
+        } else {
+            select.trigger('chosen:updated');
+        }
     }
 
     /**
@@ -119,29 +127,9 @@
             }
         }
         
-        _buildChosen(select)
+        GlobalUtils.buildChosen(select)
     }
-
-    /**
-     * Build the chosen dialogue boxes with the default app settings.
-     * 
-     * @param select
-     * @private
-     */
-    function _buildChosen(select)
-    {
-        // Chosen will initialize at 0px because it's in a modal.
-        select.chosen({ 
-            width: '100%',
-            allow_single_deselect:  1/*,
-            inherit_select_classes: true
-            ,
-            From a DevOps perspective, soft-limiting this just makes sense. From
-            someone who wants to graduate and impress - what are you gonna do?
-            max_selected_options:  3,*/
-        });
-    }
-
+    
     /**
      * Builds a optgroup subtree.
      * 

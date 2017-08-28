@@ -218,19 +218,21 @@ const Scheduler = (function ($) {
         clearFilters : function () {
             let selectors, options;
             selectors = $('.chosen-select');
-            options   = selectors.find('option[value]:selected');
+            options   = selectors.find('option:selected');
             
-            // $.removeAttr is broken for the selected property.
-            options.prop('selected', false);
+            options.removeAttr('selected');
             
             // Hide related fields (term-blocks, course numbers).
-            selectors.val('');
-            selectors.trigger('change');
-            selectors.trigger('chosen:updated');
+            selectors
+                .val('')
+                .trigger('chosen:updated')
+            ;
             
-            if (!this.calendar.fullCalendar('clientEvents').length) {
+            if (this.sections.length) {
                 updateHeader(false);
             }
+            
+            GlobalUtils.hideSecondaryFilters();
             
             return this;
         },
@@ -239,7 +241,10 @@ const Scheduler = (function ($) {
          * Clear all calendar data.
          */
         clear : function () {
-            this.wipe().clearFilters();
+            this
+                .clearFilters()
+                .wipe()
+            ;
             
             return this;
         },
@@ -248,7 +253,11 @@ const Scheduler = (function ($) {
          * Wipe the calendar data.
          */
         wipe : function () {
+            this.sections = [];
             this.calendar.fullCalendar('removeEventSources');
+            
+            // Remove any existing qTip items.
+            $('.qtip').remove();
             
             return this;
         },

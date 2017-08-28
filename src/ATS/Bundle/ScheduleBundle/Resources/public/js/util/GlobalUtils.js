@@ -73,6 +73,44 @@ var GlobalUtils = void 0;
     };
 
     /**
+     * Clear a chosen field.
+     * 
+     * @param select
+     */
+    GlobalUtils.clearSelect = function (select) {
+        select.find('option:selected').removeAttr('selected').end().chosen('destroy');
+
+        this.buildChosen(select);
+    };
+
+    /**
+     * Hide the secondary filters.
+     */
+    GlobalUtils.hideSecondaryFilters = function () {
+        $('#number, #term-block').chosen('destroy');
+
+        $('label[for="number"], label[for="term-block"]').addClass('hidden');
+    };
+
+    /**
+     * Build the chosen dialogue boxes with the default app settings.
+     * 
+     * @param select
+     */
+    GlobalUtils.buildChosen = function (select) {
+        // Chosen will initialize at 0px because it's in a modal.
+        select.chosen({
+            width: '100%',
+            allow_single_deselect: 1 /*,
+                                     inherit_select_classes: true
+                                     ,
+                                     From a DevOps perspective, soft-limiting this just makes sense. From
+                                     someone who wants to graduate and impress - what are you gonna do?
+                                     max_selected_options:  3,*/
+        });
+    };
+
+    /**
      * Set the last updated variable.
      * 
      * @param update
