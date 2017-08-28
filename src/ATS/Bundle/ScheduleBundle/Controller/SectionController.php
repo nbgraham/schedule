@@ -13,6 +13,7 @@ use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 /**
@@ -37,49 +38,56 @@ class SectionController extends AbstractController implements ClassResourceInter
      * )
      * 
      * @Route("")
-     * @QueryParam(name="block",       nullable=false, description="The block ID(s).")
-     * @QueryParam(name="subject",     nullable=true,  description="Optional. The subject ID(s).")
-     * @QueryParam(name="instructor",  nullable=true,  description="Optional. The instructor ID(s) to filter on.")
-     * @QueryParam(name="number",      nullable=true,  description="Optional. The course number ID(s) to filter on.")
-     * @QueryParam(name="last_update", nullable=false, description="The date that the other IDs were created on.")
+     * @QueryParam(name="b", nullable=false, description="The block ID(s).")
+     * @QueryParam(name="s", nullable=true,  description="Optional. The subject ID(s).")
+     * @QueryParam(name="i", nullable=true,  description="Optional. The instructor ID(s) to filter on.")
+     * @QueryParam(name="n", nullable=true,  description="Optional. The course number ID(s) to filter on.")
+     * @QueryParam(name="u", nullable=false, description="The date that the other IDs were created on.")
      * 
      * @View(serializerEnableMaxDepthChecks=true)
      * @Cache(public=true, expires="+10 minutes", maxage=600, smaxage=600)
+     * 
+     * @param Request      $request
+     * @param ParamFetcher $fetcher
+     * 
+     * @return array
      */
-    public function getAction(ParamFetcher $fetcher)
+    public function getAction(Request $request, ParamFetcher $fetcher)
     {
         $block       = null;
         $subject     = null;
         $course      = null;
         $instructor  = null;
         
-        if (!$this->checkTimestamp($fetcher->get('last_update'))) {
+        if (!$this->checkTimestamp($fetcher->get('u'))) {
             throw new ConflictHttpException();
         }
         
-        if ($block_id = $fetcher->get('block')) {
+        if ($block_id = $fetcher->get('b')) {
             $block = $this->getRepo('ATSScheduleBundle:TermBlock')
                 ->findById($block_id)
             ;
         }
         
-        if ($instructor_id = $fetcher->get('instructor')) {
+        if ($instructor_id = $fetcher->get('i')) {
             $instructor = $this->getRepo('ATSScheduleBundle:Instructor')
                 ->findById($instructor_id)
             ;
         }
         
-        if ($subject_id = $fetcher->get('subject')) {
+        if ($subject_id = $fetcher->get('s')) {
             $subject = $this->getRepo('ATSScheduleBundle:Subject')
                 ->findById($subject_id)
             ;
         }
         
-        if ($course_id = $fetcher->get('number')) {
+        if ($course_id = $fetcher->get('n')) {
             $course = $this->getRepo('ATSScheduleBundle:Course')
                 ->findById($course_id)
             ;
         }
+        
+        $this->get('session')->set('last_query', $request->getQueryString());
         
         return ['sections' => $this->getRepo(Section::class)
             ->findBy(array_filter([

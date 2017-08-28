@@ -739,12 +739,12 @@ const Scheduler = (function ($) {
     function getData()
     {
         return {
-            'term'        : $('#term').val(),
-            'block'       : filterMultiSelects($('#term-block')),
-            'subject'     : filterMultiSelects($('#subject')),
-            'number'      : filterMultiSelects($('#number')),
-            'instructor'  : filterMultiSelects($('#instructor')),
-            'last_update' : GlobalUtils.getLastUpdate().start
+            't' : $('#term').val(),
+            'b' : filterMultiSelects($('#term-block')),
+            's' : filterMultiSelects($('#subject')),
+            'n' : filterMultiSelects($('#number')),
+            'i' : filterMultiSelects($('#instructor')),
+            'u' : GlobalUtils.getLastUpdate().start
         };
     }
 

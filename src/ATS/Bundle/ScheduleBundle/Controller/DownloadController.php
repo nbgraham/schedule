@@ -20,8 +20,10 @@ class DownloadController extends AbstractController
      * Exports the section information.
      * 
      * @see https://vauly.com/symfony2-export-csv
+     * 
+     * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return StreamedResponse
      */
     public function getExportAction(Request $request)
     {
