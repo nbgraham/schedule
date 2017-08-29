@@ -225,6 +225,7 @@ var Scheduler = function ($) {
             }
 
             GlobalUtils.hideSecondaryFilters();
+            GlobalUtils.toggleExportBtn();
 
             return this;
         },
