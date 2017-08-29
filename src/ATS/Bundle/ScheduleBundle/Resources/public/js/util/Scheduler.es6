@@ -294,19 +294,26 @@ const Scheduler = (function ($) {
      * Determine if there is space available to render the the Qtip without
      * having to squish text.
      * 
+     * @param event
      * @param element
+     * 
+     * @private
      * @return {int}
      */
-    function ttSpaceIndex(element)
+    function _ttSpaceIndex(event, element)
     {
-        let left, width, body_width;
+        let left, width, body_width, room_right, is_early;
         left       = $(element).offset().left;
         width      = 280; // QTip CSS library sets a tooltip max-width to 280px.
         body_width = parseInt($('body').css('width'));
+        room_right = 1 > ((left + width) / body_width);
+        is_early   = event.start.hour() < 12;
         
-        if (1 > ((left + width) / body_width)) {
+        if (room_right && !is_early) {
             // Tooltip has room in the default position.
             return 0;
+        } else if (!room_right) {
+            return 2;
         }
         
         return 1;
@@ -322,17 +329,25 @@ const Scheduler = (function ($) {
      */
     function getTooltipPosition(event, element)
     {
-        let position = {
+        let index, position;
+        
+        index    = _ttSpaceIndex(event, element);
+        position = {
             my:     'bottom left',
             at:     'top left',
             target: element,
             adjust: {resize: false}
         };
         
-        if (1 === ttSpaceIndex(element) || event.start.hour() < 12) {
+        if (2 === index) {
             position = {
                 my: 'right center',
                 at: 'left center'
+            };
+        } else if (1 === index) {
+            position = {
+                my: 'top left',
+                at: 'left bottom'
             };
         }
         
