@@ -42,12 +42,12 @@ const Scheduler = (function ($) {
                 startParam:   null,
                 endParam:     null,
                 lazyFetching: true,
-                allDaySlot:  false,
-                defaultView: 'agendaWeek',
-                weekends:    false,
-                defaultDate: moment(),
-                minTime:     '08:00:00',
-                maxTime:     '22:00:00',
+                allDaySlot:   false,
+                defaultView:  'agendaWeek',
+                weekends:     false,
+                defaultDate:  moment(),
+                minTime:      '08:00:00',
+                maxTime:      '22:00:00',
                 header: {
                     left: 'prev,next',
                     center: 'title',
@@ -152,7 +152,7 @@ const Scheduler = (function ($) {
                     }
                     
                     // An update has occurred and the page data needs to be refreshed.
-                    GlobalUtils.showMessage('The system recently updated, and you must reload the page in order to receive accurate results.<br /><p>Automatically reloading the page in 10 seconds..</p>');
+                    GlobalUtils.showMessage('The system recently updated, and you must reload the page in order to receive accurate results.<br /><br /><p>Automatically reloading the page in 10 seconds...</p>');
                     
                     setTimeout(function () {
                         window.location.reload();
@@ -229,6 +229,8 @@ const Scheduler = (function ($) {
                 .trigger('chosen:updated')
             ;
             
+            toggleOrangeBorder(false);
+            
             if (this.sections.length) {
                 updateHeader(false);
             }
@@ -262,32 +264,6 @@ const Scheduler = (function ($) {
             $('.qtip').remove();
             
             return this;
-        },
-
-        /**
-         * Get the section IDs from all of the displayed events.
-         * 
-         * @returns {Array}
-         */
-        getSectionIds : function () {
-            let context, ids, idx, events, event;
-            
-            context = this;
-            events  = context.calendar.fullCalendar('clientEvents');
-            ids     = [];
-            
-            for (idx in events) {
-                if (!events.hasOwnProperty(idx)) {
-                    continue;
-                }
-                
-                event = events[idx];
-                if (!$.inArray(event.id, ids)) {
-                    ids.push(event.id);
-                }
-            }
-            
-            return ids;
         }
     };
 

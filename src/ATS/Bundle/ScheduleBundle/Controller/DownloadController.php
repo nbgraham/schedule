@@ -29,11 +29,9 @@ class DownloadController extends AbstractController
     {
         $response = $this->forward('ATSScheduleBundle:Section:get', [], $request->query->all());
         $sections = json_decode($response->getContent(), true);
-        
-        $doctrine = $this->getDoctrine();
         $response = new StreamedResponse();
         
-        $response->setCallback(function () use ($doctrine, $sections) {
+        $response->setCallback(function () use ($sections) {
             $handle = fopen('php://output', 'w+');
             
             fputcsv($handle, ['Subject', 'Course', 'Section', 'CRN', 'Title', 'Instructor', 'Instructor ID', 'Max', 'Start Date', 'End Date', 'Bldg', 'Rm', 'Days', 'Start', 'End'], ',');

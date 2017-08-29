@@ -39,6 +39,7 @@
             );
         }
         
+        // Remove the loading spinner.
         $('#calendar').find('.row').remove();
         
         scheduler = new Scheduler('#calendar');
@@ -47,6 +48,9 @@
         bindDelegated();
         populateFilters();
         buttonActions();
+        
+        // Setup the hovertext in the filter modal.
+        $('[data-toggle="tooltip"]').tooltip();
     });
 
     /**

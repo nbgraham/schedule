@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Homepage.
  * 
- * Actions here are not handled by FOSRest.
+ * Actions/routing here are not handled by FOSRest.
  * 
  * @Route("/")
  * @author Austin Shinpaugh <ashinpuagh@ou.edu>
@@ -56,19 +56,6 @@ class DefaultController extends AbstractController
             's_maxage'      => $ttl,
             'last_modified' => $update->getStart(),
         ]);
-    }
-    
-    /**
-     * Fetch the most recent update log.
-     * 
-     * @return UpdateLog
-     */
-    private function getLastUpdateLog()
-    {
-        $repo   = $this->getDoctrine()->getRepository(UpdateLog::class);
-        $update = $repo->findBy([], ['start' => 'DESC'], 1);
-        
-        return current($update);
     }
     
     /**

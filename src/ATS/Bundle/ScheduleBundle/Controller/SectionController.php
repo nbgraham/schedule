@@ -3,7 +3,6 @@
 namespace ATS\Bundle\ScheduleBundle\Controller;
 
 use ATS\Bundle\ScheduleBundle\Entity\Section;
-use ATS\Bundle\ScheduleBundle\Entity\UpdateLog;
 use FOS\RestBundle\Controller\Annotations\Prefix;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -113,10 +112,7 @@ class SectionController extends AbstractController implements ClassResourceInter
      */
     private function checkTimestamp($timestamp)
     {
-        $repo   = $this->getRepo(UpdateLog::class);
-        $update = $repo->findBy([], ['start' => 'DESC'], 1);
-        
-        $update    = current($update);
+        $update    = $this->getLastUpdateLog();
         $timestamp = strtotime($timestamp);
         
         return $update->getStart()->getTimestamp() === $timestamp;

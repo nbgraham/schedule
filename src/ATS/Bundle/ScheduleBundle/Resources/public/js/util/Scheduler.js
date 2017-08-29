@@ -144,7 +144,7 @@ var Scheduler = function ($) {
                     }
 
                     // An update has occurred and the page data needs to be refreshed.
-                    GlobalUtils.showMessage('The system recently updated, and you must reload the page in order to receive accurate results.<br /><p>Automatically reloading the page in 10 seconds..</p>');
+                    GlobalUtils.showMessage('The system recently updated, and you must reload the page in order to receive accurate results.<br /><br /><p>Automatically reloading the page in 10 seconds...</p>');
 
                     setTimeout(function () {
                         window.location.reload();
@@ -220,6 +220,8 @@ var Scheduler = function ($) {
             // Hide related fields (term-blocks, course numbers).
             selectors.val('').trigger('chosen:updated');
 
+            toggleOrangeBorder(false);
+
             if (this.sections.length) {
                 updateHeader(false);
             }
@@ -250,36 +252,6 @@ var Scheduler = function ($) {
             $('.qtip').remove();
 
             return this;
-        },
-
-        /**
-         * Get the section IDs from all of the displayed events.
-         * 
-         * @returns {Array}
-         */
-        getSectionIds: function getSectionIds() {
-            var context = void 0,
-                ids = void 0,
-                idx = void 0,
-                events = void 0,
-                event = void 0;
-
-            context = this;
-            events = context.calendar.fullCalendar('clientEvents');
-            ids = [];
-
-            for (idx in events) {
-                if (!events.hasOwnProperty(idx)) {
-                    continue;
-                }
-
-                event = events[idx];
-                if (!$.inArray(event.id, ids)) {
-                    ids.push(event.id);
-                }
-            }
-
-            return ids;
         }
     };
 
