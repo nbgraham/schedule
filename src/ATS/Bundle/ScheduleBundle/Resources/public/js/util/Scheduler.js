@@ -73,10 +73,11 @@ var Scheduler = function ($) {
                 },
                 eventAfterRender: function eventAfterRender(event, element) {
                     $(element).qtip({
+                        overwrite: true,
                         style: {
                             classes: 'qtip-rounded qtip-shadow qtip-bootstrap'
                         },
-                        position: getTooltipPosition(element),
+                        position: getTooltipPosition(event, element),
                         content: {
                             text: getToolTipText(event)
                         },
@@ -307,10 +308,12 @@ var Scheduler = function ($) {
     /**
      * Get the tooltip position.
      * 
+     * @param event
      * @param element
+     * 
      * @return {{my: string, at: string, target: *}}
      */
-    function getTooltipPosition(element) {
+    function getTooltipPosition(event, element) {
         var position = {
             my: 'bottom left',
             at: 'top left',
@@ -318,7 +321,7 @@ var Scheduler = function ($) {
             adjust: { resize: false }
         };
 
-        if (1 === ttSpaceIndex(element)) {
+        if (1 === ttSpaceIndex(element) || event.start.hour() < 12) {
             position = {
                 my: 'right center',
                 at: 'left center'
