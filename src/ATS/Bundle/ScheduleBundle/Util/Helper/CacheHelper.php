@@ -92,6 +92,10 @@ class CacheHelper
         $browser->getClient()->setTimeout(30);
         
         foreach ($urls as $url) {
+            if (!$url) {
+                continue;
+            }
+            
             $browser->get($url);
         }
         
