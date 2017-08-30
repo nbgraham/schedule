@@ -2,10 +2,6 @@
 
 namespace ATS\Bundle\ScheduleBundle\Util\Helper;
 
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
-
 /**
  * Helper class for commands.
  * 
@@ -43,35 +39,5 @@ class CommandHelper
     public function getAppRoot()
     {
         return $this->root_dir . '/../';
-    }
-    
-    public function prepareAssets($env = null)
-    {
-        if (null === $env) {
-            $env = $this->env;
-        }
-        
-        $process = new Process($this->getConsolePath() . " assetic:dump --env={$env} --no-debug --force");
-        $process->run();
-        
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-        
-        $finder = Finder::create()
-            ->files()
-            ->in($this->root_dir . '/../web/assets/compiled')
-            ->name('controllers.js')
-            ->name('libraries.js')
-            ->name('utils.js')
-            
-            
-            ->name('app.css')
-            ->name('app_print.css')
-            ->name('inline-libraries.css')
-            ->name('libraries.css')
-        ;
-        
-        return 7 === $finder->count();
     }
 }

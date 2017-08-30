@@ -75,8 +75,8 @@ class SetupCommand extends AbstractCommand
         $output->writeln('Preparing assets...');
         
         try {
-            $success = $this->getContainer()->get('schedule.command_helper')
-                ->prepareAssets('prod')
+            $success = $this->getContainer()->get('schedule.cache_helper')
+                ->dumpAssets('prod')
             ;
         } catch (ProcessFailedException $e) {
             $output->writeln('Failed!');
@@ -231,7 +231,7 @@ class SetupCommand extends AbstractCommand
      */
     private function warmCache()
     {
-        $process = new Process($this->getConsolePath() . ' cache:warmup --env=prod');
+        $process = new Process($this->getConsolePath() . ' cache:warmup --env=prod --no-optional-warmers');
         
         $process->run();
         

@@ -33,6 +33,11 @@ class OnCompleteFixture extends AbstractDataFixture
         
         // Clear the cache again.
         $this->clearEdgeSideInclude();
+        
+        // Make a Http request and rebuild the Http cache.
+        $this->container->get('schedule.cache_helper')
+            ->warmHttpCache(false)
+        ;
     }
     
     /**
