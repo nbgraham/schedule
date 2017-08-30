@@ -74,26 +74,16 @@ class SetupCommand extends AbstractCommand
     {
         $output->writeln('Preparing assets...');
         
-        $process = new Process($this->getConsolePath() . ' assetic:dump --env=prod --no-debug --force');
-        $process->run();
-        
-        if (!$process->isSuccessful()) {
+        try {
+            $success = $this->getContainer()->get('schedule.command_helper')
+                ->prepareAssets('prod')
+            ;
+        } catch (ProcessFailedException $e) {
             $output->writeln('Failed!');
-            throw new ProcessFailedException($process);
+            throw $e;
         }
         
-        $root   = $this->getContainer()->getParameter('kernel.root_dir');
-        $finder = Finder::create()
-            ->files()
-            ->in($root . '/../web/assets/compiled')
-            ->name('controllers.js')
-            ->name('utils.js')
-            ->name('libraries.js')
-            ->name('libraries.css')
-            ->name('app.css')
-        ;
-        
-        if (5 === $finder->count()) {
+        if ($success) {
             $output->writeln("Assets created successfully.\n");
             return $this;
         }
@@ -331,9 +321,8 @@ class SetupCommand extends AbstractCommand
      */
     private function getConsolePath()
     {
-        return '/usr/local/bin/php '
-            . $this->getAppRoot()
-            . 'bin/console'
+        return $this->getContainer()->get('schedule.command_helper')
+            ->getConsolePath()
         ;
     }
     
@@ -344,6 +333,8 @@ class SetupCommand extends AbstractCommand
      */
     private function getAppRoot()
     {
-        return $this->getContainer()->getParameter('kernel.root_dir') . '/../';
+        return $this->getContainer()->get('schedule.command_helper')
+            ->getAppRoot()
+        ;
     }
 }

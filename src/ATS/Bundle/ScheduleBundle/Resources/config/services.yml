@@ -52,3 +52,19 @@ services:
             - "%kernel.root_dir%"
         tags:
             - { name: twig.extension }
+    
+    schedule.http_cache_warmer:
+        class: ATS\Bundle\ScheduleBundle\Cache\HttpCacheWarmer
+        tags:
+            - { name: kernel.cache_warmer, priority: -15 }
+        arguments:
+            - "@schedule.command_helper"
+            - "%dev_domain%"
+            - "%prod_domain%"
+            - "%kernel.environment%"
+    
+    schedule.command_helper:
+        class: ATS\Bundle\ScheduleBundle\Util\Helper\CommandHelper
+        arguments:
+            - "%kernel.root_dir%"
+            - "%kernel.environment%"

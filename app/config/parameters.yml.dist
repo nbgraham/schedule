@@ -27,3 +27,7 @@ parameters:
     # The time the import starts - used to invalidate the HttpCache.
     import_hour:   8
     import_minute: 00
+    
+    # The URLs to hit so that the HttpCacheWarmer will build the cache.
+    dev_domain:  RememberToIncludeApp_Dev.php
+    prod_domain: ~
