@@ -60,9 +60,21 @@ docker exec -it web /usr/local/bin/composer dump-autoload -a -d /var/www/html/cl
 
 
 ### cache
-The application leverages Symfony's reverse proxy in dev and prod.
+The application leverages Symfony's reverse proxy to reduce page load times.
 
-In dev if the GET param ?no_cache=1 is passed in the URL the reverse proxy isn’t used.  
+In dev if the GET param ?no_cache=1 is passed in the URL the reverse proxy
+is skipped and AJAX calls aren't cached.
+
+The Http cache is built during cache:warmup, and again after each import.
+This pre-builds the edge side includes (@see `DefaultController:esi`).
+
+These urls are used to build the cache: 
+
+    dev_domain:  ~
+    prod_domain: ~
+
+If you're developing locally, remember to include the `/app_dev.php` for `dev_domain`.
+If you have no use for one of these domains set it to `~`.
 
 Section API calls are cached for ten minutes, and can be tweaked using the @Cache annotation.
 
@@ -73,6 +85,8 @@ Section API calls are cached for ten minutes, and can be tweaked using the @Cach
      *
      * @Cache(public=true, expires="+10 minutes", maxage=600, smaxage=600)
      */
+
+### assets
 
 Assets are handled by Assetic. They are first dumped to their output file location (ie: web/assets/compiled/(css|js)).
 Most are then inlined and cached along with the rest of the page in http_cache.
