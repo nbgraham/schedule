@@ -7,15 +7,5 @@
     output='assets/compiled/css/app_print.css'
     filter='cssrewrite,lessphp'
 %}
-    {% if 'dev' == app.environment %}
-        <style type="text/css" media="print">
-            {{ inline_resource(asset_url)|raw }}
-        </style>
-    {% endif %}
+    <link rel="stylesheet" type="text/css" media="print" href="{{ asset_url }}" />
 {% endstylesheets %}
-
-{% if 'dev' != app.environment %}
-    <style type="text/css" media="print">
-        {{ inline_resource('assets/compiled/css/app_print.css')|raw }}
-    </style>
-{% endif %}

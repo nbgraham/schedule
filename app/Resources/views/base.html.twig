@@ -3,6 +3,9 @@
     <head>
         {% include 'components/meta.html.twig' %}
         {% include 'stylesheets.html.twig' %}
+        
+        {% include 'blocking-stylesheets.html.twig' %}
+        {% include 'components/print-css.html.twig' %}
     </head>
     
     <body>
@@ -12,11 +15,7 @@
         
         {{ render_esi(controller('ATSScheduleBundle:Default:esi')) }}
         
-        {% include 'blocking-stylesheets.html.twig' %}
-        
         {# Prefetch some content for a seemless experience. #}
         <link rel="prefetch" href="{{ asset('assets/vendor/chosen/chosen-sprite.png') }}">
-        
-        {% include 'components/print-css.html.twig' %}
     </body>
 {% endspaceless %}</html>
