@@ -33,7 +33,8 @@
 
     function loadDeferredStyles ()
     {
-        var deferred_urls, idx;
+        var deferred_urls, head, idx, link;
+        head          = document.getElementsByTagName('head')[0];
         deferred_urls = {{ urls|json_encode|raw }};
         
         for (idx in deferred_urls) {
@@ -41,11 +42,12 @@
                 continue;
             }
             
-            $('<link>').attr({
-                'rel':  'stylesheet',
-                'type': 'text/css',
-                'href': deferred_urls[idx]
-            }).appendTo('head');
+            link = document.createElement('link');
+            link.rel  = 'stylesheet';
+            link.type = 'text/css';
+            link.href = deferred_urls[idx];
+            
+            head.appendChild(link);
         }
     }
 </script>
