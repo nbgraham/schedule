@@ -49,12 +49,20 @@ class DefaultController extends AbstractController
         $response = $this->render('@ATSSchedule/Default/esi.html.twig', [
             'update' => $update,
         ]);
+
+        $now = new \DateTime();
+
+        if ($update) {
+            $now = $update->getStart();
+        } else {
+            $now->setTimestamp(strtotime('yesterday'));            
+        }
         
         return $response->setCache([
             'public'        => true,
             'max_age'       => $ttl,
             's_maxage'      => $ttl,
-            'last_modified' => $update->getStart(),
+            'last_modified' => $now,
         ]);
     }
     
@@ -65,7 +73,7 @@ class DefaultController extends AbstractController
      * 
      * @return int
      */
-    private function getMaxAge(UpdateLog $update)
+    private function getMaxAge($update)
     {
         $import_hour = $this->getParameter('import_hour');
         $import_min  = $this->getParameter('import_minute');
@@ -79,7 +87,7 @@ class DefaultController extends AbstractController
             return $today->format('U');
         }
         
-        if (UpdateLog::STARTED === $update->getStatus()) {
+        if ($update !== false && UpdateLog::STARTED === $update->getStatus()) {
             // The update is currently in progress. Only save this response for 2.5 seconds.
             return (int) $now->format('U') + 2500;
         }
