@@ -58,9 +58,9 @@ class SectionController extends AbstractController implements ClassResourceInter
         $course      = null;
         $instructor  = null;
         
-        if (!$this->checkTimestamp($fetcher->get('u'))) {
-            throw new ConflictHttpException();
-        }
+        // if (!$this->checkTimestamp($fetcher->get('u'))) {
+        //     throw new ConflictHttpException();
+        // }
         
         if ($block_id = $fetcher->get('b')) {
             $block = $this->getRepo('ATSScheduleBundle:TermBlock')
