@@ -30,6 +30,8 @@ class Instructor extends AbstractEntity
     protected $id;
     
     /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(name="name", type="string")
      * @var String
      */
