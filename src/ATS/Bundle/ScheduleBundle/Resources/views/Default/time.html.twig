@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {# {% embed '@ATSSchedule/Default/components/filter-modal-wrapper.html.twig' %}
+    {% endembed %} #}
+    
+    <div class="container-fluid scheduler-header-wrapper">
+        <div class="row scheduler-header">
+            <div class="col-xs-8 col-sm-4">
+                <div class="tool-bar">
+                    <button id="clear-calendar" type="button" class="btn btn-default btn-sm">Clear</button>
+                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#filtersModal">
+                        Search
+                    </button>
+                    
+                    <a title="Export" id="btn-export" class="btn btn-default btn-sm" disabled="disabled" download>
+                        <span class="fa fa-download"></span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center hidden-xs col-sm-4">
+                <h4>Class Plan</h4>
+            </div>
+            
+            <div class="text-right header-image col-xs-4 col-sm-4">
+                {% image
+                    '@ATSScheduleBundle/Resources/public/images/optimized-logo.png'
+                    output='images/logo.png'
+                %}
+                    <img src="{{ asset_url }}" alt="Boomer Sooner!" />
+                {% endimage %}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid calendar-container">
+        <form action="" method="GET">
+            Building Codes:<br>
+                <select id="building_codes_select" name="building_codes" size="10" multiple>
+                </select><br>
+            Min room size:<br>
+            <input type="number" name="min_room_size" value="50" min="0" max="1000"><br>
+            Max room size:<br>
+            <input type="number" name="max_room_size" value="200" min="0" max="1000"><br>
+                Show seat utilization: <input type="checkbox" name="seat_utilization" checked=true><br><br>
+            <input type="button" value="Submit" onClick="submitForm(this.form)">
+        </form>
+
+    <div id="heatmap"></div>
+        
+        <div class="mobile-tooltip hidden-md hidden-lg"></div>
+    </div>
+{% endblock %}
