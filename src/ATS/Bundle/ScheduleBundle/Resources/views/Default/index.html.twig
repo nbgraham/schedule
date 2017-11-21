@@ -8,6 +8,7 @@
         <div class="row scheduler-header">
             <div class="col-xs-8 col-sm-4">
                 <div class="tool-bar">
+                {% if page == 'coreq' %}
                     <button id="clear-calendar" type="button" class="btn btn-default btn-sm">Clear</button>
                     <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#filtersModal">
                         Search
@@ -16,6 +17,7 @@
                     <a title="Export" id="btn-export" class="btn btn-default btn-sm" disabled="disabled" download>
                         <span class="fa fa-download"></span>
                     </a>
+                {% endif %}
                 </div>
             </div>
             
@@ -33,16 +35,20 @@
             </div>
         </div>
     </div>
-    
-    <div class="container-fluid calendar-container">
-        <div id="calendar">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="loader"></div>
+
+    {% if page == 'coreq' %}
+        <div class="container-fluid calendar-container">
+            <div id="calendar">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="loader"></div>
+                    </div>
                 </div>
             </div>
+            
+            <div class="mobile-tooltip hidden-md hidden-lg"></div>
         </div>
-        
-        <div class="mobile-tooltip hidden-md hidden-lg"></div>
-    </div>
+    {% else %}
+        <a href="/app_dev.php/coreq">Coreq</a>
+    {% endif %}
 {% endblock %}

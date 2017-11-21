@@ -20,18 +20,32 @@ class DefaultController extends AbstractController
     /**
      * Page index.
      * 
-     * @Route(name="ats_home")
+     * @Route(name="home")
      * @return Response
      */
     public function indexAction()
+    {        
+        return $this->render('ATSScheduleBundle:Default:index.html.twig', [
+            'page' => 'index',
+        ]);
+    }
+
+    /**
+     * Page index.
+     * 
+     * @Route("/coreq", name="ats_home")
+     * @return Response
+     */
+    public function coreqAction()
     {
-        $response = $this->render('ATSScheduleBundle:Default:index.html.twig');
+        $response = $this->render('ATSScheduleBundle:Default:index.html.twig', [
+            'page' => 'coreq',
+        ]);
         
         return $response
             ->setPublic()
             ->setSharedMaxAge(0)
-            ->setMaxAge(0)
-        ;
+            ->setMaxAge(0);
     }
     
     /**
