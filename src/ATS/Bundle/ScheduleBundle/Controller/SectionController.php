@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
  * )
  * 
  * @RouteResource("section", pluralize=false)
- * @Prefix("/section")
+ * @Prefix("/coreq/section")
  * 
  * @author Austin Shinpaugh <ashinpaugh@ou.edu>
  */
