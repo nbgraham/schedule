@@ -92,7 +92,7 @@ function showHeatMap(data, ylabels, xlabels) {
         .data(xlabels)
         .enter().append("text")
         .text(function(d) { return d; })
-        .attr("transform", function(d,i) {return ["rotate(-90) translate(", gridSize * 3, ", ", ((i+1)*gridSize), ")"].join("") })
+        .attr("transform", function(d,i) {return ["rotate(-90) translate(", 50, ", ", ((i+.5)*gridSize), ")"].join("") })
         .attr("x", 0)
         .attr("y", 0)
         .style("text-anchor", "middle")
