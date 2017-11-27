@@ -103,22 +103,22 @@ var Scheduler = function ($) {
                 },
                 selectable: true,
                 selectHelper: true,
-                select: function(start, end) {
+                select: function select(start, end) {
                     var title = 'Potential Time Slot';
                     var eventData = {
                         title: title,
                         start: start,
                         end: end
-                    };        
+                    };
 
                     console.log(outer);
                     console.log(outer.selected);
                     outer.selected.push(eventData);
 
                     $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-                    
+
                     $('#calendar').fullCalendar('unselect');
-                },
+                }
             };
 
             this.calendar.fullCalendar($.extend(defaults, options));
@@ -459,13 +459,13 @@ var Scheduler = function ($) {
      * @returns {string|*}
      */
     function getToolTipText(event) {
-        var section = void 0,
-            course = void 0,
-            output = void 0;
-        
         if (event.title.includes("Potential")) {
             return "Potential";
         }
+
+        var section = void 0,
+            course = void 0,
+            output = void 0;
 
         section = event.section;
         course = event.course;
