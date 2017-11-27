@@ -25,7 +25,7 @@ function filter(buildings, building_codes, max_seat, min_seat) {
     return result;
 }
 
-function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat) {
+function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat, selected_intervals) {
     var filtered_buildings = filter(buildings, building_codes, max_seat, min_seat);
 
     data = [];
@@ -47,6 +47,10 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat)
         }
     }
 
+    if (selected_intervals === undefined) {
+        selected_intervals = ["M 8:00","M 8:30", "T 9:00","F 3:00"];
+    }
+
     room_i = -1;
     for (building_code in filtered_buildings) {
         building = filtered_buildings[building_code];
@@ -62,10 +66,14 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat)
             for (i_day in matrix) {
                 day_matrix = matrix[i_day];
                 for (i_interval in day_matrix) {
+                    if (selected_intervals.indexOf(intervals[i_interval]) === -1) {
+                        continue;
+                    }
+
                     var hour = hours24[Math.trunc(i_interval/2)];
                     var rem = i_interval/2.0 - Math.trunc(i_interval/2);
                     var minutes = rem > 0 ? "30" : "00";
-                    var interval_name = days[i_day] + " " + hour + minutes;
+                    var interval_name = days[i_day] + " " + hour + minutes;                    
 
                     var sections = room.interval_names_to_sections_dict[interval_name];
 
@@ -86,6 +94,6 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat)
     return {
         data,
         ylabels: rooms,
-        xlabels: intervals
+        xlabels: selected_intervals
     };
 }
