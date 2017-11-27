@@ -16,6 +16,7 @@ var Scheduler = function ($) {
         this.calendar = $(calendar);
         this.shades = { 'subject': {}, 'instructor': {}, 'term-block': {} };
         this.sections = [];
+        this.selected = [];
     };
 
     Scheduler.prototype = {
@@ -38,6 +39,8 @@ var Scheduler = function ($) {
          * @var object options The options to override the default settings.
          */
         init: function init(options) {
+            var outer = this;
+
             var defaults = {
                 startParam: null,
                 endParam: null,
@@ -97,7 +100,25 @@ var Scheduler = function ($) {
                 windowResize: function windowResize() {
                     // Update the tooltips position.
                     $('.qtip').qtip('reposition');
-                }
+                },
+                selectable: true,
+                selectHelper: true,
+                select: function(start, end) {
+                    var title = 'Potential Time Slot';
+                    var eventData = {
+                        title: title,
+                        start: start,
+                        end: end
+                    };        
+
+                    console.log(outer);
+                    console.log(outer.selected);
+                    outer.selected.push(eventData);
+
+                    $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                    
+                    $('#calendar').fullCalendar('unselect');
+                },
             };
 
             this.calendar.fullCalendar($.extend(defaults, options));
@@ -441,6 +462,10 @@ var Scheduler = function ($) {
         var section = void 0,
             course = void 0,
             output = void 0;
+        
+        if (event.title.includes("Potential")) {
+            return "Potential";
+        }
 
         section = event.section;
         course = event.course;
