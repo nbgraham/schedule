@@ -15,6 +15,7 @@ const Scheduler = (function ($) {
         this.calendar = $(calendar);
         this.shades   = {'subject': {}, 'instructor': {}, 'term-block': {}};
         this.sections = [];
+        this.selected = [];
     };
     
     Scheduler.prototype = {
@@ -38,6 +39,8 @@ const Scheduler = (function ($) {
          */
         init : function (options)
         {
+            let outer = this;
+
             let defaults = {
                 startParam:   null,
                 endParam:     null,
@@ -105,7 +108,25 @@ const Scheduler = (function ($) {
                 windowResize: function () {
                     // Update the tooltips position.
                     $('.qtip').qtip('reposition');
-                }
+                },
+                selectable: true,
+                selectHelper: true,
+                select: function(start, end) {
+                    var title = 'Potential Time Slot';
+                    var eventData = {
+                        title: title,
+                        start: start,
+                        end: end
+                    };        
+
+                    console.log(outer);
+                    console.log(outer.selected);
+                    outer.selected.push(eventData);
+
+                    $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                    
+                    $('#calendar').fullCalendar('unselect');
+                },
             };
             
             this.calendar.fullCalendar($.extend(defaults, options));
@@ -449,6 +470,10 @@ const Scheduler = (function ($) {
      */
     function getToolTipText(event)
     {
+        if (event.title.includes("Potential")) { 
+            return "Potential"; 
+        } 
+        
         let section, course, output;
         
         section = event.section;
