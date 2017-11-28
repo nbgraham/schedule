@@ -1,6 +1,8 @@
+var selected_time_slots;
 
 function showFilteredHeatMap(buildings, building_codes, max_room, min_room, seat) {
-    res = getOccInDataFormat(buildings, building_codes, max_room, min_room, seat);
+    console.log(selected_time_slots);
+    res = getOccInDataFormat(buildings, building_codes, max_room, min_room, seat, selected_time_slots);
 
     showHeatMap(res.data, res.ylabels, res.xlabels);
 }
