@@ -1,3 +1,10 @@
+function goToHeatmapWithSlots(s) {
+    var a = "/app_dev.php/t/" + encodeURI(JSON.stringify(s));
+    console.log(a);
+    window.location.href = a;
+    return a;
+}
+
 function filter(buildings, building_codes, max_seat, min_seat) {
     var result = {}
     if (building_codes.length == 0) {
