@@ -1,4 +1,3 @@
-
 function filter(buildings, building_codes, max_seat, min_seat) {
     var result = {}
     if (building_codes.length == 0) {
@@ -48,7 +47,7 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
     }
 
     if (selected_intervals === undefined) {
-        selected_intervals = ["M 8:00","M 8:30", "T 9:00","F 3:00"];
+        selected_intervals = intervals;
     }
 
     room_i = -1;
