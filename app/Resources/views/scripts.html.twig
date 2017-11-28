@@ -30,9 +30,16 @@
  # App-wide utils.
  #}
 {% javascripts '@ATSScheduleBundle/Resources/public/js/util/*.js'
-    '@ATSScheduleBundle/Resources/public/js/heatmap/*.js'
     filter='?jsqueeze'
     output='assets/compiled/js/utils.js'
+%}
+    {% set urls      = urls|merge({ (url_count): asset_url}) %}
+    {% set url_count = url_count + 1 %}
+{% endjavascripts %}
+
+{% javascripts '@ATSScheduleBundle/Resources/public/js/heatmap/*.js'
+    filter='?jsqueeze'
+    output='assets/compiled/js/heatmaps.js'
 %}
     {% set urls      = urls|merge({ (url_count): asset_url}) %}
     {% set url_count = url_count + 1 %}
