@@ -114,6 +114,8 @@ var Scheduler = function ($) {
                     addHalfHourSections(eventData, outer.selected);
                     console.log(outer.selected);
 
+                    selected_time_slots = outer.selected;
+
                     $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
 
                     $('#calendar').fullCalendar('unselect');
