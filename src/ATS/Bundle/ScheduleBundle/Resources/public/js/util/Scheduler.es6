@@ -119,10 +119,9 @@ const Scheduler = (function ($) {
                         end: end
                     };        
 
-                    console.log(outer);
+                    addHalfHourSections(eventData, outer.selected);
                     console.log(outer.selected);
-                    outer.selected.push(eventData);
-
+                    
                     $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
                     
                     $('#calendar').fullCalendar('unselect');
