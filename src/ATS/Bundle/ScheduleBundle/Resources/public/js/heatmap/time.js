@@ -12,7 +12,7 @@ function calculate(ev) {
     return timeStops;
 }
 
-function tom(m) { return DAYS[m.day() - 1] + " " + m.format("H:mm")}
+function toShortFormat(m) { return DAYS[m.day() - 1] + " " + m.format("Hmm")}
 
 function roundToNearestHalfHour(mm, up) {
     remainder = mm.minutes() % 30;
@@ -24,7 +24,7 @@ function addHalfHourSections(ev, list) {
     var mmHalfHours = calculate(ev);
 
     for (i in mmHalfHours) {
-        var i_name = tom(mmHalfHours[i]);
+        var i_name = toShortFormat(mmHalfHours[i]);
         if (list.indexOf(i_name) < 0) {
             list.push(i_name);
         }

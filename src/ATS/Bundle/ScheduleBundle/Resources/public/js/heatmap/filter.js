@@ -68,11 +68,9 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
             for (i_day in matrix) {
                 day_matrix = matrix[i_day];
                 for (i_interval in day_matrix) {
-                    var mmt = intervals[i_overall_interval];
-                    var interval_name = days[mmt.day() - 1] + mmt.format(" HH:mm");
+                    var interval_name = toShortFormat(intervals[i_overall_interval]);
 
                     if (selected_intervals.indexOf(interval_name) >= 0) {
-                        interval_name = interval_name.replace(":","");
                         var sections = room.interval_names_to_sections_dict[interval_name];
 
                         x_count++;
