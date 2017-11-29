@@ -1,18 +1,18 @@
-DAYS = ["M","T","W","R","F"];
+var DAYS = ["U", "M","T","W","R","F","S"];
 
 function calculate(ev) {
-    var timeStops = [];
-    var startTime = roundToNearestHalfHour(ev.start, true);
-
+    let timeStops = [];
+    let startTime = roundToNearestHalfHour(ev.start, true);
+    
     while(startTime <= ev.end){
         timeStops.push(new moment(startTime));
         startTime.add(30, 'minutes');
     }
-
+    
     return timeStops;
 }
 
-function toShortFormat(m) { return DAYS[m.day() - 1] + " " + m.format("Hmm")}
+function toShortFormat(m) { return DAYS[m.day()] + " " + m.format("Hmm")}
 
 function roundToNearestHalfHour(mm, up) {
     remainder = mm.minutes() % 30;
@@ -21,10 +21,10 @@ function roundToNearestHalfHour(mm, up) {
 }
 
 function addHalfHourSections(ev, list) {
-    var mmHalfHours = calculate(ev);
-
-    for (i in mmHalfHours) {
-        var i_name = toShortFormat(mmHalfHours[i]);
+    let mmHalfHours = calculate(ev);
+    
+    for (let i in mmHalfHours) {
+        let i_name = toShortFormat(mmHalfHours[i]);
         if (list.indexOf(i_name) < 0) {
             list.push(i_name);
         }

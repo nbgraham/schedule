@@ -1,18 +1,15 @@
-var default_selected = [];
+let default_selected = [];
 document.addEventListener("DOMContentLoaded", function(event) {
-
-        var codes_select = document.getElementById("building_codes_select");
-        if (codes_select == null) {
-            return;
-        }
-
-        for (code_i in building_codes.sort()) {
-            var option = document.createElement("option");
-            if (default_selected.indexOf(building_codes[code_i]) >= 0) {
-                option.selected = true;
-            }
-            option.text = building_codes[code_i];
-            option.value = building_codes[code_i];
-            codes_select.add(option);
-        }
-     });
+    let codes_select = document.getElementById("building_codes_select");
+    if (codes_select == null) {
+        return;
+    }
+    
+    for (let code_i in building_codes.sort()) {
+        let option = document.createElement("option");
+        option.selected = default_selected.includes(building_codes[code_i]);
+        option.text = building_codes[code_i];
+        option.value = building_codes[code_i];
+        codes_select.add(option);
+    }
+});
