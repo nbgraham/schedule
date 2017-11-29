@@ -3,11 +3,12 @@
 {% block body %}
     {% embed '@ATSSchedule/Default/heatmap.scripts.html.twig' %}
     {% endembed %}
+
+    {% if slots is defined %}
     <script>
-        var a = "{{slots}}";
-        selected_time_slots = JSON.parse(a.replace(/&quot;/g,'"'));
-        console.log(selected_time_slots);
+        selected_time_slots = JSON.parse("{{slots}}".replace(/&quot;/g,'"'));
     </script>
+    {% endif %}
 
     <div class="heatmap-page">
     <div class="container-fluid scheduler-header-wrapper">

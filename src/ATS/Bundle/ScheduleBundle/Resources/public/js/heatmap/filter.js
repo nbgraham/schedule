@@ -50,7 +50,12 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
     }
     
     if (selected_intervals === undefined) {
-        selected_intervals = intervals;
+        selected_intervals = [];
+
+        for (let i_day in intervals) {
+            let dayArrayShortFormat = intervals[i_day].map(mmt => toShortFormat(mmt));
+            selected_intervals = selected_intervals.concat(dayArrayShortFormat);
+        }
     }
     
     let room_i = 0;
