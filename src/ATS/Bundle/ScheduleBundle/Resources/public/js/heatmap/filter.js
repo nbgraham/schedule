@@ -36,6 +36,7 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
     
     let data = [];
     let intervals = [];
+    let selected_intervals_names = [];
     let rooms = [];
     
     let start = new moment().day(1).hour(8).minute(0);
@@ -69,6 +70,10 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
                     let interval_name = toShortFormat(intervals[i_overall_interval]);
                     
                     if (selected_intervals.includes(interval_name)) {
+                        let display_name = intervals[i_overall_interval].format("dd h:mm");
+                        if (! selected_intervals_names.includes(display_name)) {
+                            selected_intervals_names.push(display_name); 
+                        }
                         let sections = room.interval_names_to_sections_dict[interval_name];
                         x_count++;
                         data.push({
@@ -92,6 +97,6 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
     return {
         data,
         ylabels: rooms,
-        xlabels: selected_intervals
+        xlabels: selected_intervals_names
     };
 }

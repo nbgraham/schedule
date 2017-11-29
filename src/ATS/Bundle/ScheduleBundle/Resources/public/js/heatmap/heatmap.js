@@ -218,7 +218,7 @@ function showHeatMap(data, ylabels, xlabels) {
     svg.append("text")
     .attr("class", "credit")
     .attr("x", width/2)
-    .attr("y", gridSize * (days.length+1) + 260)
+    .attr("y", gridSize * (ylabels.length+1) + 260)
     .style("text-anchor", "middle")
     .text("Based on Miles McCrocklin's Heatmap block");
     
