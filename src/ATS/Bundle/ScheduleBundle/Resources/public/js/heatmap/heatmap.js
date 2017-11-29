@@ -1,7 +1,6 @@
 var selected_time_slots;
 
 function showFilteredHeatMap(buildings, building_codes, max_room, min_room, seat) {
-    console.debug(selected_time_slots);
     let res = getOccInDataFormat(buildings, building_codes, max_room, min_room, seat, selected_time_slots);
     showHeatMap(res.data, res.ylabels, res.xlabels);
 }

@@ -1,6 +1,5 @@
 function goToHeatmapWithSlots(s) {
     let route = "/app_dev.php/t/" + encodeURI(JSON.stringify(s));
-    console.debug(route);
     window.location.href = route;
     return route;
 }
@@ -77,12 +76,6 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
                             selected_intervals_names.push(display_name); 
                         }
                         let sections = room.interval_names_to_sections_dict[interval_name];
-                        if (sections === undefined) {
-                            console.log(interval_name + " not found in room.");
-                            console.log(room.interval_names_to_sections_dict);
-                            console.log(day_matrix);
-                            console.log("at interval #" + i_interval + " named " + interval_name + " val is " + day_matrix[i_interval])
-                        }
                         x_count++;
                         data.push({
                             y: room_i,
@@ -98,7 +91,6 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
         }
     }
     
-    console.debug(data);
     return {
         data,
         ylabels: rooms,
