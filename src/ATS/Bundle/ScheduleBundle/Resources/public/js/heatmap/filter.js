@@ -30,14 +30,8 @@ function filter(buildings, building_codes, max_seat, min_seat) {
     return result;
 }
 
-function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat, selected_intervals) {
-    let filtered_buildings = filter(buildings, building_codes, max_seat, min_seat);
-    
-    let data = [];
+function buildDefaultIntervals() {
     let intervals = [];
-    let selected_intervals_names = [];
-    let rooms = [];
-    
     let start = new moment().day(0);
     while (start.day() < 6) {
         let day = [];
@@ -48,7 +42,10 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
         }
         intervals.push(day);
     }
-    
+    return intervals;
+}
+
+function getSelectedIntervals(selected_intervals, intervals) {
     if (selected_intervals === undefined) {
         selected_intervals = [];
 
@@ -57,6 +54,17 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
             selected_intervals = selected_intervals.concat(dayArrayShortFormat);
         }
     }
+    return selected_intervals;
+}
+
+function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat, chosen_intervals) {
+    let filtered_buildings = filter(buildings, building_codes, max_seat, min_seat);
+    let intervals = buildDefaultIntervals();  
+    let selected_intervals = getSelectedIntervals(chosen_intervals, intervals);
+
+    let data = [];
+    let selected_intervals_names = [];
+    let rooms = [];
     
     let room_i = 0;
     for (let building_code in filtered_buildings) {
@@ -71,8 +79,8 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
             let x_count = 0;
             let matrix = seat ? room.seat_occupancy_matrix : room.occupancy_matrix;
             for (let i_day in matrix) {
-                let day_matrix = matrix[i_day];
-                for (let i_interval in day_matrix) {
+                let day_array = matrix[i_day];
+                for (let i_interval in day_array) {
                     let interval_name = toShortFormat(intervals[i_day][i_interval]);
                     
                     if (selected_intervals.includes(interval_name)) {
@@ -85,7 +93,7 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
                         data.push({
                             y: room_i,
                             x: x_count,
-                            val: day_matrix[i_interval],
+                            val: day_array[i_interval],
                             sections,
                             room_cap: room.seat_count
                         });
