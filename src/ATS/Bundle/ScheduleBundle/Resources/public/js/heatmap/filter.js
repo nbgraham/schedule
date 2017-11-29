@@ -67,29 +67,32 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
             room_i++;
             rooms.push(building.name + " " + room.number);
 
-            i_overall_interval = 0
+            i_overall_interval = 0;
+            let x_count = 0;
             var matrix = seat ? room.seat_occupancy_matrix : room.occupancy_matrix;
             for (i_day in matrix) {
                 day_matrix = matrix[i_day];
                 for (i_interval in day_matrix) {
-                    if (selected_intervals.indexOf(intervals[i_interval]) === -1) {
-                        continue;
-                    }
-
                     var hour = hours24[Math.trunc(i_interval/2)];
                     var rem = i_interval/2.0 - Math.trunc(i_interval/2);
                     var minutes = rem > 0 ? "30" : "00";
-                    var interval_name = days[i_day] + " " + hour + minutes;                    
+                    var interval_name = days[i_day] + " " + hour + ":" + minutes;
 
-                    var sections = room.interval_names_to_sections_dict[interval_name];
+                    if (selected_intervals.indexOf(interval_name) >= 0) {
+                        interval_name = interval_name.replace(":","");
+                        var sections = room.interval_names_to_sections_dict[interval_name];
 
-                    data.push({
-                        y: room_i + 1,
-                        x: i_overall_interval + 1,
-                        val: day_matrix[i_interval],
-                        sections,
-                        room_cap: room.seat_count
-                    });
+                        x_count++;
+                        data.push({
+                            y: room_i + 1,
+                            x: x_count,
+                            val: day_matrix[i_interval],
+                            sections,
+                            room_cap: room.seat_count
+                        });
+                    } else {
+                        console.debug("Interval not found: " + intervals[i_overall_interval]);
+                    }
                     i_overall_interval++;
                 }
             }
@@ -97,6 +100,7 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
         }
     }
 
+    console.debug(data);
     return {
         data,
         ylabels: rooms,
