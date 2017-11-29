@@ -39,18 +39,13 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
     rooms = [];
 
     days = ["M","T","W","R","F"];
-    hours = [8,9,10,11,12,1,2,3,4];
-    hours24 = [8,9,10,11,12,13,14,15,16];
 
-    for (i_day in days) {
-        day = days[i_day];
-        for (i_hour in hours) {
-            hour = hours[i_hour];
-            intervals.push(day + " " + hour + ":00")
-            if (hour !== 4) {
-                intervals.push(day + " " + hour + ":30")
-            }
+    let start = new moment().day(1).hour(8).minute(0);
+    while (start.day() < 6) {
+        if (start.hour() < 16 || (start.hour() == 16 && start.minute() == 0)) {
+            intervals.push(new moment(start));    
         }
+        start.add(30, "minutes");        
     }
 
     if (selected_intervals === undefined) {
@@ -73,10 +68,8 @@ function getOccInDataFormat(buildings, building_codes, max_seat, min_seat, seat,
             for (i_day in matrix) {
                 day_matrix = matrix[i_day];
                 for (i_interval in day_matrix) {
-                    var hour = hours24[Math.trunc(i_interval/2)];
-                    var rem = i_interval/2.0 - Math.trunc(i_interval/2);
-                    var minutes = rem > 0 ? "30" : "00";
-                    var interval_name = days[i_day] + " " + hour + ":" + minutes;
+                    var mmt = intervals[i_overall_interval];
+                    var interval_name = days[mmt.day() - 1] + mmt.format(" HH:mm");
 
                     if (selected_intervals.indexOf(interval_name) >= 0) {
                         interval_name = interval_name.replace(":","");
