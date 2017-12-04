@@ -39,7 +39,7 @@ function showHeatMap(data, ylabels, xlabels) {
     
     //Reset the overall font size
     let newFontSize = width * 62.5 / 900;
-    d3.select("html").style("font-size", newFontSize + "%");
+    d3.select("#heatmap").style("font-size", newFontSize + "%");
     
     ///////////////////////////////////////////////////////////////////////////
     //////////////////////////// Draw Heatmap /////////////////////////////////
