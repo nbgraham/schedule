@@ -7,6 +7,11 @@
     {% if slots is defined %}
     <script>
         selected_time_slots = JSON.parse("{{slots}}".replace(/&quot;/g,'"'));
+
+        function clearTimeSlots() {
+            selected_time_slots = undefined;
+            document.getElementById("selected-slots").style.display = "none";
+        }
     </script>
     {% endif %}
 
@@ -43,6 +48,12 @@
 
 
     <div class="container-fluid calendar-container">
+        {% if slots is defined %}
+            <div id="selected-slots">
+                {{slots}}
+                <button onClick='clearTimeSlots()'>Clear time slot selection</button>
+            </div>
+        {% endif %}
         <form action="" method="GET">
             Building Codes:<br>
                 <select id="building_codes_select" name="building_codes" size="10" multiple>
