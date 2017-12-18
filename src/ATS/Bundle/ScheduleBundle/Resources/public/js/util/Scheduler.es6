@@ -39,7 +39,7 @@ const Scheduler = (function ($) {
          */
         init : function (options)
         {
-            let outer = this;
+            let context = this;
 
             let defaults = {
                 startParam:   null,
@@ -119,10 +119,7 @@ const Scheduler = (function ($) {
                         end: end
                     };        
 
-                    addHalfHourSections(eventData, outer.selected);
-                    console.log(outer.selected);
-
-                    selected_time_slots = outer.selected;
+                    addHalfHourSections(eventData, context.selected);
                     
                     $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
                     

@@ -39,7 +39,7 @@ var Scheduler = function ($) {
          * @var object options The options to override the default settings.
          */
         init: function init(options) {
-            var outer = this;
+            var context = this;
 
             var defaults = {
                 startParam: null,
@@ -111,10 +111,8 @@ var Scheduler = function ($) {
                         end: end
                     };
 
-                    addHalfHourSections(eventData, outer.selected);
-                    console.log(outer.selected);
-
-                    selected_time_slots = outer.selected;
+                    addHalfHourSections(eventData, context.selected);
+                    console.log(context.selected);
 
                     $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
 

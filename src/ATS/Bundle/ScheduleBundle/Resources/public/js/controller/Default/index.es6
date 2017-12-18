@@ -455,6 +455,10 @@
         $('#btn-export').on('click', function () {
             fetchCsvExport();
         });
+
+        $('#explore-slots').on('click', function () {
+            goToHeatmapWithSlots(scheduler.selected);
+        });
     }
 
     /**
