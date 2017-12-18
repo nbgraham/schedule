@@ -6,6 +6,10 @@
     text-align: center;
 }
 
+.btn-home {
+    float: left;
+}
+
 .xLabel, .yLabel {
     font-size: 1.0rem;
     fill: #AAAAAA;
