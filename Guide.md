@@ -21,10 +21,10 @@ The author of the document developed this on OSX and used Homebrew as his packag
 
 Mac | Unix
 --- | ---
-`$ brew install git` | `$ sudo apt-get install git`
+`brew install git` | `sudo apt-get install git`
 
 Check your manual for further information based on your distro. In Unix to see if you already have a dependency installed (and if it’s in your PATH environment variable) type:  
-`$ which <dependency>`
+`which <dependency>`
 
 This project was developed with [Symfony](https://symfony.com/), a common Model-View-Controller (MVC) PHP framework. It has extensive [documentation](https://symfony.com/doc/current/index.html) available online. This document is intended to combine knowledge from several sources and provided as a general guide.
 
@@ -32,11 +32,11 @@ This project was developed with [Symfony](https://symfony.com/), a common Model-
 
 ### Basics
 Open up the Terminal and download your project dependencies:  
-`$ brew install git`  
-`$ brew install mysql`  
-`$ brew install php56 php56-opcache php56-yaml php56-igbinary php56-mcrypt`  
-`$ brew install httpd24`  
-`$ brew install composer`  
+`brew install git`  
+`brew install mysql`  
+`brew install php56 php56-opcache php56-yaml php56-igbinary php56-mcrypt`  
+`brew install httpd24`  
+`brew install composer`  
 Install in one line:  
 `brew install git mysql php56 php56-opcache php56-yaml php56-igbinary php56-mcrypt httpd24 composer`
 
@@ -46,31 +46,31 @@ Several of these will require a first-time setup. It’s recommended you refrain
 
 #### Part 1: Project setup
 Change Directory (CD) into where you’ll be working on the project.  
-`$ cd /Users/ashinpaugh/development/`
+`cd /Users/ashinpaugh/development/`
 
 Next download the project:  
-`$ git clone schedule git@github.com:ashinpaugh/schedule.git`  
-`$ cd schedule`
+`git clone schedule git@github.com:ashinpaugh/schedule.git`  
+`cd schedule`
 
 The output of pwd is what we will refer to as the Project’s Root Folder (PRF):
-`$ pwd`
+`pwd`
 
 Next verify that your basic dependencies are installed correctly, make changes as suggested.  
-`$ php bin/symfony_requirements`
+`php bin/symfony_requirements`
 
 Install the project’s PHP dependencies:  
-`$ composer install`
+`composer install`
 
 Next setup the project’s SQL structure:  
-`$ php bin/console doctrine:database:create`
-`$ php bin/console doctrine:schema:create`
+`php bin/console doctrine:database:create`
+`php bin/console doctrine:schema:create`
 
 Next install the project’s assets into the <Project’s Root Folder>/web directory:  
-`$ php bin/console assetic:dump`
+`php bin/console assetic:dump`
 
 #### Part 2: Server Configuration and Host entry
 Setup your Apache Virtual Host (Mac):  
-`$ vim /usr/local/etc/apache2/2.4/extra/httpd-vhosts.conf`
+`vim /usr/local/etc/apache2/2.4/extra/httpd-vhosts.conf`
 
 For Unix (creates a new file):  
 `sudo vim /etc/apache2/sites-available/scheduler.conf`
@@ -99,7 +99,7 @@ DocumentRoot see below.
 The DocumentRoot can point either to a symlink you create in the WebServer folder that points to your <Project’s Root Folder>/web, or directly to <Project Root Folder>/web. Sometimes there are technical reasons for creating a symlink to that WebServer folder, but we won’t be exploring those in this document.
 
 Edit your host file to point to home:  
-`$ sudo vim /etc/hosts`
+`sudo vim /etc/hosts`
 
 And paste:  
 `127.0.0.1 scheduler.dev`
@@ -112,12 +112,12 @@ Note the `/app_dev.php` at the end. This means your accessing the “dev” vers
 
 #### Part 3: Development
 At this point you need to import data to work with. You can get the data by running:  
-`$ php bin/console scheduler:parse-book`
+`php bin/console scheduler:parse-book`
 
 This wasn’t high optimized (it takes a while to run) as it was hoped that we would be able to hook into API’s provided by OU IT; at the time of writing this document, those have yet to surface.
 
 From here you’re ready to start development. At this point you should familiarize yourself with Symfony’s command line. To get a list of available commands type:  
-`$ php bin/console`  
+`php bin/console`  
 You should see this list:
 ```
 Symfony 3.3.8 (kernel: app, env: dev, debug: true)
@@ -214,7 +214,7 @@ Available commands:
 The author prefers [PHPStorm](https://www.jetbrains.com/phpstorm/) by JetBrains for as an IDE. A one year free trial is available through their website for students. PHPStorm has an extremely useful Symfony plugin that is highly recommend.
 
 When editing your CSS / Javascript run the :watch command in an open terminal window to compile those assets automatically when you reload your page:  
-`$ php bin/console assetic:watch`
+`php bin/console assetic:watch`
 To see a list of existing project APIs visit `/api/doc`, ie: http://scheduler.dev/app_dev.php/api/doc
 ## Maintenance
 
