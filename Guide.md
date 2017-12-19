@@ -104,7 +104,20 @@ Edit your host file to point to home:
 
 And paste:  
 `127.0.0.1 scheduler.dev`
-	
+
+To get it working on Unix, I followed https://lowendbox.com/blog/how-to-setup-apache-virtual-hosts-on-ubuntu-16-04/ and
+1. Remove consecutive spaces from config file (with tabs)
+2. Add conf file
+    `sudo a2ensite scheduler.conf`
+3. Disable apache default
+    `sudo a2dissite 000-default.conf`
+4. Restart apache
+    `sudo service apache2 restart`
+5. Create the store directory
+    `mkdir <project root>/var/cache/prod/http_cache`
+6. Grant write access to entire var directory
+    `chmod +w <project root>/var`  
+I had some other issues with expectations of where a file should be. For example, I had to symlink `ln -s /usr/bin/php /usr/local/bin/php`
 
 At this point you should be able to visit the landing page for the app at http://scheduler.dev/app_dev.php/:
 ![Landing Page](/landing_page.png)
