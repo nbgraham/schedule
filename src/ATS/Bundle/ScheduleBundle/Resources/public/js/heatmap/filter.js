@@ -1,5 +1,5 @@
 function goToHeatmapWithSlots(s) {
-    let route = "/app_dev.php/t/" + encodeURI(JSON.stringify(s));
+    let route = "/app_dev.php/heatmap/" + encodeURI(JSON.stringify(s));
     window.location.href = route;
     return route;
 }

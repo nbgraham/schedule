@@ -220,5 +220,4 @@ function showHeatMap(data, ylabels, xlabels) {
     .attr("y", gridSize * (ylabels.length+1) + 260)
     .style("text-anchor", "middle")
     .text("Based on Miles McCrocklin's Heatmap block");
-    
 }

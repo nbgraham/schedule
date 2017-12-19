@@ -45,22 +45,22 @@ class DefaultController extends AbstractController
 
     /**
      * 
-     * @Route("/t", name="t")
+     * @Route("/heatmap", name="heatmap")
      * @return Response
      */
     public function timeAction()
     {        
-        return $this->render('ATSScheduleBundle:Default:time.html.twig');
+        return $this->render('ATSScheduleBundle:Default:heatmap.html.twig');
     }
 
     /**
      * 
-     * @Route("/t/{slots}", name="t_slots")
+     * @Route("/heatmap/{slots}", name="heatmap_slots")
      * @return Response
      */
     public function timeSlotsAction($slots)
     {        
-        return $this->render('ATSScheduleBundle:Default:time.html.twig', [ 'slots' => $slots ]);
+        return $this->render('ATSScheduleBundle:Default:heatmap.html.twig', [ 'slots' => $slots ]);
     }
     
     /**
