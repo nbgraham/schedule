@@ -113,7 +113,7 @@ Note the `/app_dev.php` at the end. This means your accessing the “dev” vers
 
 #### Part 3: Development
 At this point you need to import data to work with. You can get the data by running:  
-`php bin/console scheduler:parse-book`
+`php bin/console schedule:parse-book`
 
 This wasn’t high optimized (it takes a while to run) as it was hoped that we would be able to hook into API’s provided by OU IT; at the time of writing this document, those have yet to surface.
 
