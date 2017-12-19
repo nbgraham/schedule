@@ -3,6 +3,8 @@ schedule
 
 A utility for viewing sections and when they are scheduled.
 
+[Detailed Guide](/Guide.md)
+
 ### setup
 
 1. Make sure php's cli config has a high enough memory_limit - 512mb is the minimum recommended value.
