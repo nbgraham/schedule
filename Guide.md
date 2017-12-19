@@ -228,7 +228,7 @@ Available commands:
 The author prefers [PHPStorm](https://www.jetbrains.com/phpstorm/) by JetBrains for as an IDE. A one year free trial is available through their website for students. PHPStorm has an extremely useful Symfony plugin that is highly recommend.
 
 When editing your CSS / Javascript run the :watch command in an open terminal window to compile those assets automatically when you reload your page:  
-`php bin/console assetic:watch`
+`php bin/console assetic:watch`  
 To see a list of existing project APIs visit `/api/doc`, ie: http://scheduler.dev/app_dev.php/api/doc
 ## Maintenance
 
