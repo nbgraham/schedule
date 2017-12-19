@@ -78,19 +78,20 @@ For Unix (creates a new file):
 Insert the following:
 ```xml
 <VirtualHost *:80>
-   ServerAdmin  yourEmail@example.com
-   ServerName   scheduler.dev
+   ServerAdmin  yourEmail@example.com
+   ServerName   scheduler.dev
 
-   SetEnv       APPLICATION_ENV "dev"
+   SetEnv   APPLICATION_ENV "dev"
    DocumentRoot /Library/WebServer/schedule
    <Directory "/Library/WebServer/schedule">
-      DirectoryIndex app_dev.php
-      Options        MultiViews FollowSymLinks
-      AllowOverride  All
-      Require        all granted
+      DirectoryIndex    app_dev.php
+      Options   MultiViews FollowSymLinks
+      AllowOverride All
+      Require   all granted
    </Directory>
 </VirtualHost>
 ```
+For Unix, make sure that tabs are used instead of spaces.
 
 Edit server admin to something appropriate.
 ServerName will be the URL you type into your browser to access the site.
