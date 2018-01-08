@@ -220,15 +220,7 @@ let GlobalUtils;
             }
             
             subjects[idx].courses.sort(function (a, b) {
-                if (a.number === b.number) {
-                    return 0;
-                }
-                
-                if (a.number > b.number) {
-                    return 1;
-                }
-                
-                return -1;
+                return a.number > b.number;
             });
         }
     };
