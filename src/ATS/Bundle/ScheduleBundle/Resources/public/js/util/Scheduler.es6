@@ -469,7 +469,7 @@ const Scheduler = (function ($) {
     function getToolTipText(event)
     {
         if (event.title.includes("Potential")) { 
-            return "Potential"; 
+            return "Potential Time Slot"; 
         } 
         
         let section, course, output;
