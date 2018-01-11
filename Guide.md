@@ -62,7 +62,7 @@ Install the project’s PHP dependencies:
 `composer install`
 
 Next setup the project’s SQL structure:  
-`php bin/console doctrine:database:create`
+`php bin/console doctrine:database:create`  
 `php bin/console doctrine:schema:create`
 
 Next install the project’s assets into the <Project’s Root Folder>/web directory:  
@@ -97,7 +97,7 @@ Edit server admin to something appropriate.
 ServerName will be the URL you type into your browser to access the site.
 DocumentRoot see below.
 
-The DocumentRoot can point either to a symlink you create in the WebServer folder that points to your <Project’s Root Folder>/web, or directly to <Project Root Folder>/web. Sometimes there are technical reasons for creating a symlink to that WebServer folder, but we won’t be exploring those in this document.
+**Note**: The DocumentRoot can point either to a symlink you create in the WebServer folder that points to your <Project’s Root Folder>/web, or directly to <Project Root Folder>/web. Sometimes there are technical reasons for creating a symlink to that WebServer folder, but we won’t be exploring those in this document.
 
 Edit your host file to point to home:  
 `sudo vim /etc/hosts`
@@ -119,7 +119,7 @@ To get it working on Unix, I followed https://lowendbox.com/blog/how-to-setup-ap
     `chmod +w <project root>/var`  
 I had some other issues with expectations of where a file should be. For example, I had to symlink `ln -s /usr/bin/php /usr/local/bin/php`
 
-At this point you should be able to visit the landing page for the app at http://scheduler.dev/app_dev.php/:
+At this point you should be able to visit the landing page for the app at http://scheduler.dev/app_dev.php/
 ![Landing Page](/landing_page.png)
 
 Note the `/app_dev.php` at the end. This means your accessing the “dev” version of the project, which will enable the Symfony’s Web Profiler feature to give you useful information regarding the performance of the app. `/app_dev.php` also loads the “dev” config files and routing resources.
