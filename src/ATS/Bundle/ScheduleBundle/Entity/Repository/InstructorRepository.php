@@ -26,15 +26,15 @@ class InstructorRepository extends EntityRepository
         $conn = $this->getEntityManager()->getConnection();
         
         $statement = $conn->prepare('
-            SELECT sub.id AS subject_id, sub.name AS subject_name,
-              i.id, i.email, i.name
+            SELECT sub.id, sub.name, i.id, any_value(i.email), any_value(i.name) as i_name
             FROM section AS s
             JOIN subject AS sub
               ON s.subject_id = sub.id
             JOIN instructor AS i
               ON s.instructor_id = i.id
+            WHERE s.instructor_id != 0
             GROUP BY sub.id, i.id
-            ORDER BY i.name
+            ORDER BY i_name;
         ');
         
         $statement->execute();
