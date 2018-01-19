@@ -108,7 +108,8 @@ var Scheduler = function ($) {
                     var eventData = {
                         title: title,
                         start: start,
-                        end: end
+                        end: end,
+                        editable: true,
                     };
 
                     addHalfHourSections(eventData, context.selected);
